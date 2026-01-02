@@ -1,0 +1,18 @@
+node_modules/
+dist/
+
+# Ignore the build directory
+build/
+
+# Ignore the logs directory
+logs/
+
+# Ignore the .env file
+.env
+
+# Ignore the .env.example file
+.env.example.*
+.env
+
+
+
