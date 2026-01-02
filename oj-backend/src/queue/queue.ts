@@ -29,7 +29,13 @@ class Queue<T> {
     return this.items.length;
   }
 }
+export type Submission = {
+  code: string;
+  language: string;
+  userId: string;
+  question: string;
+};
 
-const submissionQueue = new Queue<{ code: string; language: string; userId: string; question: string }>();
+const submissionQueue = new Queue<Submission>();
 
 export default submissionQueue;
