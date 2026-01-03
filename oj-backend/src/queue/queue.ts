@@ -3,7 +3,7 @@ class Queue<T> {
 
   // Add an element to the end of the queue (enqueue)
   enqueue(item: T): void {
-    this.items.push(item); 
+    this.items.push(item);
   }
 
   // Remove and return the first element from the queue (dequeue)
@@ -11,7 +11,7 @@ class Queue<T> {
     if (this.isEmpty()) {
       return undefined; // Or throw an error for an empty queue
     }
-    return this.items.shift() as T; 
+    return this.items.shift() as T;
   }
 
   // Return the first element of the queue without removing it (peek)
@@ -29,13 +29,9 @@ class Queue<T> {
     return this.items.length;
   }
 }
-export type Submission = {
-  code: string;
-  language: string;
-  userId: string;
-  question: string;
-};
 
-const submissionQueue = new Queue<Submission>();
+export type SubmissionId = string;
+
+const submissionQueue = new Queue<string>();
 
 export default submissionQueue;

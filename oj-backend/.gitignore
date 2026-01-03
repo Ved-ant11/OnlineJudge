@@ -13,6 +13,5 @@ logs/
 # Ignore the .env.example file
 .env.example.*
 .env
-
-
+/src/generated/prisma
 
