@@ -1,14 +1,18 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "CommonJS",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "moduleDetection": "auto",
     "rootDir": "src",
     "outDir": "dist",
+    "lib": ["ES2020"],
     "strict": true,
     "esModuleInterop": true,
-    "types": ["node"],
-    "moduleDetection": "auto"
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "types": ["node"]
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist", "prisma.config.ts"],
+  "exclude": ["node_modules", "dist", "prisma.config.ts"]
 }
