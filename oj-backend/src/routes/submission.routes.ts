@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 //import submissionQueue from "../queue/queue";
 import prisma from "../db/client";
 import { SubmissionStatus } from "../generated/prisma/client";
-import { redis } from "../redis/client";
+import redis from "../redis/client";
 
 const router = Router();
 

@@ -1,16 +1,51 @@
-import redis from "../redis/client";
+import redis, { connectRedis } from "../redis/client";
 import prisma from "../db/client";
 import { SubmissionStatus } from "../generated/prisma/client";
 
 const QUEUE_KEY = "oj:submissions";
 const MAX_ATTEMPTS = 3;
-const RUNNING_TIMEOUT_MS = 2 * 60 * 1000; 
+const RUNNING_TIMEOUT_MS = 2 * 60 * 1000;
+const RECOVERY_INTERVAL_MS = 30 * 1000;
 
 const worker = async () => {
   console.log("Worker started with retries enabled...");
+  await connectRedis();
+  //Log to check redis status
+  console.log("Redis isOpen:", redis.isOpen);
+
+  setInterval(async () => {
+    try {
+      const staleSubmissions = await prisma.submission.findMany({
+        where: {
+          status: SubmissionStatus.RUNNING,
+          lastStartedAt: {
+            lt: new Date(Date.now() - RUNNING_TIMEOUT_MS),
+          },
+        },
+      });
+
+      for (const sub of staleSubmissions) {
+        if (sub.attempts >= MAX_ATTEMPTS) {
+          console.log(`Marking ${sub.id} as FAILED`);
+          await prisma.submission.update({
+            where: { id: sub.id },
+            data: { status: SubmissionStatus.FAILED },
+          });
+        } else {
+          console.log(`Re-queueing ${sub.id}`);
+          await prisma.submission.update({
+            where: { id: sub.id },
+            data: { status: SubmissionStatus.QUEUED },
+          });
+          await redis.lPush(QUEUE_KEY, sub.id);
+        }
+      }
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  }, RECOVERY_INTERVAL_MS);
 
   while (true) {
-    // Blocking pop
     const res = await redis.blPop(QUEUE_KEY, 0);
     const submissionId = res?.element;
 
@@ -22,6 +57,7 @@ const worker = async () => {
       });
 
       if (!submission) continue;
+
       if (
         submission.status === SubmissionStatus.COMPLETED ||
         submission.status === SubmissionStatus.FAILED
@@ -29,73 +65,64 @@ const worker = async () => {
         continue;
       }
 
-      const now = new Date();
-      if (submission.status === SubmissionStatus.RUNNING) {
-        const last = submission.lastStartedAt?.getTime() ?? 0;
-        const isStale = Date.now() - last > RUNNING_TIMEOUT_MS;
-
-        if (!isStale) {
-          continue;
-        }
-
-        if (submission.attempts >= MAX_ATTEMPTS) {
-          await prisma.submission.update({
-            where: { id: submissionId },
-            data: { status: SubmissionStatus.FAILED },
-          });
-          continue;
-        }
-
-        // Retry
-        await prisma.submission.update({
-          where: { id: submissionId },
-          data: {
-            status: SubmissionStatus.QUEUED,
-          },
-        });
-
-        await redis.lPush(QUEUE_KEY, submissionId);
+      if (submission.status !== SubmissionStatus.QUEUED) {
         continue;
       }
 
-      //Handle QUEUED jobs
-      if (submission.status === SubmissionStatus.QUEUED) {
-        if (submission.attempts >= MAX_ATTEMPTS) {
-          await prisma.submission.update({
-            where: { id: submissionId },
-            data: { status: SubmissionStatus.FAILED },
-          });
-          continue;
-        }
-
-        // Increment attempts + mark RUNNING
+      if (submission.attempts >= MAX_ATTEMPTS) {
         await prisma.submission.update({
           where: { id: submissionId },
-          data: {
-            status: SubmissionStatus.RUNNING,
-            attempts: { increment: 1 },
-            lastStartedAt: now,
-          },
+          data: { status: SubmissionStatus.FAILED },
         });
-
-        console.log(
-          `Processing submission ${submissionId}, attempt ${
-            submission.attempts + 1
-          }`
-        );
-        await new Promise((r) => setTimeout(r, 2000));
-        await prisma.submission.update({
-          where: { id: submissionId },
-          data: {
-            status: SubmissionStatus.COMPLETED,
-            result: "AC",
-          },
-        });
-
-        console.log(`Completed submission ${submissionId}`);
+        continue;
       }
+
+      await prisma.submission.update({
+        where: { id: submissionId },
+        data: {
+          status: SubmissionStatus.RUNNING,
+          attempts: { increment: 1 },
+          lastStartedAt: new Date(),
+        },
+      });
+
+      console.log(
+        `Processing ${submissionId}, attempt ${submission.attempts + 1}`,
+      );
+
+      await new Promise((r) => setTimeout(r, 2000));
+
+      await prisma.submission.update({
+        where: { id: submissionId },
+        data: {
+          status: SubmissionStatus.COMPLETED,
+          result: "AC",
+        },
+      });
+
+      console.log(`Completed ${submissionId}`);
     } catch (err) {
-      console.error(`Worker error for submission ${submissionId}`, err);
+      console.error(`Error processing ${submissionId}:`, err);
+
+      const submission = await prisma.submission.findUnique({
+        where: { id: submissionId },
+      });
+
+      if (!submission) continue;
+
+      if (submission.attempts >= MAX_ATTEMPTS) {
+        await prisma.submission.update({
+          where: { id: submissionId },
+          data: { status: SubmissionStatus.FAILED },
+        });
+      } else {
+        await prisma.submission.update({
+          where: { id: submissionId },
+          data: { status: SubmissionStatus.QUEUED },
+        });
+        await redis.lPush(QUEUE_KEY, submissionId);
+        console.log(`Re-queued ${submissionId} after error`);
+      }
     }
   }
 };
