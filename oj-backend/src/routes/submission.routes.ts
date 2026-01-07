@@ -1,7 +1,8 @@
 import { Router, Request, Response } from "express";
-import submissionQueue from "../queue/queue";
+//import submissionQueue from "../queue/queue";
 import prisma from "../db/client";
 import { SubmissionStatus } from "../generated/prisma/client";
+import { redis } from "../redis/client";
 
 const router = Router();
 
@@ -29,7 +30,8 @@ router.post("/", async (req: Request, res: Response) => {
   });
 
   const submissionId = submission.id;
-  submissionQueue.enqueue(submissionId);
+  //submissionQueue.enqueue(submissionId);
+  await redis.lPush("oj:submissions", submissionId);
   await prisma.submission.update({
     where: { id: submissionId },
     data: { status: SubmissionStatus.QUEUED },
@@ -42,10 +44,10 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 // safe check log for queueing operation
-router.get("/size", (_req: Request, res: Response) => {
-  return res.json({
-    queueSize: submissionQueue.size(),
-  });
-});
+// router.get("/size", async (_req: Request, res: Response) => {
+//   return res.json({
+//     queueSize: await redis.llen("oj:submissions"),
+//   });
+// });
 
 export default router;

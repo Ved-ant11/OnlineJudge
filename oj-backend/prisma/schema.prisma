@@ -21,6 +21,8 @@ model Submission {
   code       String
   language   String
   status     SubmissionStatus
+  attempts   Int              @default(0)
+  lastStartedAt DateTime?     
   result     String?
   user       User             @relation(fields: [userId], references: [id])
   createdAt  DateTime         @default(now())
