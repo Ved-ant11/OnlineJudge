@@ -25,6 +25,7 @@ model Submission {
   lastStartedAt DateTime?     
   result     String?
   user       User             @relation(fields: [userId], references: [id])
+  question   Question         @relation(fields: [questionId], references: [id])
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
 }
@@ -43,3 +44,19 @@ model User {
   submissions Submission[]
 }
 
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model Question {
+  id          String      @id @default(uuid())
+  title       String
+  statement   String
+  difficulty  Difficulty
+  examples    Json
+  constraints String
+  submissions Submission[]
+  createdAt   DateTime @default(now())
+}
