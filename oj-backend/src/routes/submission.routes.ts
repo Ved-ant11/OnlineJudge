@@ -8,7 +8,7 @@ const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
   const { code, language, userId, questionId } = req.body;
-
+  // console.log("Submission received: ", req.body);
   if (!code || !language || !userId || !questionId) {
     return res.status(400).json({ error: "Invalid submission payload" });
   }

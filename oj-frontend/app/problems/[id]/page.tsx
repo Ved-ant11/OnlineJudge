@@ -1,12 +1,14 @@
 import { fetchQuestionById } from "@/lib/api";
 import ReactMarkdown from "react-markdown";
+import CodeSubmission from "@/components/CodeSubmission";
 
 type PageProps = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export default async function ProblemDetailPage({ params }: PageProps) {
-  const question = await fetchQuestionById(params.id);
+  const {id} = await params;
+  const question = await fetchQuestionById(id);
 
   return (
     <div>
@@ -46,6 +48,7 @@ export default async function ProblemDetailPage({ params }: PageProps) {
 
       <h2>Constraints</h2>
       <ReactMarkdown>{question.constraints}</ReactMarkdown>
+      <CodeSubmission questionId={question.id} />
     </div>
   );
 }

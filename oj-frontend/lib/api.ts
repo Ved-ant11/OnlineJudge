@@ -27,3 +27,30 @@ export const fetchQuestions = async () => {
   if (!response.ok) throw new Error(`Failed to fetch questions`);
   return response.json();
 };
+
+export const submitSolution = async ({
+  code,
+  language,
+  questionId,
+}: {
+  code: string;
+  language: string;
+  questionId: string;
+}) => {
+  const response = await fetch(`${API_BASE_URL}/submissions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      code,
+      language,
+      questionId,
+      userId: "test-user-1",
+    }),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to submit solution");
+  }
+  return response.json();
+};
