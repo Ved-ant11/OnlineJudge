@@ -14,20 +14,59 @@ datasource db {
   provider = "postgresql"
 }
 
+model User {
+  id          String       @id @default(uuid())
+  createdAt   DateTime     @default(now())
+  submissions Submission[]
+}
+
+model Question {
+  id          String       @id
+  title       String
+  statement   String
+  difficulty  Difficulty
+  examples    Json
+  constraints String
+  testCases   TestCase[]
+  submissions Submission[]
+  createdAt   DateTime     @default(now())
+}
+
 model Submission {
-  id         String           @id @default(uuid())
-  userId     String
-  questionId String
-  code       String
-  language   String
-  status     SubmissionStatus
-  attempts   Int              @default(0)
-  lastStartedAt DateTime?     
-  result     String?
-  user       User             @relation(fields: [userId], references: [id])
-  question   Question         @relation(fields: [questionId], references: [id])
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @updatedAt
+  id             String           @id @default(uuid())
+  userId         String
+  questionId     String
+  code           String
+  language       String
+  status         SubmissionStatus
+  verdict        Verdict?
+  result         String?
+  attempts       Int              @default(0)
+  lastStartedAt  DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question       Question         @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@index([userId])
+  @@index([status])
+}
+
+model TestCase {
+  id             String   @id @default(uuid())
+  questionId     String
+  input          String
+  expectedOutput String
+  isHidden       Boolean  @default(true)
+  order          Int
+  timeLimitMs    Int      @default(2000)
+
+  question       Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@unique([questionId, order])
 }
 
 enum SubmissionStatus {
@@ -38,25 +77,16 @@ enum SubmissionStatus {
   FAILED
 }
 
-model User {
-  id        String       @id
-  createdAt DateTime     @default(now())
-  submissions Submission[]
+enum Verdict {
+  AC
+  WA
+  TLE
+  RTE
+  CE
 }
 
 enum Difficulty {
   EASY
   MEDIUM
   HARD
-}
-
-model Question {
-  id          String      @id @default(uuid())
-  title       String
-  statement   String
-  difficulty  Difficulty
-  examples    Json
-  constraints String
-  submissions Submission[]
-  createdAt   DateTime @default(now())
 }

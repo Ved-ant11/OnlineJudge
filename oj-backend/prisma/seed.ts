@@ -28,15 +28,34 @@ and you may not use the same element twice.
         {
           input: "nums = [2,7,11,15], target = 9",
           output: "[0,1]",
-          explanation: "nums[0] + nums[1] = 9"
-        }
+          explanation: "nums[0] + nums[1] = 9",
+        },
       ],
       constraints: `
-- 2 ≤ nums.length ≤ 10⁴  
-- -10⁹ ≤ nums[i] ≤ 10⁹  
+- 2 ≤ nums.length ≤ 10⁴
+- -10⁹ ≤ nums[i] ≤ 10⁹
 - -10⁹ ≤ target ≤ 10⁹
       `,
     },
+  });
+
+  await prisma.testCase.createMany({
+    data: [
+      {
+        questionId: "two-sum",
+        input: "2 7 11 15\n9",
+        expectedOutput: "0 1",
+        order: 1,
+        isHidden: false,
+      },
+      {
+        questionId: "two-sum",
+        input: "3 2 4\n6",
+        expectedOutput: "1 2",
+        order: 2,
+        isHidden: true,
+      },
+    ],
   });
 }
 
