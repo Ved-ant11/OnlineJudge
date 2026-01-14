@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Editor from "@monaco-editor/react";
 import { submitSolution } from "@/lib/api";
 
 export default function CodeSubmission({
@@ -9,19 +11,21 @@ export default function CodeSubmission({
   questionId: string;
 }) {
   const [code, setCode] = useState("");
-  const [language, setLanguage] = useState("cpp");
+  const [language, setLanguage] = useState("javascript");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
 
   const handleSubmit = async () => {
     if (!code.trim()) {
-      setMessage("Code cannot be empty");
+      setError("Code cannot be empty");
       return;
     }
 
     try {
       setLoading(true);
-      setMessage(null);
+      setError(null);
 
       const res = await submitSolution({
         code,
@@ -29,10 +33,9 @@ export default function CodeSubmission({
         questionId,
       });
 
-      setMessage(`Submission received. ID: ${res.submissionId}`);
-    } catch (error) {
-      console.error(error);
-      setMessage("Failed to submit code. Please try again.");
+      router.push(`/submissions/${res.submissionId}`);
+    } catch {
+      setError("Failed to submit code. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -51,23 +54,24 @@ export default function CodeSubmission({
         <option value="cpp">C++</option>
       </select>
 
-      <br />
-
-      <textarea
-        rows={10}
-        cols={80}
+      <Editor
+        height="400px"
+        language={language}
         value={code}
-        onChange={(e) => setCode(e.target.value)}
-        placeholder="Write your code here..."
+        theme="vs-dark"
+        onChange={(value) => setCode(value || "")}
+        options={{
+          minimap: { enabled: false },
+          fontSize: 14,
+          automaticLayout: true,
+        }}
       />
-
-      <br />
 
       <button onClick={handleSubmit} disabled={loading}>
         {loading ? "Submitting..." : "Submit"}
       </button>
 
-      {message && <p>{message}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 }

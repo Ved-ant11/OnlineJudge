@@ -43,6 +43,23 @@ router.post("/", async (req: Request, res: Response) => {
   });
 });
 
+router.get("/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const submission = await prisma.submission.findUnique({
+    where: { id },
+  });
+
+  if (!submission) {
+    return res.status(404).json({ error: "Submission not found" });
+  }
+
+  return res.status(200).json({
+    id: submission.id,
+    status: submission.status,
+    result: submission.result,
+  });
+});
+
 // safe check log for queueing operation
 // router.get("/size", async (_req: Request, res: Response) => {
 //   return res.json({

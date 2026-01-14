@@ -54,3 +54,15 @@ export const submitSolution = async ({
   }
   return response.json();
 };
+
+export const fetchSubmissionStatus = async (id: string) => {
+  const response = await fetch(`${API_BASE_URL}/submissions/${id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    cache: 'no-store'
+  });
+  if (!response.ok) throw new Error(`Failed to fetch submission status ${id}`);
+  return response.json();
+};
