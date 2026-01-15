@@ -1,6 +1,7 @@
 import redis, { connectRedis } from "../redis/client";
 import prisma from "../db/client";
 import { SubmissionStatus } from "../generated/prisma/client";
+import { judgeJavaScriptSubmission } from "./judge";
 
 const QUEUE_KEY = "oj:submissions";
 const MAX_ATTEMPTS = 3;
@@ -27,28 +28,26 @@ const recoverStaleSubmissions = async () => {
       if (sub.attempts >= MAX_ATTEMPTS) {
         await prisma.submission.update({
           where: { id: sub.id },
-          data: { 
-            status: SubmissionStatus.FAILED,
-            result: "System timeout - max attempts exceeded"
+          data: {
+            status: SubmissionStatus.COMPLETED,
+            verdict: "TLE",
+            result: "System timeout - max attempts exceeded",
           },
         });
-        console.log(`Failed ${sub.id} (max attempts)`);
       } else {
         await prisma.submission.update({
           where: { id: sub.id },
           data: { status: SubmissionStatus.QUEUED },
         });
         await redis.lPush(QUEUE_KEY, sub.id);
-        console.log(`Re-queued ${sub.id} (attempt ${sub.attempts + 1}/${MAX_ATTEMPTS})`);
       }
     }
   } catch (err) {
-    console.error("Error:", err);
+    console.error("Recovery error:", err);
   }
 };
 
 const processSubmission = async (submissionId: string) => {
-  // Atomic claim for submission
   const claim = await prisma.submission.updateMany({
     where: {
       id: submissionId,
@@ -63,68 +62,52 @@ const processSubmission = async (submissionId: string) => {
   });
 
   if (claim.count === 0) {
-    console.log(`Skipped ${submissionId} (already claimed or max attempts)`);
     return;
   }
 
-  console.log(`Processing ${submissionId}`);
-
   try {
-    // TODO: code execution logic
-    await new Promise((r) => setTimeout(r, 2000));
+    const submission = await prisma.submission.findUnique({
+      where: { id: submissionId },
+    });
+
+    if (!submission) return;
+
+    const testCases = await prisma.testCase.findMany({
+      where: { questionId: submission.questionId },
+      orderBy: { order: "asc" },
+    });
+
+    const { verdict, message } = await judgeJavaScriptSubmission({
+      code: submission.code,
+      testCases,
+    });
 
     await prisma.submission.update({
       where: { id: submissionId },
       data: {
         status: SubmissionStatus.COMPLETED,
-        result: "AC",
+        verdict,
+        result: message,
       },
     });
-
-    console.log(`Completed ${submissionId}`);
   } catch (err) {
-    console.error(`Error processing ${submissionId}:`, err);
-    await handleFailedSubmission(submissionId);
-  }
-};
+    console.error(`Worker error for ${submissionId}:`, err);
 
-const handleFailedSubmission = async (submissionId: string) => {
-  try {
-    const sub = await prisma.submission.findUnique({
+    await prisma.submission.update({
       where: { id: submissionId },
+      data: {
+        status: SubmissionStatus.COMPLETED,
+        verdict: "RTE",
+        result: "Internal judge error",
+      },
     });
-
-    if (!sub) {
-      console.error(`Submission ${submissionId} not found`);
-      return;
-    }
-
-    if (sub.attempts >= MAX_ATTEMPTS) {
-      await prisma.submission.update({
-        where: { id: submissionId },
-        data: { 
-          status: SubmissionStatus.FAILED,
-          result: "System error - max attempts exceeded"
-        },
-      });
-      console.log(`Failed ${submissionId} (max attempts)`);
-    } else {
-      await prisma.submission.update({
-        where: { id: submissionId },
-        data: { status: SubmissionStatus.QUEUED },
-      });
-      await redis.lPush(QUEUE_KEY, submissionId);
-      console.log(`Re-queued ${submissionId} for retry (attempt ${sub.attempts}/${MAX_ATTEMPTS})`);
-    }
-  } catch (retryErr) {
-    console.error(`Error handling failed submission ${submissionId}:`, retryErr);
   }
 };
 
 const worker = async () => {
   console.log("Worker started with retries enabled...");
   await connectRedis();
-  console.log("Redis isOpen:", redis.isOpen);
+
   await recoverStaleSubmissions();
   recoveryIntervalId = setInterval(recoverStaleSubmissions, RECOVERY_INTERVAL_MS);
 
@@ -134,20 +117,17 @@ const worker = async () => {
       if (!res?.element) continue;
       await processSubmission(res.element);
     } catch (err) {
-      console.error("Unexpected error in main loop:", err);
-      await new Promise(r => setTimeout(r, 1000)); // Brief pause before retrying
+      console.error("Main loop error:", err);
+      await new Promise((r) => setTimeout(r, 1000));
     }
   }
 
-  console.log("Shutting down gracefully...");
   if (recoveryIntervalId) clearInterval(recoveryIntervalId);
   await redis.quit();
   await prisma.$disconnect();
 };
 
-// Graceful shutdown
-const shutdown = async () => {
-  console.log("Received shutdown signal");
+const shutdown = () => {
   isShuttingDown = true;
 };
 
@@ -155,7 +135,7 @@ process.on("SIGTERM", shutdown);
 process.on("SIGINT", shutdown);
 
 worker().catch((err) => {
-  console.error("Fatal error:", err);
+  console.error("Fatal worker error:", err);
   process.exit(1);
 });
 
