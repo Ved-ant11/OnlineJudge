@@ -21,10 +21,8 @@ export default async function ProblemDetailPage({ params }: PageProps) {
 
   return (
     <div className="flex h-[calc(100vh-3rem)] overflow-hidden">
-      {/* Left Panel — Problem Description */}
       <div className="flex-1 min-w-0 overflow-y-auto border-r border-neutral-800">
         <div className="max-w-3xl px-6 py-8 lg:px-10">
-          {/* Back */}
           <Link
             href="/problems"
             className="inline-flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-300 transition-colors mb-6"
@@ -40,8 +38,6 @@ export default async function ProblemDetailPage({ params }: PageProps) {
             </svg>
             Problems
           </Link>
-
-          {/* Title + Difficulty */}
           <div className="mb-8">
             <h1 className="text-2xl font-semibold tracking-tight text-neutral-100 mb-2">
               {question.title}
@@ -52,8 +48,6 @@ export default async function ProblemDetailPage({ params }: PageProps) {
               {question.difficulty}
             </span>
           </div>
-
-          {/* Statement */}
           <div
             className="mb-8 prose prose-sm prose-invert max-w-none
               prose-headings:text-neutral-200 prose-headings:font-medium
@@ -67,7 +61,6 @@ export default async function ProblemDetailPage({ params }: PageProps) {
             <ReactMarkdown>{question.statement}</ReactMarkdown>
           </div>
 
-          {/* Examples */}
           <div className="mb-8">
             <h2 className="text-sm font-medium text-neutral-300 mb-4">
               Examples
@@ -113,7 +106,6 @@ export default async function ProblemDetailPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* Constraints */}
           <div className="mb-8">
             <h2 className="text-sm font-medium text-neutral-300 mb-3">
               Constraints
@@ -125,14 +117,12 @@ export default async function ProblemDetailPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Right Panel — Editor */}
       <div className="hidden lg:flex w-[50%] xl:w-[55%] flex-col bg-[#0d0d0d]">
         <div className="flex-1 min-h-0 p-3">
           <CodeSubmission questionId={question.id} />
         </div>
       </div>
 
-      {/* Mobile — bottom bar */}
       <div className="lg:hidden fixed bottom-0 inset-x-0 z-50 border-t border-neutral-800 bg-[#0a0a0a] p-3">
         <Link
           href={`/problems/${question.id}#editor`}

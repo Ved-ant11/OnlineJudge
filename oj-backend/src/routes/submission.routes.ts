@@ -8,7 +8,7 @@ const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
   const { code, language, userId, questionId } = req.body;
-  // console.log("Submission received: ", req.body);
+
   if (!code || !language || !userId || !questionId) {
     return res.status(400).json({ error: "Invalid submission payload" });
   }
@@ -25,21 +25,15 @@ router.post("/", async (req: Request, res: Response) => {
       questionId,
       code,
       language,
-      status: SubmissionStatus.RECEIVED,
+      status: SubmissionStatus.QUEUED,
     },
   });
 
-  const submissionId = submission.id;
-  //submissionQueue.enqueue(submissionId);
-  await redis.lPush("oj:submissions", submissionId);
-  await prisma.submission.update({
-    where: { id: submissionId },
-    data: { status: SubmissionStatus.QUEUED },
-  });
+  await redis.lPush("oj:submissions", submission.id);
 
   return res.status(201).json({
-    submissionId,
-    status: "QUEUED",
+    submissionId: submission.id,
+    status: SubmissionStatus.QUEUED,
   });
 });
 
@@ -47,6 +41,12 @@ router.get("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   const submission = await prisma.submission.findUnique({
     where: { id },
+    select: {
+      id: true,
+      status: true,
+      verdict: true,
+      result: true,
+    },
   });
 
   if (!submission) {
@@ -56,6 +56,7 @@ router.get("/:id", async (req: Request, res: Response) => {
   return res.status(200).json({
     id: submission.id,
     status: submission.status,
+    verdict: submission.verdict,
     result: submission.result,
   });
 });

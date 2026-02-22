@@ -253,13 +253,13 @@ Given an integer \`n\`, print a string for each number from \`1\` to \`n\` (each
       examples: [
         {
           input: "n = 5",
-          output: "1\\n2\\nFizz\\n4\\nBuzz",
+          output: "1\n2\nFizz\n4\nBuzz",
           explanation: "1 → 1, 2 → 2, 3 → Fizz, 4 → 4, 5 → Buzz",
         },
         {
           input: "n = 15",
           output:
-            "1\\n2\\nFizz\\n4\\nBuzz\\nFizz\\n7\\n8\\nFizz\\nBuzz\\n11\\nFizz\\n13\\n14\\nFizzBuzz",
+            "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz",
           explanation:
             "15 is divisible by both 3 and 5, so it prints FizzBuzz.",
         },

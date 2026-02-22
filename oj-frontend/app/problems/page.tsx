@@ -17,14 +17,12 @@ export default async function ProblemsPage() {
       </h1>
 
       <div className="rounded-lg border border-neutral-800 overflow-hidden">
-        {/* Table header */}
         <div className="grid grid-cols-[1fr_100px_80px] gap-4 px-4 py-2.5 bg-neutral-900/60 border-b border-neutral-800 text-xs font-medium text-neutral-500 uppercase tracking-wide">
           <span>Title</span>
           <span>Difficulty</span>
           <span className="text-right">Status</span>
         </div>
 
-        {/* Rows */}
         <div className="divide-y divide-neutral-800/60">
           {questions.map(
             (
