@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, Difficulty } from "../src/generated/prisma/client";
+import bcrypt from "bcryptjs";
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -10,6 +11,16 @@ const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 async function seed() {
+  await prisma.user.upsert({
+    where: {id : "test-user-1"},
+    update: {},
+    create: {
+      id: "test-user-1",
+      username: "test-user-1",
+      email: "user@example.com",
+      password: await bcrypt.hash("password", 10),
+    },
+  });
   // ─── 1. Two Sum ───────────────────────────────────────────────
   await prisma.question.upsert({
     where: { id: "two-sum" },
