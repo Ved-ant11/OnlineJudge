@@ -36,23 +36,28 @@ export const submitSolution = async ({
   code: string;
   language: string;
   questionId: string;
-}) => {
-  const response = await fetch(`${API_BASE_URL}/submissions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      code,
-      language,
-      questionId,
-      userId: "test-user-1",
-    }),
-  });
-  if (!response.ok) {
-    throw new Error("Failed to submit solution");
+  }) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    const response = await fetch(`${API_BASE_URL}/submissions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${token}`
+      }, 
+      body: JSON.stringify({
+        code,
+        language,
+        questionId,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to submit solution");
+    }
+    return response.json();
+  } else {
+    throw new Error("Not Authenticated");
   }
-  return response.json();
 };
 
 export const fetchSubmissionStatus = async (id: string) => {

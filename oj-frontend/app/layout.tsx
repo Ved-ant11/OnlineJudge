@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
+import NavAuth from "@/components/NavAuth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +45,9 @@ export default function RootLayout({
               >
                 Problems
               </Link>
+            </div>
+            <div className="flex items-center gap-6">
+              <NavAuth />
             </div>
           </div>
         </nav>

@@ -25,7 +25,7 @@ router.post('/signup', async (req: Request, res: Response) => {
         },
       });
       const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {expiresIn: "7d"});
-      res.status(201).json({ token });
+      res.status(201).json({ token, username: user.username });
     } else {
       res.status(409).json({ error: "User with this email exists" });
     }
@@ -43,7 +43,7 @@ router.post('/login', async (req: Request, res: Response) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return res.status(401).json({ error: 'Invalid credentials' });
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {expiresIn: "7d"});
-    res.status(200).json({ token });
+    res.status(200).json({ token, username: user.username });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });

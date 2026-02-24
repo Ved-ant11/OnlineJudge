@@ -30,8 +30,12 @@ export default function CodeSubmission({ questionId }: { questionId: string }) {
       });
 
       router.push(`/submissions/${res.submissionId}`);
-    } catch {
-      setError("Failed to submit. Please try again.");
+    } catch (err) {
+      if (err instanceof Error && err.message === "Not authenticated") {
+          router.push("/login");
+      } else {
+        setError("Failed to submit. Please try again.");
+      }
     } finally {
       setLoading(false);
     }

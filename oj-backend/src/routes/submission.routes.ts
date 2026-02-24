@@ -1,23 +1,17 @@
 import { Router, Request, Response } from "express";
-//import submissionQueue from "../queue/queue";
+import tokenVerify from "../middleware/auth";
 import prisma from "../db/client";
 import { SubmissionStatus } from "../generated/prisma/client";
 import redis from "../redis/client";
 
 const router = Router();
 
-router.post("/", async (req: Request, res: Response) => {
-  const { code, language, userId, questionId } = req.body;
+router.post("/", tokenVerify, async (req: Request, res: Response) => {
+  const userId = (req as any).userId;
+  const { code, language, questionId } = req.body;
 
   if (!code || !language || !userId || !questionId) {
     return res.status(400).json({ error: "Invalid submission payload" });
-  }
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-  });
-
-  if (!user) {
-    return res.status(404).json({ error: "User not found" });
   }
   const submission = await prisma.submission.create({
     data: {
