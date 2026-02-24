@@ -1,14 +1,49 @@
-import { fetchQuestions } from "@/lib/api";
+"use client";
+import { useEffect, useState } from "react";
+import { fetchQuestions, fetchSolvedIds } from "@/lib/api";
 import Link from "next/link";
 
-export default async function ProblemsPage() {
-  const questions = await fetchQuestions();
+export default function ProblemsPage() {
+  const [questions, setQuestions] = useState<
+    { id: string; title: string; difficulty: string }[]
+  >([]);
+  const [solvedIds, setSolvedIds] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [questionsData, solved] = await Promise.all([
+          fetchQuestions(),
+          fetchSolvedIds(),
+        ]);
+        setQuestions(questionsData);
+        setSolvedIds(new Set(solved));
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
 
   const difficultyColor: Record<string, string> = {
     easy: "text-emerald-500",
     medium: "text-amber-500",
     hard: "text-red-500",
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-3rem)]">
+        <svg className="h-6 w-6 animate-spin text-neutral-500" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.2" />
+          <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+        </svg>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
@@ -25,11 +60,9 @@ export default async function ProblemsPage() {
 
         <div className="divide-y divide-neutral-800/60">
           {questions.map(
-            (
-              question: { id: string; title: string; difficulty: string },
-              index: number,
-            ) => {
+            (question, index) => {
               const diff = question.difficulty.toLowerCase();
+              const isSolved = solvedIds.has(question.id);
               return (
                 <Link
                   key={question.id}
@@ -45,7 +78,13 @@ export default async function ProblemsPage() {
                   >
                     {question.difficulty}
                   </span>
-                  <span className="text-right text-xs text-neutral-600">—</span>
+                  <span className="text-right text-xs">
+                    {isSolved ? (
+                      <span className="text-emerald-400" title="Solved">✓</span>
+                    ) : (
+                      <span className="text-neutral-600">—</span>
+                    )}
+                  </span>
                 </Link>
               );
             },

@@ -71,3 +71,43 @@ export const fetchSubmissionStatus = async (id: string) => {
   if (!response.ok) throw new Error(`Failed to fetch submission status ${id}`);
   return response.json();
 };
+
+export const fetchProfile = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('Not Authenticated');
+    const response = await fetch(`${API_BASE_URL}/user/profile`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      cache: 'no-store'
+    });
+    if (!response.ok) throw new Error(`Failed to fetch profile`);
+    return response.json();
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to fetch profile');
+  }
+};
+
+export const fetchSolvedIds = async (): Promise<string[]> => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) return [];
+    const response = await fetch(`${API_BASE_URL}/user/solved`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      cache: 'no-store'
+    });
+    if (!response.ok) return [];
+    const data = await response.json();
+    return data.solvedIds;
+  } catch {
+    return [];
+  }
+};

@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function NavAuth() {
   const router = useRouter();
@@ -44,9 +45,9 @@ export default function NavAuth() {
     <div className="flex items-center justify-center gap-3">
       {token ? (
         <>
-          <span className="text-sm text-neutral-300 font-medium">
+          <Link href="/profile" className="text-sm text-neutral-300 font-medium hover:text-neutral-100 transition-colors">
             {username || "User"}
-          </span>
+          </Link>
           <button
             className="px-3 py-1.5 rounded-lg text-sm bg-rose-950/50 text-rose-200 border border-rose-800 hover:bg-rose-900 transition-colors"
             onClick={handleLogout}
