@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 import NavAuth from "@/components/NavAuth";
+import ToastProvider from "@/components/ToastProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0a0a0a] text-neutral-200`}
       >
+        <ToastProvider />
         <nav className="sticky top-0 z-50 h-12 border-b border-neutral-800 bg-[#0a0a0a]/80 backdrop-blur-sm">
           <div className="mx-auto flex h-full max-w-screen-2xl items-center justify-between px-4">
             <div className="flex items-center gap-6">

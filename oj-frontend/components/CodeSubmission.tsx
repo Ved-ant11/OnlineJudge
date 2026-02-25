@@ -1,5 +1,5 @@
 "use client";
-
+import toast from "react-hot-toast";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Editor from "@monaco-editor/react";
@@ -9,32 +9,31 @@ export default function CodeSubmission({ questionId }: { questionId: string }) {
   const [code, setCode] = useState("");
   const [language, setLanguage] = useState("javascript");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
 
   const handleSubmit = async () => {
     if (!code.trim()) {
-      setError("Code cannot be empty");
+      toast.error("Code cannot be empty");
       return;
     }
 
     try {
       setLoading(true);
-      setError(null);
 
       const res = await submitSolution({
         code,
         language,
         questionId,
       });
-
+      toast.success("Solution submitted successfully");
       router.push(`/submissions/${res.submissionId}`);
     } catch (err) {
       if (err instanceof Error && err.message === "Not authenticated") {
+          toast.error("Not authenticated");
           router.push("/login");
       } else {
-        setError("Failed to submit. Please try again.");
+        toast.error("Failed to submit. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -93,9 +92,6 @@ export default function CodeSubmission({ questionId }: { questionId: string }) {
           }}
         />
       </div>
-
-      {error && <p className="shrink-0 text-xs text-red-400 px-1">{error}</p>}
-
       <button
         onClick={handleSubmit}
         disabled={loading}
