@@ -25,7 +25,13 @@ router.post('/signup', async (req: Request, res: Response) => {
         },
       });
       const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {expiresIn: "7d"});
-      res.status(201).json({ token, username: user.username });
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+      res.status(200).json({ username: user.username });
     } else {
       res.status(409).json({ error: "User with this email exists" });
     }
@@ -43,11 +49,23 @@ router.post('/login', async (req: Request, res: Response) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return res.status(401).json({ error: 'Invalid credentials' });
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {expiresIn: "7d"});
-    res.status(200).json({ token, username: user.username });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    res.status(200).json({ username: user.username });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+router.post('/logout', (_req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logged out" });
+});
+
 
 export default router;

@@ -21,10 +21,10 @@ const Signup = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({username, email, password }),
+        credentials: "include",
       });
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("token", data.token);
         localStorage.setItem("username", data.username);
         window.dispatchEvent(new Event("auth-change"));
         toast.success("Signed up!");

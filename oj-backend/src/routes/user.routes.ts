@@ -31,5 +31,16 @@ router.get('/solved', tokenVerify, async (req: Request, res: Response) => {
     }
 });
 
+router.get('/me', tokenVerify, async (req: Request, res: Response) => {
+    try {
+        const user = await prisma.user.findUnique({ where: { id: (req as any).userId } });
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        res.status(200).json({ username: user.username });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 export default router;
 

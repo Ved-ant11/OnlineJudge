@@ -1,17 +1,24 @@
 "use client";
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { fetchAuthStatus, logout } from '@/lib/api';
 import Link from 'next/link';
 
 export default function NavAuth() {
   const router = useRouter();
-  const [token, setToken] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
-  const syncAuth = () => {
-    const storedToken = localStorage.getItem("token");
-    const storedUsername = localStorage.getItem("username");
-    setToken(storedToken);
-    setUsername(storedUsername);
+
+  const syncAuth = async () => {
+    const stored = localStorage.getItem("username");
+    if (stored) setUsername(stored);
+    const data = await fetchAuthStatus();
+    if (data) {
+      setUsername(data.username);
+      localStorage.setItem("username", data.username);
+    } else {
+      setUsername(null);
+      localStorage.removeItem("username");
+    }
   };
 
   useEffect(() => {
@@ -32,10 +39,9 @@ export default function NavAuth() {
   const handleSignup = () => {
     router.push('/signup');
   };
-  const handleLogout = () => {
-    localStorage.removeItem('token');
+  const handleLogout = async () => {
+    await logout();
     localStorage.removeItem('username');
-    setToken(null);
     setUsername(null);
     window.dispatchEvent(new Event("auth-change"));
     router.push('/login');
@@ -43,10 +49,10 @@ export default function NavAuth() {
 
   return (
     <div className="flex items-center justify-center gap-3">
-      {token ? (
+      {username ? (
         <>
           <Link href="/profile" className="text-sm text-neutral-300 font-medium hover:text-neutral-100 transition-colors">
-            {username || "User"}
+            {username}
           </Link>
           <button
             className="px-3 py-1.5 rounded-lg text-sm bg-rose-950/50 text-rose-200 border border-rose-800 hover:bg-rose-900 transition-colors"
