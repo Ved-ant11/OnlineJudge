@@ -40,14 +40,14 @@ const Login = () => {
   };
   
   return (
-    <div className="flex min-h-[calc(100vh-3rem)] flex-col items-center justify-center">
-      <div className="text-2xl font-semibold text-neutral-100">Log In</div>
+    <div className="flex min-h-[calc(100vh-3rem)] flex-col items-center justify-center dot-grid overflow-hidden">
+    <div className="text-2xl font-semibold text-neutral-100">Log In</div>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-sm mt-6">
         <input className="w-full h-10 rounded-md border border-neutral-800 bg-neutral-900 px-3 text-sm text-neutral-200 outline-none focus:border-neutral-600" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
         <input className="w-full h-10 rounded-md border border-neutral-800 bg-neutral-900 px-3 text-sm text-neutral-200 outline-none focus:border-neutral-600" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
         <button
           disabled={loading}
-          className="shrink-0 flex h-9 w-full items-center justify-center rounded-md bg-neutral-100 text-sm font-medium text-neutral-900 transition-colors hover:bg-neutral-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="shrink-0 flex h-9 w-full items-center justify-center rounded-md bg-neutral-100 text-sm font-medium text-neutral-900 transition-colors hover:bg-blue-400 ease-out duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? (
             <svg
