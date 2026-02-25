@@ -2,10 +2,27 @@ import { Router, Request, Response } from "express";
 import prisma from "../db/client";
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
+import rateLimit from "express-rate-limit";
 
 const router = Router();
 
-router.post('/signup', async (req: Request, res: Response) => {
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 5, 
+  message: { error: "Too many login attempts, try again after 15 minutes" },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const signupLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, 
+  max: 3, 
+  message: { error: "Too many attempts for creating an account, try again later" },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+router.post('/signup', signupLimiter, async (req: Request, res: Response) => {
   try {
     const { username, email, password } = req.body;
     if(!username || !email || !password) return res.status(400).json({ error: 'Missing required fields' });
@@ -41,7 +58,7 @@ router.post('/signup', async (req: Request, res: Response) => {
   }
 });
 
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', loginLimiter, async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const user = await prisma.user.findUnique({ where: { email } });

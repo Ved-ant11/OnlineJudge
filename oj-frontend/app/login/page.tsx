@@ -74,10 +74,12 @@ const Login = () => {
             "Login"
           )}
         </button>
-        <p className="shrink-0 text-xs text-neutral-400 px-1">Don&apos;t have an account?</p>
-        <Link href="/signup" className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors gap-6">
-          Sign Up
-        </Link>
+        <div className="flex items-baseline justify-center gap-1 text-sm text-neutral-400">
+          <p>Don&apos;t have an account?</p>
+          <Link href="/signup" className="font-medium hover:text-blue-500 transition-colors cursor-pointer ease-out duration-300">
+            Sign Up
+          </Link>
+        </div>
       </form>
     </div>
   )
