@@ -1,8 +1,8 @@
 "use client";
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import { fetchAuthStatus, logout } from '@/lib/api';
-import Link from 'next/link';
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { fetchAuthStatus, logout } from "@/lib/api";
+import Link from "next/link";
 
 export default function NavAuth() {
   const router = useRouter();
@@ -34,24 +34,27 @@ export default function NavAuth() {
   }, []);
 
   const handleLogin = () => {
-    router.push('/login');
+    router.push("/login");
   };
   const handleSignup = () => {
-    router.push('/signup');
+    router.push("/signup");
   };
   const handleLogout = async () => {
     await logout();
-    localStorage.removeItem('username');
+    localStorage.removeItem("username");
     setUsername(null);
     window.dispatchEvent(new Event("auth-change"));
-    router.push('/login');
+    router.push("/login");
   };
 
   return (
     <div className="flex items-center justify-center gap-3">
       {username ? (
         <>
-          <Link href="/profile" className="text-sm text-neutral-300 font-medium hover:text-neutral-100 transition-colors">
+          <Link
+            href="/profile"
+            className="text-sm text-neutral-300 font-medium hover:text-neutral-100 transition-colors"
+          >
             {username}
           </Link>
           <button
