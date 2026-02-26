@@ -134,6 +134,17 @@ export const fetchLeaderboard = async () => {
   return response.json();
 };
 
+export const fetchSubmissionsByQuestion = async (questionId: string) => {
+  const response = await fetch(`${API_BASE_URL}/submissions/question/${questionId}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: "include",
+    cache: 'no-store',
+  });
+  if (!response.ok) return [];
+  return response.json();
+};
+
 export const logout = async () => {
   await fetch(`${API_BASE_URL}/auth/logout`, {
     method: 'POST',

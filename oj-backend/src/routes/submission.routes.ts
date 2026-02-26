@@ -28,6 +28,24 @@ router.post("/", tokenVerify, validate(submissionSchema), async (req: Request, r
     status: SubmissionStatus.QUEUED,
   });
 });
+router.get("/question/:questionId", tokenVerify, async (req: Request, res: Response) => {
+  const userId = (req as any).userId;
+  const { questionId } = req.params;
+
+  const submissions = await prisma.submission.findMany({
+    where: { userId, questionId },
+    select: {
+      id: true,
+      language: true,
+      verdict: true,
+      status: true,
+      createdAt: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return res.status(200).json(submissions);
+});
 
 router.get("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -38,6 +56,8 @@ router.get("/:id", async (req: Request, res: Response) => {
       status: true,
       verdict: true,
       result: true,
+      code: true,
+      language: true,
     },
   });
 
@@ -50,6 +70,8 @@ router.get("/:id", async (req: Request, res: Response) => {
     status: submission.status,
     verdict: submission.verdict,
     result: submission.result,
+    code: submission.code,
+    language: submission.language,
   });
 });
 

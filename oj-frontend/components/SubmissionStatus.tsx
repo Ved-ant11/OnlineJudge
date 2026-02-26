@@ -10,6 +10,8 @@ type Props = {
 export default function SubmissionStatus({ submissionId }: Props) {
   const [status, setStatus] = useState<string>("LOADING");
   const [result, setResult] = useState<string | null>(null);
+  const [code, setCode] = useState<string | null>(null);
+  const [language, setLanguage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -18,6 +20,8 @@ export default function SubmissionStatus({ submissionId }: Props) {
         const data = await fetchSubmissionStatus(submissionId);
         setStatus(data.status);
         setResult(data.result ?? null);
+        setCode(data.code ?? null);
+        setLanguage(data.language ?? null);
 
         if (data.status === "COMPLETED" || data.status === "FAILED") {
           clearInterval(interval);
@@ -111,14 +115,24 @@ export default function SubmissionStatus({ submissionId }: Props) {
     }
 
     return (
-      <div className="rounded-md border border-neutral-800 bg-neutral-900/50 p-6">
-        <p className={`text-lg font-semibold ${verdictColor}`}>
-          {verdictLabel}
-        </p>
-        {result !== verdictLabel && (
-          <p className="mt-1 text-xs text-neutral-500">{result}</p>
+      <>
+        <div className="rounded-md border border-neutral-800 bg-neutral-900/50 p-6">
+          <p className={`text-lg font-semibold ${verdictColor}`}>
+            {verdictLabel}
+          </p>
+          {result !== verdictLabel && (
+            <p className="mt-1 text-xs text-neutral-500">{result}</p>
+          )}
+        </div>
+        {code && (
+          <div className="mt-4">
+            <p className="text-xs font-medium text-neutral-500 mb-2">Your Code</p>
+            <pre className="rounded-md border border-neutral-800 bg-neutral-900 p-4 font-mono text-xs text-neutral-300 overflow-x-auto max-h-80 overflow-y-auto">
+              {code}
+            </pre>
+          </div>
         )}
-      </div>
+      </>
     );
   }
 

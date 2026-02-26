@@ -1,6 +1,7 @@
 import { fetchQuestionById } from "@/lib/api";
 import ReactMarkdown from "react-markdown";
 import CodeSubmission from "@/components/CodeSubmission";
+import SubmissionHistory from "@/components/SubmissionHistory";
 import Link from "next/link";
 
 type PageProps = {
@@ -114,6 +115,7 @@ export default async function ProblemDetailPage({ params }: PageProps) {
               <ReactMarkdown>{question.constraints}</ReactMarkdown>
             </div>
           </div>
+          <SubmissionHistory questionId={question.id} />
         </div>
       </div>
 

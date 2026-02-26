@@ -6,8 +6,14 @@ import Editor from "@monaco-editor/react";
 import { submitSolution } from "@/lib/api";
 
 export default function CodeSubmission({ questionId }: { questionId: string }) {
-  const [code, setCode] = useState("");
+  const boilerplate: Record<string, string> = {
+    javascript: `// Read input using readline()\n// All of stdin is also available as: input (string) and lines (array)\n\nconst line = readline();\nconsole.log(line);\n`,
+    python: `# Read input using input()\n# Use sys.stdin for bulk reads\n\nline = input()\nprint(line)\n`,
+    cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string line;\n    getline(cin, line);\n    cout << line << endl;\n    return 0;\n}\n`,
+  };
+
   const [language, setLanguage] = useState("javascript");
+  const [code, setCode] = useState(boilerplate["javascript"]);
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
@@ -30,8 +36,8 @@ export default function CodeSubmission({ questionId }: { questionId: string }) {
       router.push(`/submissions/${res.submissionId}`);
     } catch (err) {
       if (err instanceof Error && err.message === "Not authenticated") {
-          toast.error("Not authenticated");
-          router.push("/login");
+        toast.error("Not authenticated");
+        router.push("/login");
       } else {
         toast.error("Failed to submit. Please try again.");
       }
@@ -49,7 +55,13 @@ export default function CodeSubmission({ questionId }: { questionId: string }) {
         <div className="flex items-center gap-3">
           <select
             value={language}
-            onChange={(e) => setLanguage(e.target.value)}
+            onChange={(e) => {
+              const newLang = e.target.value;
+              if (!code.trim() || Object.values(boilerplate).includes(code)) {
+                setCode(boilerplate[newLang] || "");
+              }
+              setLanguage(newLang);
+            }}
             className="h-8 appearance-none rounded-md border border-neutral-800 bg-neutral-900 px-3 pr-7 text-xs font-medium text-neutral-300 outline-none transition-colors hover:border-neutral-700 focus:border-neutral-600 cursor-pointer"
           >
             <option value="javascript">JavaScript</option>
