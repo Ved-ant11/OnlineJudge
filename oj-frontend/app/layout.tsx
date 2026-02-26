@@ -47,6 +47,12 @@ export default function RootLayout({
               >
                 Problems
               </Link>
+              <Link
+                href="/leaderboard"
+                className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
+              >
+                Leaderboard
+              </Link>
             </div>
             <div className="flex items-center gap-6">
               <NavAuth />

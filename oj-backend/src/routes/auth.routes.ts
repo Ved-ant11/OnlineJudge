@@ -3,6 +3,8 @@ import prisma from "../db/client";
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
 import rateLimit from "express-rate-limit";
+import { validate } from "../middleware/validate";
+import { loginSchema, signupSchema } from "../validation/schemas";
 
 const router = Router();
 
@@ -22,13 +24,9 @@ const signupLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-router.post('/signup', signupLimiter, async (req: Request, res: Response) => {
+router.post('/signup', signupLimiter, validate(signupSchema), async (req: Request, res: Response) => {
   try {
     const { username, email, password } = req.body;
-    if(!username || !email || !password) return res.status(400).json({ error: 'Missing required fields' });
-    if(password.length < 8) return res.status(400).json({ error: 'Password must be at least 8 characters long' });
-    if(username.length < 3) return res.status(400).json({ error: 'Username must be at least 3 characters long' });
-    if(username.length > 20) return res.status(400).json({ error: 'Username must be at most 20 characters long' });
     const hashedPassword = await bcrypt.hash(password, 10);
     const Email = await prisma.user.findUnique(
       { where: {email} }
@@ -58,7 +56,7 @@ router.post('/signup', signupLimiter, async (req: Request, res: Response) => {
   }
 });
 
-router.post('/login', loginLimiter, async (req: Request, res: Response) => {
+router.post('/login', loginLimiter, validate(loginSchema), async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const user = await prisma.user.findUnique({ where: { email } });

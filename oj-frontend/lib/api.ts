@@ -123,6 +123,17 @@ export const fetchAuthStatus = async (): Promise<{ username: string } | null> =>
   }
 };
 
+export const fetchLeaderboard = async () => {
+  const response = await fetch(`${API_BASE_URL}/user/leaderboard`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: "include",
+    cache: 'no-store',
+  });
+  if (!response.ok) throw new Error('Failed to fetch leaderboard');
+  return response.json();
+};
+
 export const logout = async () => {
   await fetch(`${API_BASE_URL}/auth/logout`, {
     method: 'POST',

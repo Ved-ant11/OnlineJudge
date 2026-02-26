@@ -3,16 +3,14 @@ import tokenVerify from "../middleware/auth";
 import prisma from "../db/client";
 import { SubmissionStatus } from "../generated/prisma/client";
 import redis from "../redis/client";
+import { validate } from "../middleware/validate";
+import { submissionSchema } from "../validation/schemas";
 
 const router = Router();
 
-router.post("/", tokenVerify, async (req: Request, res: Response) => {
+router.post("/", tokenVerify, validate(submissionSchema), async (req: Request, res: Response) => {
   const userId = (req as any).userId;
   const { code, language, questionId } = req.body;
-
-  if (!code || !language || !userId || !questionId) {
-    return res.status(400).json({ error: "Invalid submission payload" });
-  }
   const submission = await prisma.submission.create({
     data: {
       userId,

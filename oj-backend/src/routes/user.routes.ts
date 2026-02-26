@@ -42,5 +42,34 @@ router.get('/me', tokenVerify, async (req: Request, res: Response) => {
     }
 });
 
+router.get('/leaderboard', async (_req: Request, res: Response) => {
+    try {
+        const users = await prisma.user.findMany({
+            select: {
+                username: true,
+                submissions: {
+                    where: { verdict: 'AC' },
+                    select: { questionId: true },
+                    distinct: ['questionId'],
+                },
+            },
+        });
+
+        const leaderboard = users
+            .map((u) => ({
+                username: u.username,
+                solvedCount: u.submissions.length,
+            }))
+            .filter((u) => u.solvedCount > 0)
+            .sort((a, b) => b.solvedCount - a.solvedCount);
+
+        res.status(200).json(leaderboard);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 export default router;
 
