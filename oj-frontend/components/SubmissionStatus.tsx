@@ -103,7 +103,7 @@ export default function SubmissionStatus({ submissionId }: Props) {
     } else if (r.includes("wrong")) {
       verdictColor = "text-red-400";
       verdictLabel = "Wrong Answer";
-    } else if (r.includes("time")) {
+    } else if (r.includes("time") && !r.includes("run")) {
       verdictColor = "text-amber-500";
       verdictLabel = "Time Limit Exceeded";
     } else if (r.includes("runtime")) {
