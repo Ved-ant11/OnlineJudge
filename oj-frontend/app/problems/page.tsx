@@ -9,6 +9,8 @@ export default function ProblemsPage() {
   >([]);
   const [solvedIds, setSolvedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState<string>("");
+  const [difficulty, setDifficulty] = useState<string>("all");
 
   useEffect(() => {
     const load = async () => {
@@ -34,6 +36,13 @@ export default function ProblemsPage() {
     hard: "text-red-500",
   };
 
+  const filteredQuestions = questions.filter((q) => {
+  const matchesSearch = q.title.toLowerCase().includes(search.toLowerCase());
+  const matchesDifficulty = difficulty === "all" || q.difficulty.toLowerCase() === difficulty;
+  return matchesSearch && matchesDifficulty;
+});
+
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-3rem)]">
@@ -50,7 +59,25 @@ export default function ProblemsPage() {
       <h1 className="text-xl font-semibold tracking-tight text-neutral-100 mb-6">
         Problems
       </h1>
-
+      <div className="flex gap-2 mb-4">
+        <input
+          type="text"
+          placeholder="Search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="bg-neutral-900 border border-neutral-800 text-neutral-300 rounded-md px-3 py-2 text-sm mb-4"
+        />
+        <select
+          value={difficulty}
+          onChange={(e) => setDifficulty(e.target.value)}
+          className="bg-neutral-900 border border-neutral-800 text-neutral-300 rounded-md px-3 py-2 text-sm mb-4"
+        >
+          <option value="all">All</option>
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
       <div className="rounded-lg border border-neutral-800 overflow-hidden">
         <div className="grid grid-cols-[1fr_100px_80px] gap-4 px-4 py-2.5 bg-neutral-900/60 border-b border-neutral-800 text-xs font-medium text-neutral-500 uppercase tracking-wide">
           <span>Title</span>
@@ -59,7 +86,7 @@ export default function ProblemsPage() {
         </div>
 
         <div className="divide-y divide-neutral-800/60">
-          {questions.map(
+          {filteredQuestions.map(
             (question, index) => {
               const diff = question.difficulty.toLowerCase();
               const isSolved = solvedIds.has(question.id);
@@ -92,7 +119,7 @@ export default function ProblemsPage() {
         </div>
       </div>
 
-      {questions.length === 0 && (
+      {filteredQuestions.length === 0 && (
         <p className="text-sm text-neutral-500 text-center py-12">
           No problems available.
         </p>
