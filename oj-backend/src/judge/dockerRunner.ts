@@ -29,9 +29,12 @@ export const runInDocker = (
   stdin: string,
   timeoutMs: number,
   env?: Record<string, string>,
+  extraArgs?: string[],
+  startupOverrideMs?: number,
 ): Promise<DockerRunResult> => {
   return new Promise((resolve) => {
-    const effectiveTimeout = timeoutMs + DOCKER_STARTUP_OVERHEAD_MS;
+    const overhead = startupOverrideMs ?? DOCKER_STARTUP_OVERHEAD_MS;
+    const effectiveTimeout = timeoutMs + overhead;
 
     log(`Starting container`, {
       image,
@@ -39,6 +42,7 @@ export const runInDocker = (
       effectiveTimeoutMs: effectiveTimeout,
       stdinLength: stdin.length,
       envKeys: env ? Object.keys(env) : [],
+      extraArgs: extraArgs || [],
     });
 
     const startTime = Date.now();
@@ -69,6 +73,10 @@ export const runInDocker = (
       for (const [k, v] of Object.entries(env)) {
         args.push("-e", `${k}=${v}`);
       }
+    }
+
+    if (extraArgs) {
+      args.push(...extraArgs);
     }
 
     args.push("-i", image);
