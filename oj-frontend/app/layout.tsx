@@ -48,6 +48,12 @@ export default function RootLayout({
                 Problems
               </Link>
               <Link
+                href="/contribute"
+                className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
+              >
+                Contribute
+              </Link>
+              <Link
                 href="/leaderboard"
                 className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
               >
