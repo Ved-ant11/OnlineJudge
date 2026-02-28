@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { fetchSubmissionStatus } from "@/lib/api";
 
@@ -14,7 +13,7 @@ export default function SubmissionStatus({ submissionId }: Props) {
   const [language, setLanguage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+/*  useEffect(() => {
     const poll = async () => {
       try {
         const data = await fetchSubmissionStatus(submissionId);
@@ -36,6 +35,54 @@ export default function SubmissionStatus({ submissionId }: Props) {
     const interval = setInterval(poll, 1500);
 
     return () => clearInterval(interval);
+  }, [submissionId]);*/
+
+  useEffect(() => {
+    fetchSubmissionStatus(submissionId).then((data) => {
+    setStatus(data.status);
+    setResult(data.result ?? null);
+    setCode(data.code ?? null);
+    setLanguage(data.language ?? null);
+  }).catch(() => {});
+
+    const ws = new WebSocket("ws://localhost:5000");
+
+    ws.onopen = () => {
+      console.log("WebSocket connected");
+      ws.send(JSON.stringify({ type: "subscribe", submissionId }));
+    };
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setStatus(data.status);
+      setResult(data.result ?? null);
+      setCode(data.code ?? null);
+      setLanguage(data.language ?? null);
+
+      if (data.status === "COMPLETED" || data.status === "FAILED") {
+        ws.close();
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket disconnected");
+    };
+
+    ws.onerror = () => {
+      // Fall back to polling
+      const interval = setInterval(async () => {
+      const data = await fetchSubmissionStatus(submissionId);
+      setStatus(data.status);
+      setResult(data.result ?? null);
+      setCode(data.code ?? null);
+      setLanguage(data.language ?? null);
+      if (data.status === "COMPLETED" || data.status === "FAILED") {
+        clearInterval(interval);
+    }
+  }, 1500);
+};
+
+    return () => ws.close();
   }, [submissionId]);
 
   if (error) {

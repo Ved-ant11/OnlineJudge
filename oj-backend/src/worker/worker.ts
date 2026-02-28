@@ -168,6 +168,14 @@ const processSubmission = async (id: string) => {
       },
     });
 
+    await redis.publish(`verdict:${id}`, JSON.stringify({
+      status: SubmissionStatus.COMPLETED,
+      verdict: result.verdict,
+      result: result.message,
+      code: submission.code,
+      language: submission.language,
+    }));
+
     log(
       `Submission ${id} saved — verdict: ${result.verdict} (${totalDuration}ms total)`,
     );

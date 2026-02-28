@@ -1,5 +1,10 @@
 import app from "./app";
 import { connectRedis } from "./redis/client";
+import { setupWebSocket } from "./ws/socket";
+import { createServer } from "http";
+
+const server = createServer(app);
+setupWebSocket(server);
 
 connectRedis()
   .then(() => console.log("Redis connected"))
@@ -7,6 +12,6 @@ connectRedis()
 
 const PORT = 5000;
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
