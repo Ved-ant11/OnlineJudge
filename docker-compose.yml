@@ -28,7 +28,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
     environment:
-      DATABASE_URL: postgresql://postgres:yourpassword@postgres:5432/oj
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/oj
       REDIS_URL: redis://redis:6379
       JWT_SECRET: ${JWT_SECRET}
 
@@ -42,9 +42,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock     
     environment:
       # same env vars as backend
-      DATABASE_URL: postgresql://postgres:yourpassword@postgres:5432/oj
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/oj
       REDIS_URL: redis://redis:6379
-      JWT_SECRET: "your-secret-key"
+      JWT_SECRET: ${JWT_SECRET}
 
   frontend:
     depends_on:
