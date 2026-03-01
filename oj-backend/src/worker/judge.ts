@@ -2,6 +2,7 @@ import { Verdict } from "../generated/prisma/client";
 import { runJavaScript } from "../judge/languages/javascript";
 import { runPython } from "../judge/languages/python";
 import { runCpp } from "../judge/languages/cpp";
+import type { MultiTCResult } from "../judge/languages/javascript";
 
 type TestCase = {
   input: string;
@@ -21,133 +22,86 @@ const normalize = (s: string) => s.replace(/\r\n/g, "\n").trim();
 
 const isSyntaxError = (stderr: string): boolean => /SyntaxError/.test(stderr);
 
-const judgeCpp = async (
-  code: string,
+const analyzeResults = (
+  result: MultiTCResult,
   testCases: TestCase[],
-): Promise<JudgeResult> => {
-  for (let i = 0; i < testCases.length; i++) {
-    const tc = testCases[i];
-    const r = await runCpp(code, tc.input, tc.timeLimitMs);
+  language: string,
+): JudgeResult => {
+  // 1. Overall timeout — the entire container was killed
+  if (result.timedOut) {
+    return {
+      verdict: Verdict.TLE,
+      message: "Time Limit Exceeded",
+    };
+  }
 
-    if (r.timedOut)
-      return {
-        verdict: Verdict.TLE,
-        message: `Time Limit Exceeded on test case ${i + 1}`,
-        failedTestCaseIndex: i,
-      };
-
-    if (r.stderr.includes("error:")) {
+  // 2. Check for compilation errors (stderr with no outputs)
+  if (result.stderr && result.outputs.length === 0) {
+    if (language === "cpp" && result.stderr.includes("error:")) {
       return {
         verdict: Verdict.CE,
         message: "Compilation Error",
-        stderr: r.stderr,
+        stderr: result.stderr,
       };
     }
+    if ((language === "javascript" || language === "python") && isSyntaxError(result.stderr)) {
+      return {
+        verdict: Verdict.CE,
+        message: "Compilation Error",
+        stderr: result.stderr,
+      };
+    }
+    // Generic runtime error if stderr but no outputs
+    return {
+      verdict: Verdict.RTE,
+      message: "Runtime Error",
+      stderr: result.stderr,
+    };
+  }
 
-    if (r.stderr) {
+  // 3. Compare each test case output
+  for (let i = 0; i < testCases.length; i++) {
+    const actualOutput = result.outputs[i];
+
+    // If we got fewer outputs than test cases, the code errored/crashed on this TC
+    if (actualOutput === undefined) {
       return {
         verdict: Verdict.RTE,
         message: `Runtime Error on test case ${i + 1}`,
         failedTestCaseIndex: i,
-        stderr: r.stderr,
+        stderr: result.stderr,
       };
     }
 
-
-    if (normalize(r.stdout) !== normalize(tc.expectedOutput))
+    // Compare normalized output
+    if (normalize(actualOutput) !== normalize(testCases[i].expectedOutput)) {
       return {
         verdict: Verdict.WA,
         message: `Wrong Answer on test case ${i + 1}`,
         failedTestCaseIndex: i,
-        stdout: r.stdout,
+        stdout: actualOutput,
       };
+    }
   }
 
   return { verdict: Verdict.AC, message: "Accepted" };
 };
 
-const judgeJS = async (
+const runAll = async (
+  language: string,
   code: string,
   testCases: TestCase[],
-): Promise<JudgeResult> => {
-  for (let i = 0; i < testCases.length; i++) {
-    const tc = testCases[i];
-    const r = await runJavaScript(code, tc.input, tc.timeLimitMs);
+): Promise<MultiTCResult> => {
+  const tcInputs = testCases.map((tc) => ({
+    input: tc.input,
+    timeLimitMs: tc.timeLimitMs,
+  }));
 
-    if (r.timedOut)
-      return {
-        verdict: Verdict.TLE,
-        message: `Time Limit Exceeded on test case ${i + 1}`,
-        failedTestCaseIndex: i,
-      };
+  if (language === "javascript") return runJavaScript(code, tcInputs);
+  if (language === "python") return runPython(code, tcInputs);
+  if (language === "cpp") return runCpp(code, tcInputs);
 
-    if (r.stderr) {
-      if (isSyntaxError(r.stderr))
-        return {
-          verdict: Verdict.CE,
-          message: "Compilation Error",
-          stderr: r.stderr,
-        };
-      return {
-        verdict: Verdict.RTE,
-        message: `Runtime Error on test case ${i + 1}`,
-        failedTestCaseIndex: i,
-        stderr: r.stderr,
-      };
-    }
-
-    if (normalize(r.stdout) !== normalize(tc.expectedOutput))
-      return {
-        verdict: Verdict.WA,
-        message: `Wrong Answer on test case ${i + 1}`,
-        failedTestCaseIndex: i,
-        stdout: r.stdout,
-      };
-  }
-
-  return { verdict: Verdict.AC, message: "Accepted" };
-};
-
-const judgePython = async (
-  code: string,
-  testCases: TestCase[],
-): Promise<JudgeResult> => {
-  for (let i = 0; i < testCases.length; i++) {
-    const tc = testCases[i];
-    const r = await runPython(code, tc.input, tc.timeLimitMs);
-
-    if (r.timedOut)
-      return {
-        verdict: Verdict.TLE,
-        message: `Time Limit Exceeded on test case ${i + 1}`,
-        failedTestCaseIndex: i,
-      };
-
-    if (r.stderr) {
-      if (isSyntaxError(r.stderr))
-        return {
-          verdict: Verdict.CE,
-          message: "Compilation Error",
-          stderr: r.stderr,
-        };
-      return {
-        verdict: Verdict.RTE,
-        message: `Runtime Error on test case ${i + 1}`,
-        failedTestCaseIndex: i,
-        stderr: r.stderr,
-      };
-    }
-
-    if (normalize(r.stdout) !== normalize(tc.expectedOutput))
-      return {
-        verdict: Verdict.WA,
-        message: `Wrong Answer on test case ${i + 1}`,
-        failedTestCaseIndex: i,
-        stdout: r.stdout,
-      };
-  }
-
-  return { verdict: Verdict.AC, message: "Accepted" };
+  throw new Error(`Unsupported language: ${language}`);
 };
 
 export const judgeSubmission = async ({
@@ -159,9 +113,13 @@ export const judgeSubmission = async ({
   code: string;
   testCases: TestCase[];
 }): Promise<JudgeResult> => {
-  if (language === "javascript") return judgeJS(code, testCases);
-  if (language === "python") return judgePython(code, testCases);
-  if (language === "cpp") return judgeCpp(code, testCases);
-
-  return { verdict: Verdict.CE, message: `Unsupported language: ${language}` };
+  try {
+    const result = await runAll(language, code, testCases);
+    return analyzeResults(result, testCases, language);
+  } catch (err) {
+    return {
+      verdict: Verdict.CE,
+      message: `Unsupported language: ${language}`,
+    };
+  }
 };

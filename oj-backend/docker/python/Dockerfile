@@ -2,7 +2,9 @@ FROM python:3.12-alpine
 
 RUN addgroup -S runner && adduser -S runner -G runner
 
+COPY runner.py /opt/runner.py
+
 WORKDIR /tmp
 USER runner
 
-ENTRYPOINT ["python3", "-c", "import sys, os, base64; code = base64.b64decode(os.environ.get('USER_CODE', '')).decode('utf-8'); exec(compile(code, 'solution.py', 'exec'))"]
+ENTRYPOINT ["python3", "/opt/runner.py"]
