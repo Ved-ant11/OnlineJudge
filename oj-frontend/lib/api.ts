@@ -1,4 +1,7 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+export const API_BASE_URL = 
+  typeof window === 'undefined' 
+    ? (process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL)  // server-side
+    : process.env.NEXT_PUBLIC_API_BASE_URL;                                // browser
 
 if(!API_BASE_URL) {
   throw new Error('API_BASE_URL is not defined');
