@@ -21,6 +21,10 @@ model User {
   email       String       @unique
   password    String      
   submissions Submission[]
+  currentStreak Int      @default(0)
+  maxStreak   Int      @default(0)
+  lastActivityDate  DateTime?    @db.Date
+  activities        DailyActivity[]
 }
 
 model Question {
@@ -70,6 +74,15 @@ model TestCase {
 
   @@index([questionId])
   @@unique([questionId, order])
+}
+
+model DailyActivity {
+  id          String   @id @default(uuid())
+  userId      String
+  date        DateTime @db.Date
+  count       Int      @default(1)
+  user User @relation(fields: [userId], references: [id])
+  @@unique([userId, date])
 }
 
 enum SubmissionStatus {

@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchProfile } from "@/lib/api";
+import { fetchProfile, fetchStreakData } from "@/lib/api";
 import Link from "next/link";
+import {ActivityCalendar} from 'react-activity-calendar';
 
 interface Submission {
   id: string;
@@ -22,24 +23,53 @@ interface Profile {
   submissions: Submission[];
 }
 
+interface StreakData {
+  currentStreak: number;
+  maxStreak: number;
+  heatmapData: Array<{ date: string; count: number }>;
+}
+
 export default function ProfilePage() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [streakData, setStreakData] = useState<StreakData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadProfile = async () => {
+    const loadData = async () => {
       try {
-        const data = await fetchProfile();
-        setProfile(data);
+        const [profileData, streakRes] = await Promise.all([
+          fetchProfile(),
+          fetchStreakData()
+        ]);
+        setProfile(profileData);
+        setStreakData(streakRes);
       } catch {
         router.push("/login");
       } finally {
         setLoading(false);
       }
     };
-    loadProfile();
+    loadData();
   }, [router]);
+
+  const generateCalendarData = (heatmapData: { date: string, count: number }[]) => {
+    const map = new Map(heatmapData.map(d => [d.date, d.count]));
+    const today = new Date();
+    const yearAgo = new Date();
+    yearAgo.setFullYear(today.getFullYear() - 1);
+    const data = [];
+    for (let d = new Date(yearAgo); d <= today; d.setDate(d.getDate() + 1)) {
+      const dateStr = d.toISOString().split('T')[0];
+      const count = map.get(dateStr) || 0;
+      data.push({
+        date: dateStr,
+        count,
+        level: count === 0 ? 0 : Math.min(count, 4)
+      });
+    }
+    return data;
+  };
 
   if (loading) {
     return (
@@ -117,6 +147,48 @@ export default function ProfilePage() {
           </p>
         </div>
       </div>
+
+      {streakData && (
+        <div className="mt-8 rounded-lg border border-neutral-800 bg-neutral-900/60 p-6 overflow-hidden">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div className="w-full lg:flex-1 overflow-x-auto pb-4">
+              <div className="w-max pr-4 flex flex-row-reverse">
+                <ActivityCalendar 
+                  data={generateCalendarData(streakData.heatmapData)} 
+                  theme={{
+                    light: ['#262626', '#10b981', '#059669', '#047857', '#064e3b'],
+                    dark: ['#171717', '#064e3b', '#047857', '#059669', '#10b981']
+                  }}
+                  colorScheme="dark"
+                  labels={{
+                    totalCount: '{{count}} submissions in the last year',
+                  }}
+                  blockSize={12}
+                  blockMargin={4}
+                  fontSize={12}
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-8 lg:border-l lg:border-neutral-800 lg:pl-8 lg:h-[100px]">
+              <div className="text-center">
+                <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide">Current Streak</p>
+                <div className="flex items-center justify-center gap-2 mt-2">
+                  <span className="text-3xl ">🔥</span>
+                  <span className="text-3xl font-bold text-neutral-100">{streakData.currentStreak}</span>
+                </div>
+              </div>
+              <div className="text-center">
+                <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide">Longest Streak</p>
+                <div className="flex items-center justify-center gap-2 mt-2">
+                  <span className="text-3xl">🏆</span>
+                  <span className="text-3xl font-bold text-neutral-100">{streakData.maxStreak}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="mt-8">
         <h2 className="text-sm font-semibold text-neutral-100 mb-4">Recent Submissions</h2>
 

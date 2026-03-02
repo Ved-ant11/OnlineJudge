@@ -2,6 +2,7 @@ import redis, { connectRedis } from "../redis/client";
 import prisma from "../db/client";
 import { SubmissionStatus, Verdict } from "../generated/prisma/client";
 import { judgeSubmission } from "./judge";
+import { updateStreak } from "../utils/streak";
 
 const QUEUE_KEY = "oj:submissions";
 
@@ -167,6 +168,15 @@ const processSubmission = async (id: string) => {
         result: result.message,
       },
     });
+
+    if (result.verdict === Verdict.AC) {
+      log(`Submission ${id} got AC. Updating streak...`);
+      try {
+        await updateStreak(submission.userId);
+      } catch (err) {
+        logError(`Failed to update streak for user ${submission.userId}`, err);
+      }
+    }
 
     await redis.publish(`verdict:${id}`, JSON.stringify({
       status: SubmissionStatus.COMPLETED,

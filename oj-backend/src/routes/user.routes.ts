@@ -70,6 +70,72 @@ router.get('/leaderboard', async (_req: Request, res: Response) => {
     }
 });
 
+router.get('/streak', tokenVerify, async (req: Request, res: Response) => {
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: (req as any).userId },
+            select: { currentStreak: true, maxStreak: true, lastActivityDate: true }
+        });
+
+        if (!user) return res.status(404).json({ error: 'User not found' });
+
+        // Calculate current streak based on today's date
+        const now = new Date();
+        const todayMillis = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+        const today = new Date(todayMillis);
+
+        let currentStreak = user.currentStreak;
+
+        if (user.lastActivityDate) {
+            const lastMillis = Date.UTC(
+                user.lastActivityDate.getUTCFullYear(),
+                user.lastActivityDate.getUTCMonth(),
+                user.lastActivityDate.getUTCDate()
+            );
+
+            const diffDays = Math.round((todayMillis - lastMillis) / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 0) {
+                // Already solved today, streak is valid
+                currentStreak = user.currentStreak;
+            } else if (diffDays === 1) {
+                // Solved yesterday, streak is valid
+                currentStreak = user.currentStreak;
+            } else {
+                // Missed day(s), streak is broken
+                currentStreak = 0;
+            }
+        } else {
+            currentStreak = 0;
+        }
+
+        const oneYearAgo = new Date();
+        oneYearAgo.setUTCFullYear(oneYearAgo.getUTCFullYear() - 1);
+
+        const activities = await prisma.dailyActivity.findMany({
+            where: {
+                userId: (req as any).userId,
+                date: { gte: oneYearAgo }
+            },
+            select: { date: true, count: true },
+            orderBy: { date: 'asc' }
+        });
+
+        const heatmapData = activities.map(a => ({
+            date: a.date.toISOString().split('T')[0],
+            count: a.count
+        }));
+
+        res.status(200).json({
+            currentStreak,
+            maxStreak: user.maxStreak,
+            heatmapData
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 export default router;
 

@@ -148,6 +148,17 @@ export const fetchSubmissionsByQuestion = async (questionId: string) => {
   return response.json();
 };
 
+export const fetchStreakData = async () => {
+  const response = await fetch(`${API_BASE_URL}/user/streak`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: "include",
+    cache: 'no-store',
+  });
+  if (!response.ok) throw new Error('Failed to fetch streak data');
+  return response.json();
+};
+
 export const logout = async () => {
   await fetch(`${API_BASE_URL}/auth/logout`, {
     method: 'POST',
