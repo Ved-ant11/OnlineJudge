@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { fetchSubmissionStatus } from "@/lib/api";
+import { fetchSubmissionStatus, fetchReview } from "@/lib/api";
+import ReactMarkdown from "react-markdown";
 
 type Props = {
   submissionId: string;
@@ -12,6 +13,8 @@ export default function SubmissionStatus({ submissionId }: Props) {
   const [code, setCode] = useState<string | null>(null);
   const [language, setLanguage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [review, setReview] = useState<string | null>(null);
+  const [reviewLoading, setReviewLoading] = useState(false);
 
 /*  useEffect(() => {
     const poll = async () => {
@@ -177,6 +180,28 @@ export default function SubmissionStatus({ submissionId }: Props) {
             <pre className="rounded-md border border-neutral-800 bg-neutral-900 p-4 font-mono text-xs text-neutral-300 overflow-x-auto max-h-80 overflow-y-auto">
               {code}
             </pre>
+            <button
+              onClick={async () => {
+                setReviewLoading(true);
+                try {
+                  const data = await fetchReview(submissionId);
+                  setReview(data.review);
+                } catch {
+                  setReview("Failed to fetch AI review.");
+                } finally {
+                  setReviewLoading(false);
+                }
+              }}
+              disabled={reviewLoading}
+              className="mt-4 px-4 py-2 text-sm rounded-md bg-neutral-800 text-neutral-300 hover:bg-neutral-700 transition-colors disabled:opacity-50"
+            >
+              {reviewLoading ? "Analyzing..." : "✨ Get AI Review"}
+            </button>
+            {review && (
+              <div className="mt-4 rounded-md border border-neutral-800 bg-neutral-900/50 p-6 prose prose-sm prose-invert max-w-none">
+                <ReactMarkdown>{review}</ReactMarkdown>
+              </div>
+            )}
           </div>
         )}
       </>

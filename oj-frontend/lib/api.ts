@@ -159,6 +159,19 @@ export const fetchStreakData = async () => {
   return response.json();
 };
 
+export const fetchReview = async (submissionId: string) => {
+  const response = await fetch(`${API_BASE_URL}/review`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: "include",
+    cache: 'no-store',
+    body: JSON.stringify({ submissionId }),
+  });
+  if (!response.ok) throw new Error('Failed to fetch review');
+  return response.json();
+};
+
+
 export const logout = async () => {
   await fetch(`${API_BASE_URL}/auth/logout`, {
     method: 'POST',

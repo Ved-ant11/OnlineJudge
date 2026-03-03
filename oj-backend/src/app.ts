@@ -5,6 +5,7 @@ import healthRoutes from "./routes/health.routes";
 import questionRoutes from "./routes/question.routes";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
+import reviewRoutes from "./routes/review.routes";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -21,6 +22,7 @@ app.use("/api/health", healthRoutes);
 app.use("/api/questions", questionRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/review", reviewRoutes);
 
 export default app;
 
