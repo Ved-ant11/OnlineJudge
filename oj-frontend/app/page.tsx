@@ -6,7 +6,7 @@ export default function Home() {
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-gradient-to-r from-blue-600/20 via-violet-600/20 to-cyan-500/20 rounded-full blur-[100px] animate-glow-pulse pointer-events-none" />
       <div className="relative z-10 w-full max-w-2xl text-center">
         <h1 className="text-5xl font-bold tracking-tight text-neutral-100 animate-fade-in-up">
-          Online <span className="bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">Judge</span>
+          Execut<span className="bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">.</span>
         </h1>
         <p className="mt-4 text-base text-neutral-400 leading-relaxed max-w-md mx-auto animate-fade-in-up animation-delay-100">
           Practice coding problems. Write solutions. Get instant feedback.

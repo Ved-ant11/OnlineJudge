@@ -84,7 +84,7 @@ export default function CodeSubmission({ questionId }: { questionId: string }) {
           options={{
             minimap: { enabled: false },
             fontSize: 13,
-            fontFamily: "var(--font-geist-mono), monospace",
+            fontFamily: "var(--font-jetbrains-mono), monospace",
             automaticLayout: true,
             padding: { top: 12, bottom: 12 },
             scrollBeyondLastLine: false,

@@ -58,7 +58,7 @@ export default function NavAuth() {
             {username}
           </Link>
           <button
-            className="px-3 py-1.5 rounded-lg text-sm bg-rose-950/50 text-rose-200 border border-rose-800 hover:bg-rose-900 transition-colors"
+            className="px-3 py-1.5 rounded-full text-sm bg-rose-950/50 text-rose-200 border border-rose-800 hover:bg-rose-900 transition-colors"
             onClick={handleLogout}
           >
             Logout
@@ -67,16 +67,16 @@ export default function NavAuth() {
       ) : (
         <>
           <button
-            className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
+            className="px-3 py-1.5 rounded-full text-sm text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800/60 transition-all duration-200"
             onClick={handleLogin}
           >
             Login
           </button>
           <button
-            className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
+            className="px-4 py-1.5 rounded-full text-sm font-medium text-neutral-100 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700/50 transition-all duration-200 active:scale-[0.97]"
             onClick={handleSignup}
           >
-            Sign up
+            Sign up →
           </button>
         </>
       )}

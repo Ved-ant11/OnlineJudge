@@ -143,7 +143,14 @@ export default function SubmissionStatus({ submissionId }: Props) {
 
   if (status === "COMPLETED" && result) {
     const r = result.toLowerCase();
-
+    let diffData = null;
+    if (result){
+      try {
+        diffData = JSON.parse(result);
+      } catch (e) {
+        console.error("Failed to parse result", e);
+      }
+    }
     let verdictColor = "text-neutral-400";
     let verdictLabel = result;
 
@@ -168,10 +175,39 @@ export default function SubmissionStatus({ submissionId }: Props) {
       <>
         <div className="rounded-md border border-neutral-800 bg-neutral-900/50 p-6">
           <p className={`text-lg font-semibold ${verdictColor}`}>
-            {verdictLabel}
+            {diffData ? diffData.message : verdictLabel}
           </p>
-          {result !== verdictLabel && (
-            <p className="mt-1 text-xs text-neutral-500">{result}</p>
+          {!diffData && result !== verdictLabel && (
+            <p className="mt-2 text-sm text-neutral-400 font-mono bg-neutral-950 p-3 rounded border border-neutral-800/50 whitespace-pre-wrap">
+              {result}
+            </p>
+          )}
+          {diffData && (
+            <div className="mt-4 flex flex-col gap-3 font-mono text-sm">
+              {diffData.input && (
+                <div>
+                  <div className="text-xs text-neutral-500 mb-1">Input:</div>
+                  <div className="bg-neutral-950 p-3 rounded border border-neutral-800 text-neutral-300 w-full overflow-x-auto whitespace-pre-wrap">
+                    {diffData.input}
+                  </div>
+                </div>
+              )}
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                <div>
+                  <div className="text-xs text-emerald-500/80 mb-1">Expected Output:</div>
+                  <div className="bg-emerald-950/20 p-3 rounded border border-emerald-900/30 text-emerald-200 w-full overflow-x-auto whitespace-pre-wrap h-full">
+                    {diffData.expected}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-red-500/80 mb-1">Your Output:</div>
+                  <div className="bg-red-950/20 p-3 rounded border border-red-900/30 text-red-200 w-full overflow-x-auto whitespace-pre-wrap h-full">
+                    {diffData.actual || <span className="text-red-500/50 italic">No output</span>}
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
         </div>
         {code && (

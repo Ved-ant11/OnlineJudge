@@ -160,15 +160,42 @@ const processSubmission = async (id: string) => {
       ...(result.stdout ? { stdout: result.stdout.slice(0, 500) } : {}),
     });
 
-    await prisma.submission.update({
-      where: { id },
-      data: {
-        status: SubmissionStatus.COMPLETED,
-        verdict: result.verdict,
-        result: result.message,
-      },
-    });
+    // await prisma.submission.update({
+    //   where: { id },
+    //   data: {
+    //     status: SubmissionStatus.COMPLETED,
+    //     verdict: result.verdict,
+    //     result: result.message,
+    //   },
+    // });
 
+    if (result.verdict === Verdict.WA && result.failedTestCaseIndex !== undefined) {
+      const failedTC = testCases[result.failedTestCaseIndex];
+      await prisma.submission.update({
+        where: { id },
+        data: {
+          status: SubmissionStatus.COMPLETED,
+          verdict: result.verdict,
+          result: JSON.stringify({
+            message: result.message,
+            testCaseIndex: result.failedTestCaseIndex + 1,
+            expected: failedTC.expectedOutput,
+            actual: result.stdout || "",
+            input: failedTC.isHidden ? null : failedTC.input,
+          }),
+        },
+      });
+    } else {
+      //update for AC, TLE, RTE, CE
+      await prisma.submission.update({
+        where: { id },
+        data: {
+          status: SubmissionStatus.COMPLETED,
+          verdict: result.verdict,
+          result: result.message,
+        },
+      });
+    }
     if (result.verdict === Verdict.AC) {
       log(`Submission ${id} got AC. Updating streak...`);
       try {
