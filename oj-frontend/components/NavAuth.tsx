@@ -9,14 +9,17 @@ export default function NavAuth() {
   const [username, setUsername] = useState<string | null>(null);
 
   const syncAuth = async () => {
-    const stored = localStorage.getItem("username");
-    if (stored) setUsername(stored);
     const data = await fetchAuthStatus();
     if (data) {
       setUsername(data.username);
       localStorage.setItem("username", data.username);
     } else {
-      setUsername(null);
+      const stored = localStorage.getItem("username");
+      if (stored) {
+        setUsername(stored);
+      } else {
+        setUsername(null);
+      }
       localStorage.removeItem("username");
     }
   };
