@@ -6,31 +6,45 @@ import Link from "next/link";
 
 export default function NavAuth() {
   const router = useRouter();
-  const [username, setUsername] = useState<string | null>(null);
-
-  const syncAuth = async () => {
-    const data = await fetchAuthStatus();
-    if (data) {
-      setUsername(data.username);
-      localStorage.setItem("username", data.username);
-    } else {
-      const stored = localStorage.getItem("username");
-      if (stored) {
-        setUsername(stored);
-      } else {
-        setUsername(null);
-      }
-      localStorage.removeItem("username");
+  const [username, setUsername] = useState<string | null>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("username");
     }
-  };
+    return null;
+  });
 
   useEffect(() => {
-    syncAuth();
-    const handleAuthChange = () => syncAuth();
+    let cancelled = false;
+
+    fetchAuthStatus().then((data) => {
+      if (cancelled) return;
+      if (data) {
+        setUsername(data.username);
+        localStorage.setItem("username", data.username);
+      } else {
+        setUsername(null);
+        localStorage.removeItem("username");
+      }
+    });
+
+    const handleAuthChange = () => {
+      fetchAuthStatus().then((data) => {
+        if (cancelled) return;
+        if (data) {
+          setUsername(data.username);
+          localStorage.setItem("username", data.username);
+        } else {
+          setUsername(null);
+          localStorage.removeItem("username");
+        }
+      });
+    };
+
     window.addEventListener("auth-change", handleAuthChange);
     window.addEventListener("storage", handleAuthChange);
 
     return () => {
+      cancelled = true;
       window.removeEventListener("auth-change", handleAuthChange);
       window.removeEventListener("storage", handleAuthChange);
     };

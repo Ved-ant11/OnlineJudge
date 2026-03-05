@@ -11,8 +11,8 @@ export default function SubmissionStatus({ submissionId }: Props) {
   const [status, setStatus] = useState<string>("LOADING");
   const [result, setResult] = useState<string | null>(null);
   const [code, setCode] = useState<string | null>(null);
-  const [language, setLanguage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [_language, setLanguage] = useState<string | null>(null);
+  const [error, _setError] = useState<string | null>(null);
   const [review, setReview] = useState<string | null>(null);
   const [reviewLoading, setReviewLoading] = useState(false);
 
