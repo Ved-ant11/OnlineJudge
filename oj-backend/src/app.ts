@@ -6,6 +6,7 @@ import questionRoutes from "./routes/question.routes";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import reviewRoutes from "./routes/review.routes";
+import battleRoutes from "./routes/battle.routes";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -23,6 +24,7 @@ app.use("/api/questions", questionRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/review", reviewRoutes);
+app.use("/api/battle", battleRoutes);
 
 export default app;
 

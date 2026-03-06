@@ -25,6 +25,11 @@ model User {
   maxStreak   Int      @default(0)
   lastActivityDate  DateTime?    @db.Date
   activities        DailyActivity[]
+  rating          Int       @default(1200)
+  battlesPlayed   Int       @default(0)
+  battlesWon      Int       @default(0)
+  battlesAsP1     Battle[]  @relation("BattlePlayer1")
+  battlesAsP2     Battle[]  @relation("BattlePlayer2")
 }
 
 model Question {
@@ -36,6 +41,7 @@ model Question {
   constraints String
   testCases   TestCase[]
   submissions Submission[]
+  battles     Battle[]
   createdAt   DateTime     @default(now())
 }
 
@@ -83,6 +89,36 @@ model DailyActivity {
   count       Int      @default(1)
   user User @relation(fields: [userId], references: [id])
   @@unique([userId, date])
+}
+
+model Battle {
+  id            String        @id @default(uuid())
+  player1Id     String
+  player2Id     String
+  questionId    String
+  status        BattleStatus  @default(WAITING)
+  winnerId      String?
+  player1Time   Int?          
+  player2Time   Int?
+  player1Hints  Int           @default(0)
+  player2Hints  Int           @default(0)
+  startedAt     DateTime?
+  endedAt       DateTime?
+  createdAt     DateTime      @default(now())
+
+  player1       User          @relation("BattlePlayer1", fields: [player1Id], references: [id])
+  player2       User          @relation("BattlePlayer2", fields: [player2Id], references: [id])
+  question      Question      @relation(fields: [questionId], references: [id])
+
+  @@index([player1Id])
+  @@index([player2Id])
+}
+
+enum BattleStatus {
+  WAITING     
+  ACTIVE      
+  COMPLETED   
+  ABANDONED   
 }
 
 enum SubmissionStatus {
