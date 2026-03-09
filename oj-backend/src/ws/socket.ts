@@ -14,17 +14,16 @@ type BattleRoom = {
   player2Id: string | null;
   timer: NodeJS.Timeout | null;
   startTime: number;
-  p1Duration: number; // per-player duration (hint penalties only affect the user)
+  p1Duration: number; 
   p2Duration: number;
   questionId: string;
-  battlePlayer1Id: string; // DB player1Id (always known from battle record)
-  battlePlayer2Id: string; // DB player2Id (always known from battle record)
+  battlePlayer1Id: string; 
+  battlePlayer2Id: string;
 };
 
 const BASE_DURATION = 1200000; // 20 minutes
 
 function getEffectiveTimeout(room: BattleRoom): number {
-  // The battle room stays alive until the LAST player's clock runs out
   return Math.max(room.p1Duration, room.p2Duration);
 }
 
@@ -112,8 +111,6 @@ export function setupWebSocket(server: Server) {
       } catch {
         return;
       }
-
-      // ─── BATTLE JOIN ───────────────────────────────────────
       if (message.type === "battle:join") {
         const { battleId, userId } = message;
         if (!battleId || !userId) return;
@@ -121,7 +118,7 @@ export function setupWebSocket(server: Server) {
         let room = battleRooms.get(battleId);
 
         if (!room) {
-          // First player joining — look up battle from DB to get both player IDs
+          // First player joining
           const battle = await prisma.battle.findUnique({
             where: { id: battleId },
             select: { player1Id: true, player2Id: true, questionId: true },
@@ -133,7 +130,7 @@ export function setupWebSocket(server: Server) {
             return;
           }
 
-          // Verify the user is actually in this battle
+          // Verifying the user is a participant
           if (userId !== battle.player1Id && userId !== battle.player2Id) {
             ws.send(
               JSON.stringify({ type: "error", message: "Not a participant" }),
@@ -160,7 +157,6 @@ export function setupWebSocket(server: Server) {
 
           ws.send(JSON.stringify({ type: "battle:waiting", battleId }));
         } else if (isRoomPlayer1(room, userId)) {
-          // Player 1 reconnecting or joining
           room.player1 = ws;
           room.player1Id = userId;
 
@@ -177,11 +173,9 @@ export function setupWebSocket(server: Server) {
             ws.send(JSON.stringify({ type: "battle:waiting", battleId }));
           }
         } else if (userId === room.battlePlayer2Id) {
-          // Player 2 joining or reconnecting
           room.player2 = ws;
           room.player2Id = userId;
-
-          // If battle already started (reconnect), send current state
+          // battle already started (reconnect), send current state
           if (room.startTime > 0) {
             if (ws.readyState === WebSocket.OPEN) {
               ws.send(
@@ -195,8 +189,7 @@ export function setupWebSocket(server: Server) {
             }
             return;
           }
-
-          // Both players present — start countdown
+          // start countdown
           const countdown = JSON.stringify({
             type: "battle:countdown",
             seconds: 3,
@@ -252,7 +245,6 @@ export function setupWebSocket(server: Server) {
             }
           }, 3000);
         } else {
-          // userId doesn't match either player in this battle
           ws.send(
             JSON.stringify({
               type: "error",
@@ -261,8 +253,6 @@ export function setupWebSocket(server: Server) {
           );
         }
       }
-
-      // ─── BATTLE SUBMIT ─────────────────────────────────────
       if (message.type === "battle:submit") {
         const { battleId, userId, code, language } = message;
         if (!battleId || !userId || !code || !language) return;
@@ -304,8 +294,6 @@ export function setupWebSocket(server: Server) {
         });
 
         const result = await judgeSubmission({ language, code, testCases });
-
-        // Create a Submission record for history
         try {
           const submission = await prisma.submission.create({
             data: {
@@ -428,8 +416,6 @@ export function setupWebSocket(server: Server) {
           }
         }
       }
-
-      // ─── BATTLE LEAVE (FORFEIT) ────────────────────────────
       if (message.type === "battle:leave") {
         const { battleId, userId } = message;
         if (!battleId || !userId) return;
@@ -511,7 +497,6 @@ export function setupWebSocket(server: Server) {
               data: { rating: loserNew, battlesPlayed: { increment: 1 } },
             }),
           ]);
-
           // Notify the forfeiting player (loser) so their UI transitions
           ws.send(
             JSON.stringify({
@@ -541,8 +526,6 @@ export function setupWebSocket(server: Server) {
 
         battleRooms.delete(battleId);
       }
-
-      // ─── BATTLE HINT ───────────────────────────────────────
       if (message.type === "battle:hint") {
         const { battleId, userId } = message;
         if (!battleId || !userId) return;
@@ -585,7 +568,7 @@ export function setupWebSocket(server: Server) {
           room.p2Duration -= penalty;
         }
 
-        // Reschedule the room timeout based on the new max of both durations
+        // reschedule the timer
         if (room.startTime > 0) {
           rescheduleTimer(room, battleId, battleRooms);
         }
@@ -596,8 +579,6 @@ export function setupWebSocket(server: Server) {
         });
 
         const requesterDuration = isPlayer1 ? room.p1Duration : room.p2Duration;
-
-        // Send the hint + updated duration ONLY to the requester
         ws.send(
           JSON.stringify({
             type: "battle:hint",
@@ -608,8 +589,6 @@ export function setupWebSocket(server: Server) {
             newDuration: requesterDuration,
           }),
         );
-
-        // Notify opponent that the other player used a hint (no duration change for them)
         if (opponent?.readyState === WebSocket.OPEN) {
           opponent.send(
             JSON.stringify({
@@ -620,7 +599,6 @@ export function setupWebSocket(server: Server) {
         }
       }
 
-      // ─── REGULAR SUBMISSION SUBSCRIBE ──────────────────────
       if (message.type === "subscribe") {
         clients.set(message.submissionId, ws);
         console.log(`Subscribed to submission ${message.submissionId}`);
