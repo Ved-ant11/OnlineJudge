@@ -39,7 +39,7 @@ export default function RootLayout({
                 href="/"
                 className="text-lg font-bold text-neutral-100 tracking-tight"
               >
-                Execut<span className="bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">.</span>
+                Execut<span className="bg-linear-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">.</span>
               </Link>
               <div className="h-4 w-px bg-neutral-800" />
               <Link
@@ -59,6 +59,12 @@ export default function RootLayout({
                 className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
               >
                 Leaderboard
+              </Link>
+              <Link
+                href="/battle"
+                className="text-sm text-orange-400 hover:text-orange-300 font-medium transition-colors"
+              >
+                Match
               </Link>
             </div>
             <div className="flex items-center gap-3">
