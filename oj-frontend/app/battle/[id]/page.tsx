@@ -70,7 +70,7 @@ export default function BattleArena({ params }: PageProps) {
   if (!userId || !battleData) {
     return (
       <div className="flex h-[calc(100vh-4rem)] items-center justify-center bg-[#0a0a0a]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+        <div className="h-5 w-5 border-2 border-neutral-700 border-t-neutral-300 rounded-full animate-spin" />
       </div>
     );
   }
@@ -102,165 +102,177 @@ export default function BattleArena({ params }: PageProps) {
     timeDisplay = `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
   }
 
+  const getDifficultyStyle = (d?: string) => {
+    switch (d?.toUpperCase()) {
+      case "EASY":
+        return "text-emerald-400 bg-emerald-400/10";
+      case "MEDIUM":
+        return "text-amber-400 bg-amber-400/10";
+      case "HARD":
+        return "text-rose-400 bg-rose-400/10";
+      default:
+        return "text-neutral-400 bg-neutral-400/10";
+    }
+  };
+
+  const latestOpponentEvent =
+    battle.opponentEvents.length > 0
+      ? battle.opponentEvents[battle.opponentEvents.length - 1]
+      : null;
+
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] bg-[#0a0a0a] overflow-hidden">
-      <div className="flex items-center justify-between px-6 py-3 border-b border-neutral-800 bg-[#111] shrink-0">
-        <div className="flex items-center gap-4">
-          <h1 className="text-lg font-bold text-white">Code Battle</h1>
-          <span className="px-2 py-1 bg-neutral-800 rounded-md text-xs font-mono text-neutral-400">
+      <div className="flex items-center justify-between px-5 h-12 border-b border-neutral-800/70 bg-[#0a0a0a] shrink-0">
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-medium text-neutral-300">Battle</span>
+          <span className="text-xs text-neutral-600 font-mono">
             {battleId.substring(0, 8)}
           </span>
         </div>
 
-        <div className="flex flex-col items-center">
+        <div className="flex items-center">
           {battle.status === "waiting" && (
-            <span className="text-orange-400 font-medium">
-              Waiting for opponent...
-            </span>
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+              <span className="text-sm text-neutral-400">
+                Waiting for opponent
+              </span>
+            </div>
           )}
           {battle.status === "countdown" && (
-            <span className="text-3xl font-black text-rose-500 animate-pulse">
+            <span className="text-2xl font-bold text-white tabular-nums animate-pulse">
               {battle.countdown}
             </span>
           )}
           {battle.status === "active" && (
-            <span className="text-2xl font-mono font-bold text-white tracking-widest">
+            <span className="text-lg font-mono font-semibold text-white tabular-nums tracking-wider">
               {timeDisplay}
             </span>
           )}
           {battle.status === "finished" && (
             <span
-              className={
+              className={`text-sm font-semibold ${
                 battle.won
-                  ? "text-emerald-400 font-bold"
-                  : battle.won === false && battle.eloChange === 0
-                    ? "text-yellow-400 font-bold"
-                    : "text-rose-400 font-bold"
-              }
+                  ? "text-emerald-400"
+                  : battle.eloChange === 0
+                    ? "text-amber-400"
+                    : "text-rose-400"
+              }`}
             >
               {battle.won
-                ? "VICTORY"
+                ? "Victory"
                 : battle.eloChange === 0
-                  ? "DRAW"
-                  : "DEFEAT"}
+                  ? "Draw"
+                  : "Defeat"}
             </span>
           )}
         </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => battle.sendLeave()}
-            className="px-4 py-1.5 rounded-md bg-neutral-800 text-neutral-400 hover:text-white hover:bg-neutral-700 text-sm font-medium transition-colors"
-          >
-            Forfeit
-          </button>
-        </div>
+        <button
+          onClick={() => battle.sendLeave()}
+          className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors"
+        >
+          Forfeit
+        </button>
       </div>
 
-      {/* Split View */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Pane: Problem Description */}
-        <div className="w-1/2 flex flex-col border-r border-neutral-800 bg-[#0a0a0a]">
-          <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-            <div className="flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-bold text-neutral-100">
-                {question.title}
-              </h1>
-              <span className="px-3 py-1 bg-neutral-800 text-neutral-300 rounded-full text-xs font-semibold uppercase tracking-wider">
-                {question.difficulty}
-              </span>
-            </div>
-
-            <div className="prose prose-invert max-w-none prose-p:text-neutral-400 prose-pre:bg-neutral-900 prose-pre:border prose-pre:border-neutral-800 prose-code:text-emerald-400">
-              <ReactMarkdown>{question.statement}</ReactMarkdown>
-            </div>
-
-            <div className="mt-8 pt-8 border-t border-neutral-800/50">
-              <h2 className="text-sm font-medium text-neutral-300 mb-3">
-                Constraints
-              </h2>
-              <div className="prose prose-sm prose-invert max-w-none prose-ul:pt-0 prose-li:text-neutral-500">
-                <ReactMarkdown>{question.constraints}</ReactMarkdown>
-              </div>
-            </div>
-
-            {battle.status === "active" && (
-              <div className="mt-8 pt-8 border-t border-neutral-800/50">
-                <h2 className="text-sm font-medium text-neutral-300 mb-3 flex items-center justify-between">
-                  <span>Hints</span>
-                  <span className="text-xs text-neutral-500">
-                    {3 - battle.hintsUsed} remaining
-                  </span>
-                </h2>
-
-                {battle.hint && (
-                  <div className="p-4 mb-4 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-200 text-sm">
-                    <div className="font-bold text-orange-400 mb-1">
-                      Latest Hint:
-                    </div>
-                    {battle.hint}
-                  </div>
-                )}
-
-                {battle.hintsUsed < 3 && (
-                  <button
-                    onClick={() => battle.sendHint()}
-                    className="w-full py-2.5 rounded-lg border border-neutral-700 text-neutral-400 text-sm hover:bg-neutral-800 hover:text-white transition-colors flex items-center justify-center gap-2"
+        <div className="w-1/2 flex flex-col border-r border-neutral-800/70">
+          <div className="flex-1 overflow-y-auto p-8">
+            <div className="max-w-xl">
+              <div className="flex items-start justify-between gap-4 mb-8">
+                <h1 className="text-xl font-semibold text-white leading-snug">
+                  {question.title}
+                </h1>
+                {question.difficulty && (
+                  <span
+                    className={`px-2.5 py-1 rounded-md text-[10px] font-semibold uppercase tracking-wider shrink-0 ${getDifficultyStyle(question.difficulty)}`}
                   >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    Request Hint (-
-                    {battle.hintsUsed === 0
-                      ? "2"
-                      : battle.hintsUsed === 1
-                        ? "3"
-                        : "5"}{" "}
-                    mins)
-                  </button>
+                    {question.difficulty}
+                  </span>
                 )}
               </div>
-            )}
+
+              <div className="prose prose-invert prose-sm max-w-none prose-p:text-neutral-400 prose-p:leading-relaxed prose-pre:bg-neutral-900 prose-pre:border prose-pre:border-neutral-800 prose-code:text-emerald-400 prose-headings:text-neutral-200 prose-headings:font-medium prose-strong:text-neutral-300">
+                <ReactMarkdown>{question.statement}</ReactMarkdown>
+              </div>
+
+              {question.constraints && (
+                <div className="mt-10 pt-8 border-t border-neutral-800/50">
+                  <h2 className="text-[11px] font-medium text-neutral-500 uppercase tracking-wider mb-4">
+                    Constraints
+                  </h2>
+                  <div className="prose prose-sm prose-invert max-w-none prose-p:text-neutral-500 prose-li:text-neutral-500 prose-ul:mt-0">
+                    <ReactMarkdown>{question.constraints}</ReactMarkdown>
+                  </div>
+                </div>
+              )}
+
+              {battle.status === "active" && (
+                <div className="mt-10 pt-8 border-t border-neutral-800/50">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-[11px] font-medium text-neutral-500 uppercase tracking-wider">
+                      Hints
+                    </h2>
+                    <span className="text-[11px] text-neutral-600 tabular-nums">
+                      {3 - battle.hintsUsed} remaining
+                    </span>
+                  </div>
+
+                  {battle.hint && (
+                    <div className="p-4 mb-4 rounded-lg bg-orange-500/5 border border-orange-500/10 text-sm text-orange-200/90 leading-relaxed">
+                      {battle.hint}
+                    </div>
+                  )}
+
+                  {battle.hintsUsed < 3 && (
+                    <button
+                      onClick={() => battle.sendHint()}
+                      className="w-full py-2.5 rounded-lg border border-neutral-800 text-neutral-500 text-xs font-medium hover:border-neutral-700 hover:text-neutral-300 transition-colors"
+                    >
+                      Request Hint
+                      <span className="text-neutral-600 ml-1">
+                        (−
+                        {battle.hintsUsed === 0
+                          ? "2"
+                          : battle.hintsUsed === 1
+                            ? "3"
+                            : "5"}{" "}
+                        min)
+                      </span>
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="w-1/2 flex flex-col bg-[#0d0d0d]">
-          <div className="flex items-center justify-between px-4 py-2 border-b border-neutral-800 bg-[#111]">
+        <div className="w-1/2 flex flex-col">
+          <div className="flex items-center justify-between px-4 h-10 border-b border-neutral-800/70 shrink-0">
             <select
               value={language}
               onChange={handleLanguageChange}
-              className="bg-neutral-800 text-neutral-300 text-sm rounded-md px-3 py-1 border-none focus:ring-1 focus:ring-neutral-600 outline-none"
+              className="bg-transparent text-neutral-400 text-xs rounded px-1 py-0.5 border-none focus:ring-0 outline-none cursor-pointer hover:text-neutral-200 transition-colors"
             >
-              <option value="javascript">JavaScript</option>
-              <option value="python">Python</option>
-              <option value="cpp">C++</option>
+              <option value="javascript" className="bg-neutral-900">
+                JavaScript
+              </option>
+              <option value="python" className="bg-neutral-900">
+                Python
+              </option>
+              <option value="cpp" className="bg-neutral-900">
+                C++
+              </option>
             </select>
-            <div className="text-xs text-neutral-500">
-              {battle.opponentEvents.length > 0 &&
-                battle.opponentEvents
-                  .map((evt: string, i: number) => (
-                    <span
-                      key={i}
-                      className="animate-fade-in-up text-rose-400 ml-3"
-                    >
-                      {evt}
-                    </span>
-                  ))
-                  .pop()}
-            </div>
+            {latestOpponentEvent && (
+              <span className="text-[11px] text-rose-400/80 animate-fade-in-up">
+                {latestOpponentEvent}
+              </span>
+            )}
           </div>
 
-          <div className="flex-1 min-h-0 py-2">
+          <div className="flex-1 min-h-0">
             <Editor
               height="100%"
               language={language}
@@ -277,23 +289,31 @@ export default function BattleArena({ params }: PageProps) {
                 cursorSmoothCaretAnimation: "on",
                 formatOnPaste: true,
                 padding: { top: 16 },
+                renderLineHighlight: "none",
+                overviewRulerBorder: false,
+                hideCursorInOverviewRuler: true,
+                scrollbar: {
+                  verticalScrollbarSize: 6,
+                  horizontalScrollbarSize: 6,
+                },
               }}
             />
           </div>
-          <div className="p-3 border-t border-neutral-800 bg-[#0a0a0a] flex flex-col gap-3">
+
+          <div className="p-3 border-t border-neutral-800/70 shrink-0">
             {battle.verdict && (
               <div
-                className={`p-3 rounded-lg text-sm font-mono ${
+                className={`px-3.5 py-2.5 rounded-lg text-sm mb-3 ${
                   battle.verdict === "AC"
-                    ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                    : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                    ? "bg-emerald-500/8 text-emerald-400 border border-emerald-500/15"
+                    : "bg-rose-500/8 text-rose-400 border border-rose-500/15"
                 }`}
               >
-                <div className="font-bold mb-1">{battle.verdict}</div>
+                <span className="font-semibold text-xs">{battle.verdict}</span>
                 {battle.verdictMessage && (
-                  <div className="text-xs opacity-80 whitespace-pre-wrap">
+                  <p className="text-xs mt-1 opacity-70 whitespace-pre-wrap leading-relaxed">
                     {battle.verdictMessage}
-                  </div>
+                  </p>
                 )}
               </div>
             )}
@@ -301,15 +321,15 @@ export default function BattleArena({ params }: PageProps) {
             <button
               onClick={handleSubmit}
               disabled={battle.isSubmitting}
-              className="w-full flex h-10 items-center justify-center rounded-lg bg-neutral-100 text-sm font-bold text-neutral-900 transition-colors hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full h-9 flex items-center justify-center rounded-lg bg-white text-neutral-900 text-sm font-medium transition-all hover:bg-neutral-200 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
             >
               {battle.isSubmitting ? (
                 <div className="flex items-center gap-2">
-                  <div className="animate-spin h-4 w-4 border-2 border-neutral-900 border-t-transparent rounded-full" />
-                  Judging...
+                  <div className="h-3.5 w-3.5 border-2 border-neutral-400 border-t-neutral-900 rounded-full animate-spin" />
+                  <span>Judging</span>
                 </div>
               ) : (
-                "Submit Solution"
+                "Submit"
               )}
             </button>
           </div>
@@ -317,57 +337,64 @@ export default function BattleArena({ params }: PageProps) {
       </div>
 
       {battle.status === "finished" && (
-        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-[#111] border border-neutral-800 rounded-3xl p-10 max-w-sm w-full text-center shadow-2xl transform animate-fade-in-up">
-            <h2
-              className={`text-4xl font-black mb-2 ${battle.won ? "text-emerald-400" : battle.eloChange === 0 ? "text-yellow-400" : "text-rose-400"}`}
+        <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in-up">
+          <div className="w-full max-w-xs bg-[#111] border border-neutral-800 rounded-2xl p-8 text-center">
+            <div
+              className={`text-3xl font-bold mb-1.5 ${
+                battle.won
+                  ? "text-emerald-400"
+                  : battle.eloChange === 0
+                    ? "text-amber-400"
+                    : "text-rose-400"
+              }`}
             >
               {battle.won
-                ? "VICTORY"
+                ? "Victory"
                 : battle.eloChange === 0
-                  ? "DRAW"
-                  : "DEFEAT"}
-            </h2>
-            <div className="text-neutral-400 mb-8 whitespace-pre-wrap">
+                  ? "Draw"
+                  : "Defeat"}
+            </div>
+            <p className="text-sm text-neutral-500 mb-8 leading-relaxed">
               {battle.verdictMessage ||
                 (battle.won
-                  ? "Opponent couldn't solve first."
+                  ? "You solved it first."
                   : battle.eloChange === 0
                     ? "Neither player solved it in time."
-                    : "Opponent solved it first.")}
-            </div>
+                    : "Your opponent solved it first.")}
+            </p>
 
             {battle.newRating > 0 ? (
-              <div className="bg-neutral-900 rounded-2xl p-6 mb-8 border border-neutral-800">
-                <div className="text-neutral-500 text-xs font-bold uppercase tracking-widest mb-1">
+              <div className="mb-8">
+                <div className="text-[11px] font-medium text-neutral-500 uppercase tracking-wider mb-2">
                   New Rating
                 </div>
-                <div className="text-5xl font-black text-white">
+                <div className="text-4xl font-bold text-white tabular-nums">
                   {battle.newRating}
                 </div>
                 <div
-                  className={`text-sm font-bold mt-2 ${battle.eloChange >= 0 ? "text-emerald-500" : "text-rose-500"}`}
+                  className={`text-sm font-semibold mt-1.5 tabular-nums ${
+                    battle.eloChange >= 0 ? "text-emerald-400" : "text-rose-400"
+                  }`}
                 >
                   {battle.eloChange > 0 ? "+" : ""}
                   {battle.eloChange}
                 </div>
               </div>
             ) : (
-              <div className="bg-neutral-900 rounded-2xl p-6 mb-8 border border-neutral-800">
-                <div className="text-neutral-500 text-xs font-bold uppercase tracking-widest mb-1">
+              <div className="mb-8">
+                <div className="text-[11px] font-medium text-neutral-500 uppercase tracking-wider mb-2">
                   Rating
                 </div>
-                <div className="text-2xl font-bold text-yellow-400 mt-2">
+                <div className="text-lg font-medium text-neutral-400">
                   No change
                 </div>
               </div>
             )}
-
             <button
               onClick={() => (window.location.href = "/battle")}
-              className="w-full py-4 rounded-xl bg-neutral-800 text-white font-bold hover:bg-neutral-700 transition-colors"
+              className="w-full py-2.5 rounded-lg bg-neutral-800 text-white text-sm font-medium hover:bg-neutral-700 transition-colors active:scale-[0.98]"
             >
-              Return to Lobby
+              Back to Lobby
             </button>
           </div>
         </div>

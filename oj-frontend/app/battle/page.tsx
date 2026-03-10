@@ -90,7 +90,7 @@ export default function Battle() {
     const totalSeconds = Math.floor(ms / 1000);
     const m = Math.floor(totalSeconds / 60);
     const s = totalSeconds % 60;
-    return `${m}m ${s.toString().padStart(2, "0")}s`;
+    return `${m}:${s.toString().padStart(2, "0")}`;
   };
 
   const formatDate = (dateStr: string) => {
@@ -101,7 +101,7 @@ export default function Battle() {
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 1) return "Just now";
+    if (diffMins < 1) return "just now";
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 7) return `${diffDays}d ago`;
@@ -113,51 +113,55 @@ export default function Battle() {
       case "EASY":
         return "text-emerald-400";
       case "MEDIUM":
-        return "text-yellow-400";
+        return "text-amber-400";
       case "HARD":
         return "text-rose-400";
       default:
-        return "text-neutral-400";
+        return "text-neutral-500";
     }
   };
 
+  const winRate =
+    stats.battlesPlayed > 0
+      ? Math.round((stats.battlesWon / stats.battlesPlayed) * 100)
+      : 0;
+
   if (loading) {
     return (
-      <div className="flex h-[calc(100vh-4rem)] items-center justify-center bg-black">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+      <div className="flex h-[calc(100vh-4rem)] items-center justify-center bg-[#0a0a0a]">
+        <div className="h-5 w-5 border-2 border-neutral-700 border-t-neutral-300 rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!authStatus.isLoggedIn) {
     return (
-      <div className="relative flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-6 dot-grid overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-gradient-to-r from-orange-600/20 via-red-600/20 to-amber-500/20 rounded-full blur-[100px] animate-glow-pulse pointer-events-none" />
-        <div className="relative z-10 w-full max-w-md text-center bg-neutral-900/50 backdrop-blur-xl border border-neutral-800 rounded-2xl p-10 shadow-2xl">
-          <div className="mx-auto w-16 h-16 bg-neutral-800 rounded-2xl flex items-center justify-center mb-6 shadow-inner">
+      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] px-6 bg-[#0a0a0a]">
+        <div className="w-full max-w-sm text-center">
+          <div className="w-12 h-12 mx-auto mb-6 rounded-full bg-neutral-800/80 flex items-center justify-center">
             <svg
-              className="w-8 h-8 text-neutral-400"
+              className="w-5 h-5 text-neutral-500"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              strokeWidth={1.5}
             >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-white mb-3">
-            Sign in Required
+          <h2 className="text-xl font-semibold text-white mb-2">
+            Sign in to battle
           </h2>
-          <p className="text-neutral-400 mb-8">
-            You need to log in to participate in 1v1 Code Battles.
+          <p className="text-sm text-neutral-500 mb-8 leading-relaxed">
+            Log in to compete against other coders in real-time.
           </p>
           <button
             onClick={() => router.push("/login")}
-            className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-white text-black font-semibold hover:bg-neutral-200 transition-colors"
+            className="w-full py-2.5 rounded-lg bg-white text-neutral-900 text-sm font-medium hover:bg-neutral-200 transition-colors"
           >
             Sign In
           </button>
@@ -167,323 +171,158 @@ export default function Battle() {
   }
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-4 py-12 dot-grid overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-gradient-to-r from-red-500/15 via-orange-500/15 to-amber-500/15 rounded-full blur-[120px] pointer-events-none" />
-
-      <div className="relative z-10 w-full max-w-2xl">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-neutral-100 mb-4 flex items-center justify-center gap-3">
-            <svg
-              className="w-10 h-10 text-orange-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-            Code Battle
+    <div className="min-h-[calc(100vh-4rem)] bg-[#0a0a0a]">
+      <div className="max-w-2xl mx-auto px-6 py-16">
+        <div className="mb-12">
+          <h1 className="text-3xl font-semibold tracking-tight text-white mb-2">
+            Battle
           </h1>
-          <p className="text-neutral-400 text-lg max-w-xl mx-auto">
-            Match up against an opponent of similar skill. First to solve the
-            problem wins.
+          <p className="text-neutral-500 text-sm">
+            Compete head-to-head. First to solve wins.
           </p>
         </div>
 
-        <div className="bg-neutral-900/60 backdrop-blur-xl border border-neutral-800 rounded-3xl p-8 mb-8 shadow-2xl relative overflow-hidden">
-          <div className="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-transparent via-orange-500 to-transparent opacity-50"></div>
-
-          <div className="grid grid-cols-3 gap-6 text-center mb-10 divide-x divide-neutral-800">
-            <div className="flex flex-col items-center">
-              <span className="text-neutral-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
-                <svg
-                  className="w-4 h-4 text-blue-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
-                </svg>{" "}
-                Rating
-              </span>
-              <span className="text-4xl font-extrabold text-white tracking-tight">
-                {stats.rating}
-              </span>
+        <div className="grid grid-cols-3 gap-px bg-neutral-800/50 rounded-xl overflow-hidden mb-12">
+          <div className="bg-neutral-900/80 px-6 py-5">
+            <div className="text-[11px] font-medium text-neutral-500 uppercase tracking-wider mb-1.5">
+              Rating
             </div>
-            <div className="flex flex-col items-center">
-              <span className="text-neutral-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
-                <svg
-                  className="w-4 h-4 text-emerald-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                  />
-                </svg>{" "}
-                Played
-              </span>
-              <span className="text-4xl font-extrabold text-white tracking-tight">
-                {stats.battlesPlayed}
-              </span>
+            <div className="text-2xl font-semibold text-white tabular-nums">
+              {stats.rating}
             </div>
-            <div className="flex flex-col items-center">
-              <span className="text-neutral-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
-                <svg
-                  className="w-4 h-4 text-yellow-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                  />
-                </svg>{" "}
-                Won
-              </span>
-              <span className="text-4xl font-extrabold text-white tracking-tight">
-                {stats.battlesWon}
+          </div>
+          <div className="bg-neutral-900/80 px-6 py-5">
+            <div className="text-[11px] font-medium text-neutral-500 uppercase tracking-wider mb-1.5">
+              Battles
+            </div>
+            <div className="text-2xl font-semibold text-white tabular-nums">
+              {stats.battlesPlayed}
+            </div>
+          </div>
+          <div className="bg-neutral-900/80 px-6 py-5">
+            <div className="text-[11px] font-medium text-neutral-500 uppercase tracking-wider mb-1.5">
+              Win Rate
+            </div>
+            <div className="text-2xl font-semibold text-white tabular-nums">
+              {winRate}
+              <span className="text-sm font-normal text-neutral-500 ml-0.5">
+                %
               </span>
             </div>
           </div>
+        </div>
 
-          <div className="flex flex-col items-center justify-center pt-2">
-            {searching ? (
-              <div className="flex flex-col items-center gap-6 w-full animate-fade-in">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-orange-500 rounded-full animate-ping opacity-20 duration-1000"></div>
-                  <div className="absolute inset-0 bg-orange-500 rounded-full animate-pulse opacity-40 blur-xl"></div>
-                  <div className="relative rounded-full p-5 bg-neutral-900 border border-orange-500/30 flex items-center justify-center shadow-[0_0_40px_rgba(249,115,22,0.3)]">
-                    <svg
-                      className="w-8 h-8 text-orange-400 animate-pulse"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                  </div>
+        <div className="mb-14">
+          {searching ? (
+            <div className="flex flex-col items-center py-12 animate-fade-in">
+              <div className="relative mb-6">
+                <div className="absolute -inset-3 rounded-full bg-orange-500/10 animate-ping" />
+                <div className="relative w-12 h-12 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center">
+                  <div className="w-5 h-5 border-2 border-neutral-700 border-t-orange-400 rounded-full animate-spin" />
                 </div>
-                <div className="text-center">
-                  <h3 className="text-xl font-medium text-white mb-1">
-                    Searching for opponent...
-                  </h3>
-                  <p className="text-neutral-400 text-sm">
-                    Estimated wait time: ~10 seconds
-                  </p>
-                </div>
-
-                <button
-                  onClick={cancelSearching}
-                  className="mt-2 flex items-center gap-2 px-6 py-2.5 rounded-xl bg-red-500/10 text-red-400 font-medium hover:bg-red-500/20 hover:text-red-300 transition-colors border border-red-500/20"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                  Cancel Search
-                </button>
               </div>
-            ) : (
+              <p className="text-sm font-medium text-white mb-1">
+                Searching for opponent
+              </p>
+              <p className="text-xs text-neutral-500 mb-6">
+                This usually takes a few seconds
+              </p>
               <button
-                onClick={startSearching}
-                className="group relative w-full sm:w-auto inline-flex items-center justify-center gap-3 px-10 py-4 rounded-2xl font-bold text-lg text-white shadow-[0_0_40px_rgba(249,115,22,0.3)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_60px_rgba(249,115,22,0.5)] overflow-hidden"
+                onClick={cancelSearching}
+                className="text-sm text-neutral-500 hover:text-white transition-colors"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-600 via-red-500 to-amber-500 transition-all duration-300 group-hover:opacity-90"></div>
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-20 bg-[url('/noise.svg')] mix-blend-overlay"></div>
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={startSearching}
+              className="w-full py-3.5 rounded-xl bg-orange-500 text-white text-sm font-semibold transition-all duration-200 hover:bg-orange-400 active:scale-[0.98]"
+            >
+              <span className="flex items-center justify-center gap-2">
                 <svg
-                  className="relative z-10 w-6 h-6"
+                  className="w-4 h-4"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  strokeWidth={2}
                 >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
                     d="M13 10V3L4 14h7v7l9-11h-7z"
                   />
                 </svg>
-                <span className="relative z-10">Find Match</span>
-              </button>
-            )}
-          </div>
+                Find Match
+              </span>
+            </button>
+          )}
         </div>
-        <div className="text-center">
-          <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-widest mb-4">
+
+        <div>
+          <h2 className="text-[11px] font-medium text-neutral-500 uppercase tracking-wider mb-4">
             Recent Battles
-          </h3>
+          </h2>
 
           {history.length === 0 ? (
-            <div className="bg-neutral-900/30 border border-neutral-800 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center">
-              <svg
-                className="w-8 h-8 text-neutral-700 mb-3"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                />
-              </svg>
-              <p className="text-neutral-500 font-medium">
-                Your match history will appear here.
-              </p>
-              <p className="text-neutral-600 text-sm mt-1">
-                Play your first battle to see it here.
-              </p>
+            <div className="py-16 text-center border border-dashed border-neutral-800 rounded-xl">
+              <p className="text-sm text-neutral-600">No battles yet</p>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="divide-y divide-neutral-800/50">
               {history.map((entry) => (
                 <div
                   key={entry.id}
-                  className="bg-neutral-900/50 border border-neutral-800 rounded-xl px-5 py-4 flex items-center justify-between hover:bg-neutral-900/80 transition-colors cursor-pointer group"
                   onClick={() => router.push(`/battle/${entry.id}`)}
+                  className="flex items-center justify-between py-3.5 cursor-pointer group"
                 >
-                  {/* Left: Result + Question */}
-                  <div className="flex items-center gap-4 text-left min-w-0">
+                  <div className="flex items-center gap-3.5 min-w-0">
                     <div
-                      className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                      className={`w-1.5 h-1.5 rounded-full shrink-0 ${
                         entry.won
-                          ? "bg-emerald-500/15 border border-emerald-500/30"
+                          ? "bg-emerald-400"
                           : entry.draw
-                            ? "bg-yellow-500/15 border border-yellow-500/30"
-                            : "bg-rose-500/15 border border-rose-500/30"
+                            ? "bg-amber-400"
+                            : "bg-rose-400"
                       }`}
-                    >
-                      {entry.won ? (
-                        <svg
-                          className="w-5 h-5 text-emerald-400"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2.5}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      ) : entry.draw ? (
-                        <svg
-                          className="w-5 h-5 text-yellow-400"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2.5}
-                            d="M20 12H4"
-                          />
-                        </svg>
-                      ) : (
-                        <svg
-                          className="w-5 h-5 text-rose-400"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2.5}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      )}
-                    </div>
-
+                    />
                     <div className="min-w-0">
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <span className="text-sm font-semibold text-neutral-200 truncate">
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-sm text-neutral-200 font-medium truncate group-hover:text-white transition-colors">
                           {entry.question.title}
                         </span>
                         <span
-                          className={`text-[10px] font-bold uppercase tracking-wider ${getDifficultyColor(entry.question.difficulty)}`}
+                          className={`text-[10px] font-semibold uppercase tracking-wide ${getDifficultyColor(entry.question.difficulty)}`}
                         >
                           {entry.question.difficulty}
                         </span>
                       </div>
-                      <div className="text-xs text-neutral-500">
-                        vs{" "}
-                        <span className="text-neutral-400 font-medium">
-                          {entry.opponent}
-                        </span>
-                        <span className="text-neutral-600 ml-1">
-                          ({entry.opponentRating})
-                        </span>
+                      <div className="text-xs text-neutral-600 mt-0.5">
+                        vs {entry.opponent}
+                        <span className="mx-1.5">·</span>
+                        {entry.opponentRating}
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 shrink-0">
+                  <div className="flex items-center gap-5 shrink-0">
                     {entry.timeTaken && (
-                      <span className="text-xs text-neutral-500 font-mono">
+                      <span className="text-xs text-neutral-600 font-mono tabular-nums">
                         {formatTime(entry.timeTaken)}
                       </span>
                     )}
-                    <div className="flex flex-col items-end">
-                      <span
-                        className={`text-xs font-bold ${
-                          entry.won
-                            ? "text-emerald-400"
-                            : entry.draw
-                              ? "text-yellow-400"
-                              : "text-rose-400"
-                        }`}
-                      >
-                        {entry.won ? "WON" : entry.draw ? "DRAW" : "LOST"}
-                      </span>
-                      <span className="text-[10px] text-neutral-600">
-                        {formatDate(entry.createdAt)}
-                      </span>
-                    </div>
+                    <span className="text-xs text-neutral-600 w-14 text-right">
+                      {formatDate(entry.createdAt)}
+                    </span>
                     <svg
-                      className="w-4 h-4 text-neutral-700 group-hover:text-neutral-500 transition-colors"
+                      className="w-3.5 h-3.5 text-neutral-700 group-hover:text-neutral-400 transition-colors"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
+                      strokeWidth={2}
                     >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
                         d="M9 5l7 7-7 7"
                       />
                     </svg>

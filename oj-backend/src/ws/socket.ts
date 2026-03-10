@@ -14,10 +14,10 @@ type BattleRoom = {
   player2Id: string | null;
   timer: NodeJS.Timeout | null;
   startTime: number;
-  p1Duration: number; 
+  p1Duration: number;
   p2Duration: number;
   questionId: string;
-  battlePlayer1Id: string; 
+  battlePlayer1Id: string;
   battlePlayer2Id: string;
 };
 
@@ -319,6 +319,23 @@ export function setupWebSocket(server: Server) {
           room.timer = null;
 
           const loserId = isPlayer1 ? battle.player2Id : battle.player1Id;
+
+          const checkStatus = await prisma.battle.findUnique({
+            where: { id: battleId },
+            select: { status: true },
+          });
+          if (checkStatus?.status !== "ACTIVE") {
+            ws.send(
+              JSON.stringify({
+                type: "battle:result",
+                battleId,
+                won: false,
+                message:
+                  "Battle already ended before your submission was judged.",
+              }),
+            );
+            return;
+          }
 
           await prisma.battle.update({
             where: { id: battleId },

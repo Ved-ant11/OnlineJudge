@@ -21,6 +21,22 @@ router.post("/queue", tokenVerify, async (req: Request, res: Response) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+    const exists = await redis.zScore("matchmaking_queue", userId);
+    if (exists) {
+      return res.status(400).json({ error: "Already in queue" });
+    }
+    const battle = await prisma.battle.findFirst({
+      where: {
+        OR: [{ player1Id: userId }, { player2Id: userId }],
+        status: "ACTIVE",
+      },
+      select: {
+        status: true,
+      },
+    });
+    if (battle) {
+      return res.status(400).json({ error: "Already in an active battle" });
+    }
     await redis.zAdd("matchmaking_queue", {
       score: user.rating,
       value: userId,
