@@ -8,6 +8,16 @@ async function matchmake() {
   }
 
   const matched = new Set<number>();
+  const timestamps = await redis.hGetAll("matchmaking_timestamps");
+  
+  for (let i = 0; i < queue.length; i++) {
+    const timestamp = timestamps[queue[i].value];
+    if (Date.now() - parseInt(timestamp) > 5 * 60 * 1000) {
+      await redis.zRem("matchmaking_queue", queue[i].value);
+      await redis.hDel("matchmaking_timestamps", queue[i].value);
+      matched.add(i);
+    }
+  }
 
   for (let i = 0; i < queue.length - 1; i++) {
     if (matched.has(i)) continue;
@@ -43,6 +53,8 @@ async function matchmake() {
 
         await redis.zRem("matchmaking_queue", queue[i].value);
         await redis.zRem("matchmaking_queue", queue[j].value);
+        await redis.hDel("matchmaking_timestamps", queue[i].value);
+        await redis.hDel("matchmaking_timestamps", queue[j].value);
 
         matched.add(i);
         matched.add(j);

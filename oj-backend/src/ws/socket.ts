@@ -287,7 +287,15 @@ export function setupWebSocket(server: Server) {
           },
         });
         if (!battle || battle.status !== "ACTIVE") return;
-
+        if (userId !== battle.player1Id && userId !== battle.player2Id) {
+          ws.send(
+            JSON.stringify({
+              type: "error",
+              message: "Not a participant in this battle",
+            }),
+          );
+          return;
+        }
         const testCases = await prisma.testCase.findMany({
           where: { questionId: battle.questionId },
           orderBy: { order: "asc" },
@@ -451,7 +459,15 @@ export function setupWebSocket(server: Server) {
           select: { player1Id: true, player2Id: true, status: true },
         });
         if (!battle) return;
-
+        if (userId !== battle.player1Id && userId !== battle.player2Id) {
+          ws.send(
+            JSON.stringify({
+              type: "error",
+              message: "Not a participant in this battle",
+            }),
+          );
+          return;
+        }
         // If battle hasn't started yet (no opponent), just cancel
         if (room.startTime === 0) {
           await prisma.battle.update({
@@ -556,10 +572,18 @@ export function setupWebSocket(server: Server) {
 
         const battle = await prisma.battle.findUnique({
           where: { id: battleId },
-          select: { questionId: true, player1Hints: true, player2Hints: true },
+          select: { questionId: true, player1Hints: true, player2Hints: true, status: true },
         });
         if (!battle) return;
-
+        if (battle.status !== "ACTIVE") {
+          ws.send(
+            JSON.stringify({
+              type: "error",
+              message: "Battle not active",
+            }),
+          );
+          return;
+        }
         const currentHints = isPlayer1
           ? battle.player1Hints
           : battle.player2Hints;

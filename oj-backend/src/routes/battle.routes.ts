@@ -41,6 +41,7 @@ router.post("/queue", tokenVerify, async (req: Request, res: Response) => {
       score: user.rating,
       value: userId,
     });
+    await redis.hSet("matchmaking_timestamps", userId, Date.now().toString());
     return res.status(200).json({ message: "Added to queue" });
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
@@ -51,6 +52,7 @@ router.delete("/queue", tokenVerify, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
     await redis.zRem("matchmaking_queue", userId);
+    await redis.hDel("matchmaking_timestamps", userId);    
     return res.status(200).json({ message: "Removed from queue" });
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
