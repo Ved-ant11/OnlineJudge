@@ -2,6 +2,7 @@
 import { useEffect, useState, use } from "react";
 import { useBattleSocket } from "@/hooks/useBattleSocket";
 import { fetchAuthStatus, getBattle } from "@/lib/api";
+import ReconnectTimer from "@/components/ReconnectComp";
 import Editor from "@monaco-editor/react";
 import ReactMarkdown from "react-markdown";
 import toast from "react-hot-toast";
@@ -167,14 +168,27 @@ export default function BattleArena({ params }: PageProps) {
             </span>
           )}
         </div>
-
-        <button
-          onClick={() => battle.sendLeave()}
-          className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors"
-        >
-          Forfeit
-        </button>
+        {battle.status === "active" && (
+          <button
+            onClick={() => battle.sendLeave()}
+            className="text-xs text-neutral-500 hover:text-neutral-300 transition-colors"
+          >
+            Forfeit
+          </button>
+        )}
       </div>
+
+      {battle.opponentDisconnected && battle.status === "active" && (
+        <div className="w-full border-b border-orange-500/20 bg-orange-500/10 px-5 py-2.5 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse" />
+            <span className="text-sm font-medium text-orange-400">
+              Opponent disconnected
+            </span>
+          </div>
+          <ReconnectTimer />
+        </div>
+      )}
 
       <div className="flex-1 flex overflow-hidden">
         <div className="w-1/2 flex flex-col border-r border-neutral-800/70">
@@ -320,7 +334,7 @@ export default function BattleArena({ params }: PageProps) {
 
             <button
               onClick={handleSubmit}
-              disabled={battle.isSubmitting}
+              disabled={battle.isSubmitting || battle.status !== "active"}
               className="w-full h-9 flex items-center justify-center rounded-lg bg-white text-neutral-900 text-sm font-medium transition-all hover:bg-neutral-200 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
             >
               {battle.isSubmitting ? (

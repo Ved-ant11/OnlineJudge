@@ -21,6 +21,8 @@ type BattleRoom = {
   battlePlayer2Id: string;
   p1LastSubmitTime: number;
   p2LastSubmitTime: number;
+  p1DisconnectTimer: NodeJS.Timeout | null;
+  p2DisconnectTimer: NodeJS.Timeout | null;
 };
 
 const BASE_DURATION = 1200000; // 20 minutes
@@ -102,6 +104,89 @@ export function setupWebSocket(server: Server) {
   const wss = new WebSocketServer({ server });
   const clients = new Map<string, WebSocket>();
   const battleRooms = new Map<string, BattleRoom>();
+  const wsMetadata = new Map<WebSocket, { battleId: string; userId: string }>();
+
+  const DISCONNECT_GRACE_MS = 30000;
+
+  async function handleDisconnectForfeit(
+    battleId: string,
+    odisconnectedUserId: string,
+  ) {
+    const room = battleRooms.get(battleId);
+    if (!room) return;
+
+    const isPlayer1 = room.battlePlayer1Id === odisconnectedUserId;
+    const reconnected = isPlayer1 ? room.player1 : room.player2;
+    if (reconnected !== null) return;
+
+    if (room.timer) clearTimeout(room.timer);
+    room.timer = null;
+
+    if (room.startTime === 0) {
+      await prisma.battle.update({
+        where: { id: battleId },
+        data: { status: "ABANDONED", endedAt: new Date() },
+      });
+      battleRooms.delete(battleId);
+      return;
+    }
+
+    const winnerId = isPlayer1 ? room.battlePlayer2Id : room.battlePlayer1Id;
+
+    await prisma.battle.update({
+      where: { id: battleId },
+      data: {
+        status: "ABANDONED",
+        winnerId,
+        endedAt: new Date(),
+      },
+    });
+
+    const [winner, loser] = await Promise.all([
+      prisma.user.findUnique({ where: { id: winnerId } }),
+      prisma.user.findUnique({ where: { id: odisconnectedUserId } }),
+    ]);
+
+    if (winner && loser) {
+      const { winnerNew, loserNew } = calculateNewRating(
+        winner.rating,
+        loser.rating,
+        winner.battlesPlayed,
+        loser.battlesPlayed,
+      );
+
+      await Promise.all([
+        prisma.user.update({
+          where: { id: winner.id },
+          data: {
+            rating: winnerNew,
+            battlesPlayed: { increment: 1 },
+            battlesWon: { increment: 1 },
+          },
+        }),
+        prisma.user.update({
+          where: { id: loser.id },
+          data: { rating: loserNew, battlesPlayed: { increment: 1 } },
+        }),
+      ]);
+
+      const opponent = isPlayer1 ? room.player2 : room.player1;
+      if (opponent?.readyState === WebSocket.OPEN) {
+        opponent.send(
+          JSON.stringify({
+            type: "battle:result",
+            battleId,
+            won: true,
+            eloChange: winnerNew - winner.rating,
+            newRating: winnerNew,
+            reason: "opponent_disconnected",
+          }),
+        );
+      }
+    }
+
+    battleRooms.delete(battleId);
+  }
 
   wss.on("connection", (ws) => {
     console.log("Client connected");
@@ -116,6 +201,8 @@ export function setupWebSocket(server: Server) {
       if (message.type === "battle:join") {
         const { battleId, userId } = message;
         if (!battleId || !userId) return;
+
+        wsMetadata.set(ws, { battleId, userId });
 
         let room = battleRooms.get(battleId);
 
@@ -156,6 +243,8 @@ export function setupWebSocket(server: Server) {
             battlePlayer2Id: battle.player2Id,
             p1LastSubmitTime: 0,
             p2LastSubmitTime: 0,
+            p1DisconnectTimer: null,
+            p2DisconnectTimer: null,
           });
           room = battleRooms.get(battleId)!;
 
@@ -163,6 +252,11 @@ export function setupWebSocket(server: Server) {
         } else if (isRoomPlayer1(room, userId)) {
           room.player1 = ws;
           room.player1Id = userId;
+
+          if (room.p1DisconnectTimer) {
+            clearTimeout(room.p1DisconnectTimer);
+            room.p1DisconnectTimer = null;
+          }
 
           if (room.startTime > 0 && ws.readyState === WebSocket.OPEN) {
             ws.send(
@@ -179,6 +273,11 @@ export function setupWebSocket(server: Server) {
         } else if (userId === room.battlePlayer2Id) {
           room.player2 = ws;
           room.player2Id = userId;
+
+          if (room.p2DisconnectTimer) {
+            clearTimeout(room.p2DisconnectTimer);
+            room.p2DisconnectTimer = null;
+          }
           // battle already started (reconnect), send current state
           if (room.startTime > 0) {
             if (ws.readyState === WebSocket.OPEN) {
@@ -302,7 +401,9 @@ export function setupWebSocket(server: Server) {
         }
         const coolDownTimep1 = room.p1LastSubmitTime + 15 * 1000;
         const coolDownTimep2 = room.p2LastSubmitTime + 15 * 1000;
-        if(isPlayer1 ? coolDownTimep1 > Date.now() : coolDownTimep2 > Date.now()) {
+        if (
+          isPlayer1 ? coolDownTimep1 > Date.now() : coolDownTimep2 > Date.now()
+        ) {
           ws.send(
             JSON.stringify({
               type: "error",
@@ -332,7 +433,8 @@ export function setupWebSocket(server: Server) {
           console.log(
             `[ws] Created battle submission record ${submission.id} for user ${userId}`,
           );
-          room[isPlayer1 ? "p1LastSubmitTime" : "p2LastSubmitTime"] = Date.now();
+          room[isPlayer1 ? "p1LastSubmitTime" : "p2LastSubmitTime"] =
+            Date.now();
         } catch (err) {
           console.error(`[ws] Failed to create submission record:`, err);
         }
@@ -588,7 +690,12 @@ export function setupWebSocket(server: Server) {
 
         const battle = await prisma.battle.findUnique({
           where: { id: battleId },
-          select: { questionId: true, player1Hints: true, player2Hints: true, status: true },
+          select: {
+            questionId: true,
+            player1Hints: true,
+            player2Hints: true,
+            status: true,
+          },
         });
         if (!battle) return;
         if (battle.status !== "ACTIVE") {
@@ -673,6 +780,43 @@ export function setupWebSocket(server: Server) {
 
     ws.on("close", () => {
       console.log("Client disconnected");
+
+      const meta = wsMetadata.get(ws);
+      wsMetadata.delete(ws);
+      if (!meta) return;
+
+      const { battleId, userId } = meta;
+      const room = battleRooms.get(battleId);
+      if (!room) return;
+
+      const isPlayer1 = room.battlePlayer1Id === userId;
+
+      if (isPlayer1) {
+        room.player1 = null;
+      } else {
+        room.player2 = null;
+      }
+
+      const opponent = isPlayer1 ? room.player2 : room.player1;
+      if (opponent?.readyState === WebSocket.OPEN) {
+        opponent.send(
+          JSON.stringify({
+            type: "battle:opponent_disconnected",
+            battleId,
+            gracePeriodMs: DISCONNECT_GRACE_MS,
+          }),
+        );
+      }
+
+      const disconnectTimer = setTimeout(() => {
+        handleDisconnectForfeit(battleId, userId);
+      }, DISCONNECT_GRACE_MS);
+
+      if (isPlayer1) {
+        room.p1DisconnectTimer = disconnectTimer;
+      } else {
+        room.p2DisconnectTimer = disconnectTimer;
+      }
     });
   });
 }

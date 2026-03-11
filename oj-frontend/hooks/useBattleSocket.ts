@@ -21,6 +21,7 @@ type BattleState = {
   hint: string | null;
   hintsUsed: number;
   isSubmitting: boolean;
+  opponentDisconnected: boolean;
 };
 
 export function useBattleSocket(battleId: string, userId: string) {
@@ -38,6 +39,7 @@ export function useBattleSocket(battleId: string, userId: string) {
     hint: null,
     hintsUsed: 0,
     isSubmitting: false,
+    opponentDisconnected: false,
   });
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -76,6 +78,7 @@ export function useBattleSocket(battleId: string, userId: string) {
             status: "active",
             startTime: msg.startTime,
             duration: msg.duration,
+            opponentDisconnected: false,
           }));
           break;
 
@@ -85,6 +88,7 @@ export function useBattleSocket(battleId: string, userId: string) {
             verdict: msg.verdict,
             verdictMessage: msg.message,
             isSubmitting: false,
+            opponentDisconnected: false,
           }));
           break;
 
@@ -95,6 +99,7 @@ export function useBattleSocket(battleId: string, userId: string) {
               ...prev.opponentEvents,
               `Opponent: ${msg.verdict}`,
             ],
+            opponentDisconnected: false,
           }));
           break;
 
@@ -106,6 +111,7 @@ export function useBattleSocket(battleId: string, userId: string) {
             eloChange: msg.eloChange,
             newRating: msg.newRating,
             isSubmitting: false,
+            verdictMessage: msg.message || prev.verdictMessage
           }));
           break;
 
@@ -139,6 +145,13 @@ export function useBattleSocket(battleId: string, userId: string) {
               ...prev.opponentEvents,
               `Opponent used hint #${msg.hintNumber}`,
             ],
+          }));
+          break;
+        
+        case "battle:opponent_disconnected":
+          setState((prev) => ({
+            ...prev,
+            opponentDisconnected: true,
           }));
           break;
 

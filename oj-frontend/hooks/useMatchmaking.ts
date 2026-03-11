@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { joinQueue, leaveQueue, getQueueStatus } from "@/lib/api";
+import toast from "react-hot-toast";
 
 export function useMatchmaking() {
     const [searching, setSearching] = useState(false);
@@ -8,8 +9,12 @@ export function useMatchmaking() {
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     const startSearching = async () => {
+      try {
         await joinQueue();
         setSearching(true);
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : String(error));
+      }
     };
 
     const cancelSearching = async () => {

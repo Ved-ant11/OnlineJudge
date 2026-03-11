@@ -184,8 +184,9 @@ export const joinQueue = async () => {
     credentials: "include",
     cache: "no-store",
   });
-  if (!response.ok) throw new Error("Failed to join queue");
-  return response.json();
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error);
+  return data;
 };
 
 export const leaveQueue = async () => {
