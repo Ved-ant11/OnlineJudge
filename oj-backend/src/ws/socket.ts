@@ -19,6 +19,8 @@ type BattleRoom = {
   questionId: string;
   battlePlayer1Id: string;
   battlePlayer2Id: string;
+  p1LastSubmitTime: number;
+  p2LastSubmitTime: number;
 };
 
 const BASE_DURATION = 1200000; // 20 minutes
@@ -152,6 +154,8 @@ export function setupWebSocket(server: Server) {
             questionId: battle.questionId,
             battlePlayer1Id: battle.player1Id,
             battlePlayer2Id: battle.player2Id,
+            p1LastSubmitTime: 0,
+            p2LastSubmitTime: 0,
           });
           room = battleRooms.get(battleId)!;
 
@@ -296,6 +300,17 @@ export function setupWebSocket(server: Server) {
           );
           return;
         }
+        const coolDownTimep1 = room.p1LastSubmitTime + 15 * 1000;
+        const coolDownTimep2 = room.p2LastSubmitTime + 15 * 1000;
+        if(isPlayer1 ? coolDownTimep1 > Date.now() : coolDownTimep2 > Date.now()) {
+          ws.send(
+            JSON.stringify({
+              type: "error",
+              message: "Submission is too soon after the last submission",
+            }),
+          );
+          return;
+        }
         const testCases = await prisma.testCase.findMany({
           where: { questionId: battle.questionId },
           orderBy: { order: "asc" },
@@ -317,6 +332,7 @@ export function setupWebSocket(server: Server) {
           console.log(
             `[ws] Created battle submission record ${submission.id} for user ${userId}`,
           );
+          room[isPlayer1 ? "p1LastSubmitTime" : "p2LastSubmitTime"] = Date.now();
         } catch (err) {
           console.error(`[ws] Failed to create submission record:`, err);
         }
