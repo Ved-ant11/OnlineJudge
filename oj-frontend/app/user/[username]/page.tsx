@@ -177,7 +177,7 @@ export default function PublicProfilePage() {
                   {profile.username}
                 </h1>
                 {isCurrentUser && (
-                  <span className="rounded bg-neutral-800 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-neutral-400">
+                  <span className="rounded bg-neutral-800 px-2 py-0.5 text-[10px] font-medium tracking-wider text-neutral-400">
                     You
                   </span>
                 )}
@@ -206,7 +206,7 @@ export default function PublicProfilePage() {
             <p className="text-2xl font-bold tabular-nums text-neutral-100">
               {profile.solvedCount}
             </p>
-            <p className="mt-1 text-xs font-medium uppercase tracking-wide text-neutral-500">
+            <p className="mt-1 text-xs font-medium tracking-wide text-neutral-500">
               Total Solved
             </p>
           </div>
@@ -216,7 +216,7 @@ export default function PublicProfilePage() {
             }`}>
               {successRate}%
             </p>
-            <p className="mt-1 text-xs font-medium uppercase tracking-wide text-neutral-500">
+            <p className="mt-1 text-xs font-medium tracking-wide text-neutral-500">
               Success Rate
             </p>
           </div>
@@ -224,7 +224,7 @@ export default function PublicProfilePage() {
             <p className="text-2xl font-bold tabular-nums text-neutral-100">
               {profile.rating}
             </p>
-            <p className="mt-1 text-xs font-medium uppercase tracking-wide text-neutral-500">
+            <p className="mt-1 text-xs font-medium tracking-wide text-neutral-500">
               Battle Rating
             </p>
           </div>
@@ -234,7 +234,7 @@ export default function PublicProfilePage() {
             }`}>
               {winRate}%
             </p>
-            <p className="mt-1 text-xs font-medium uppercase tracking-wide text-neutral-500">
+            <p className="mt-1 text-xs font-medium tracking-wide text-neutral-500">
               Win Rate
             </p>
           </div>
@@ -275,7 +275,7 @@ export default function PublicProfilePage() {
               </div>
               <div className="flex items-center gap-8 lg:h-[100px] lg:border-l lg:border-neutral-800 lg:pl-8">
                 <div className="text-center">
-                  <p className="text-xs font-medium uppercase tracking-wide text-neutral-500">
+                  <p className="text-xs font-medium tracking-wide text-neutral-500">
                     Current Streak
                   </p>
                   <div className="mt-2 flex items-center justify-center gap-2">
@@ -286,7 +286,7 @@ export default function PublicProfilePage() {
                   </div>
                 </div>
                 <div className="text-center">
-                  <p className="text-xs font-medium uppercase tracking-wide text-neutral-500">
+                  <p className="text-xs font-medium tracking-wide text-neutral-500">
                     Longest Streak
                   </p>
                   <div className="mt-2 flex items-center justify-center gap-2">
@@ -312,7 +312,7 @@ export default function PublicProfilePage() {
             </div>
           ) : (
             <div className="overflow-hidden rounded-lg border border-neutral-800">
-              <div className="grid grid-cols-[1fr_90px_120px_100px] gap-4 border-b border-neutral-800 bg-neutral-900/60 px-4 py-2.5 text-xs font-medium uppercase tracking-wide text-neutral-500">
+              <div className="grid grid-cols-[1fr_90px_120px_100px] gap-4 border-b border-neutral-800 bg-neutral-900/60 px-4 py-2.5 text-xs font-medium tracking-wide text-neutral-500">
                 <span>Problem</span>
                 <span>Language</span>
                 <span>Verdict</span>

@@ -138,13 +138,13 @@ export default function ProfilePage() {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-6">
         <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
           <p className="text-2xl font-bold text-neutral-100">{totalSubmissions}</p>
-          <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide mt-1">
+          <p className="text-xs font-medium text-neutral-500 tracking-wide mt-1">
             Submissions
           </p>
         </div>
         <div className="rounded-lg border border-emerald-900/50 bg-emerald-950/20 p-4">
           <p className="text-2xl font-bold text-emerald-400">{accepted}</p>
-          <p className="text-xs font-medium text-emerald-500/70 uppercase tracking-wide mt-1">
+          <p className="text-xs font-medium text-emerald-500/70 tracking-wide mt-1">
             Accepted
           </p>
         </div>
@@ -154,13 +154,13 @@ export default function ProfilePage() {
           }`}>
             {successRate}%
           </p>
-          <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide mt-1">
+          <p className="text-xs font-medium text-neutral-500 tracking-wide mt-1">
             Success Rate
           </p>
         </div>
         <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
           <p className="text-2xl font-bold text-neutral-100">{profile.rating}</p>
-          <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide mt-1">
+          <p className="text-xs font-medium text-neutral-500 tracking-wide mt-1">
             Battle Rating
           </p>
         </div>
@@ -170,7 +170,7 @@ export default function ProfilePage() {
           }`}>
             {winRate}%
           </p>
-          <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide mt-1">
+          <p className="text-xs font-medium text-neutral-500 tracking-wide mt-1">
             Win Rate
           </p>
         </div>
@@ -199,14 +199,14 @@ export default function ProfilePage() {
             </div>
             <div className="flex items-center gap-8 lg:border-l lg:border-neutral-800 lg:pl-8 lg:h-[100px]">
               <div className="text-center">
-                <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide">Current Streak</p>
+                <p className="text-xs font-medium text-neutral-500 tracking-wide">Current Streak</p>
                 <div className="flex items-center justify-center gap-2 mt-2">
                   <span className="text-3xl ">🔥</span>
                   <span className="text-3xl font-bold text-neutral-100">{streakData.currentStreak}</span>
                 </div>
               </div>
               <div className="text-center">
-                <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide">Longest Streak</p>
+                <p className="text-xs font-medium text-neutral-500 tracking-wide">Longest Streak</p>
                 <div className="flex items-center justify-center gap-2 mt-2">
                   <span className="text-3xl">🏆</span>
                   <span className="text-3xl font-bold text-neutral-100">{streakData.maxStreak}</span>
@@ -232,7 +232,7 @@ export default function ProfilePage() {
           </div>
         ) : (
           <div className="rounded-lg border border-neutral-800 overflow-hidden">
-            <div className="grid grid-cols-[1fr_90px_120px_100px] gap-4 px-4 py-2.5 bg-neutral-900/60 border-b border-neutral-800 text-xs font-medium text-neutral-500 uppercase tracking-wide">
+            <div className="grid grid-cols-[1fr_90px_120px_100px] gap-4 px-4 py-2.5 bg-neutral-900/60 border-b border-neutral-800 text-xs font-medium text-neutral-500 tracking-wide">
               <span>Problem</span>
               <span>Language</span>
               <span>Verdict</span>

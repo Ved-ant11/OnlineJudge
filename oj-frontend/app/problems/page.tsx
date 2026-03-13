@@ -79,7 +79,7 @@ export default function ProblemsPage() {
         </select>
       </div>
       <div className="rounded-lg border border-neutral-800 overflow-hidden">
-        <div className="grid grid-cols-[1fr_100px_80px] gap-4 px-4 py-2.5 bg-neutral-900/60 border-b border-neutral-800 text-xs font-medium text-neutral-500 uppercase tracking-wide">
+        <div className="grid grid-cols-[1fr_100px_80px] gap-4 px-4 py-2.5 bg-neutral-900/60 border-b border-neutral-800 text-xs font-medium text-neutral-500 tracking-wide">
           <span>Title</span>
           <span>Difficulty</span>
           <span className="text-right">Status</span>
