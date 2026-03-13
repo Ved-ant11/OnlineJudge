@@ -211,7 +211,9 @@ export default function PublicProfilePage() {
             </p>
           </div>
           <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
-            <p className="text-2xl font-bold tabular-nums text-neutral-100">
+            <p className={`text-2xl font-bold tabular-nums ${
+              parseFloat(successRate) < 25 ? "text-rose-400" : parseFloat(successRate) <= 60 ? "text-orange-400" : "text-emerald-400"
+            }`}>
               {successRate}%
             </p>
             <p className="mt-1 text-xs font-medium uppercase tracking-wide text-neutral-500">
@@ -227,7 +229,9 @@ export default function PublicProfilePage() {
             </p>
           </div>
           <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
-            <p className="text-2xl font-bold tabular-nums text-neutral-100">
+            <p className={`text-2xl font-bold tabular-nums ${
+              winRate < 25 ? "text-rose-400" : winRate <= 60 ? "text-orange-400" : "text-emerald-400"
+            }`}>
               {winRate}%
             </p>
             <p className="mt-1 text-xs font-medium uppercase tracking-wide text-neutral-500">

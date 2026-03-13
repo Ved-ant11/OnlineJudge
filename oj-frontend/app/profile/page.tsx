@@ -149,7 +149,11 @@ export default function ProfilePage() {
           </p>
         </div>
         <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
-          <p className="text-2xl font-bold text-neutral-100">{successRate}%</p>
+          <p className={`text-2xl font-bold ${
+            parseFloat(successRate) < 25 ? "text-rose-400" : parseFloat(successRate) <= 60 ? "text-orange-400" : "text-emerald-400"
+          }`}>
+            {successRate}%
+          </p>
           <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide mt-1">
             Success Rate
           </p>
@@ -161,7 +165,11 @@ export default function ProfilePage() {
           </p>
         </div>
         <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
-          <p className="text-2xl font-bold text-neutral-100">{winRate}%</p>
+          <p className={`text-2xl font-bold ${
+            winRate < 25 ? "text-rose-400" : winRate <= 60 ? "text-orange-400" : "text-emerald-400"
+          }`}>
+            {winRate}%
+          </p>
           <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide mt-1">
             Win Rate
           </p>
