@@ -63,10 +63,11 @@ export default function BattleArena({ params }: PageProps) {
 
   const [currentTime, setCurrentTime] = useState(() => Date.now());
   useEffect(() => {
+    if (battleData?.status === "COMPLETED") return; // No timer if already ended
     if (battle.status !== "active") return;
     const interval = setInterval(() => setCurrentTime(Date.now()), 1000);
     return () => clearInterval(interval);
-  }, [battle.status]);
+  }, [battle.status, battleData?.status]);
 
   if (!userId || !battleData) {
     return (
@@ -78,6 +79,9 @@ export default function BattleArena({ params }: PageProps) {
 
   const { question } = battleData;
 
+  const isAlreadyCompleted = battleData.status === "COMPLETED" || battleData.status === "ABANDONED";
+  const amIWinner = isAlreadyCompleted && battleData.winnerId === userId;
+  const isDraw = isAlreadyCompleted && battleData.winnerId === null;
   const handleSubmit = () => {
     if (!code.trim()) {
       toast.error("Code cannot be empty");
@@ -122,7 +126,7 @@ export default function BattleArena({ params }: PageProps) {
       : null;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] bg-[#0a0a0a] overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-4rem)] bg-[#0a0a0a] overflow-hidden relative">
       <div className="flex items-center justify-between px-5 h-12 border-b border-neutral-800/70 bg-[#0a0a0a] shrink-0">
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium text-neutral-300">Battle</span>
@@ -145,12 +149,12 @@ export default function BattleArena({ params }: PageProps) {
               {battle.countdown}
             </span>
           )}
-          {battle.status === "active" && (
+          {battle.status === "active" && !isAlreadyCompleted && (
             <span className="text-lg font-mono font-semibold text-white tabular-nums tracking-wider">
               {timeDisplay}
             </span>
           )}
-          {battle.status === "finished" && (
+          {battle.status === "finished" && !isAlreadyCompleted && (
             <span
               className={`text-sm font-semibold ${
                 battle.won
@@ -166,6 +170,19 @@ export default function BattleArena({ params }: PageProps) {
                   ? "Draw"
                   : "Defeat"}
             </span>
+          )}
+          {isAlreadyCompleted && (
+             <span
+             className={`text-sm font-semibold ${
+               amIWinner 
+                 ? "text-emerald-400"
+                 : isDraw 
+                  ? "text-amber-400"
+                  : "text-rose-400"
+             }`}
+           >
+             {amIWinner ? "Victory" : isDraw ? "Draw" : "Defeat"}
+           </span>
           )}
         </div>
         {battle.status === "active" && (
@@ -411,6 +428,37 @@ export default function BattleArena({ params }: PageProps) {
               Back to Lobby
             </button>
           </div>
+        </div>
+      )}
+      {isAlreadyCompleted && (
+        <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in-up">
+        <div className="w-full max-w-xs bg-[#111] border border-neutral-800 rounded-2xl p-8 text-center">
+          <div
+            className={`text-3xl font-bold mb-1.5 ${
+              amIWinner
+                ? "text-emerald-400"
+                : isDraw
+                  ? "text-amber-400"
+                  : "text-rose-400"
+            }`}
+          >
+            {amIWinner
+              ? "Victory"
+              : isDraw
+                ? "Draw"
+                : "Defeat"}
+          </div>
+          <p className="text-sm text-neutral-500 mb-8 leading-relaxed">
+            This battle has already ended.
+          </p>
+
+          <button
+            onClick={() => (window.location.href = "/battle")}
+            className="w-full py-2.5 rounded-lg bg-neutral-800 text-white text-sm font-medium hover:bg-neutral-700 transition-colors active:scale-[0.98]"
+          >
+            Back to Matchmaking
+          </button>
+        </div>
         </div>
       )}
     </div>

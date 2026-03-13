@@ -210,11 +210,18 @@ export function setupWebSocket(server: Server) {
           // First player joining
           const battle = await prisma.battle.findUnique({
             where: { id: battleId },
-            select: { player1Id: true, player2Id: true, questionId: true },
+            select: { player1Id: true, player2Id: true, questionId: true, status: true },
           });
           if (!battle) {
             ws.send(
               JSON.stringify({ type: "error", message: "Battle not found" }),
+            );
+            return;
+          }
+
+          if (battle.status === "COMPLETED" || battle.status === "ABANDONED") {
+            ws.send(
+              JSON.stringify({ type: "error", message: "Battle already ended" }),
             );
             return;
           }
