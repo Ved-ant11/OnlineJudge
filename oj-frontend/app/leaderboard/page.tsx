@@ -1,4 +1,5 @@
 import { fetchLeaderboard } from "@/lib/api";
+import Link from "next/link";
 
 export default async function Leaderboard() {
   const leaderboard = await fetchLeaderboard();
@@ -26,7 +27,11 @@ export default async function Leaderboard() {
                 <td className="px-4 py-3 text-neutral-400">
                   {index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `#${index + 1}`}
                 </td>
-                <td className="px-4 py-3 text-neutral-200 font-medium">{user.username}</td>
+                <td className="px-4 py-3 text-neutral-200 font-medium">
+                  <Link href={`/user/${user.username}`} className="hover:text-white hover:underline underline-offset-4 transition-all">
+                    {user.username}
+                  </Link>
+                </td>
                 <td className="px-4 py-3 text-right text-emerald-400 font-mono">{user.solvedCount}</td>
               </tr>
             ))}

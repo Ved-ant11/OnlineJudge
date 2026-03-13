@@ -21,6 +21,9 @@ interface Profile {
   email: string;
   createdAt: string;
   submissions: Submission[];
+  rating: number;
+  battlesPlayed: number;
+  battlesWon: number;
 }
 
 interface StreakData {
@@ -88,6 +91,11 @@ export default function ProfilePage() {
   const accepted = profile.submissions.filter((s) => s.verdict === "AC").length;
   const successRate = totalSubmissions > 0 ? ((accepted / totalSubmissions) * 100).toFixed(1) : "0";
 
+  const winRate =
+    profile.battlesPlayed > 0
+      ? Math.round((profile.battlesWon / profile.battlesPlayed) * 100)
+      : 0;
+
   const verdictColor: Record<string, string> = {
     AC: "text-emerald-400",
     WA: "text-red-400",
@@ -127,16 +135,16 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-4 mt-6">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-6">
         <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
           <p className="text-2xl font-bold text-neutral-100">{totalSubmissions}</p>
           <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide mt-1">
-            Total Submissions
+            Submissions
           </p>
         </div>
         <div className="rounded-lg border border-emerald-900/50 bg-emerald-950/20 p-4">
           <p className="text-2xl font-bold text-emerald-400">{accepted}</p>
-          <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide mt-1">
+          <p className="text-xs font-medium text-emerald-500/70 uppercase tracking-wide mt-1">
             Accepted
           </p>
         </div>
@@ -144,6 +152,18 @@ export default function ProfilePage() {
           <p className="text-2xl font-bold text-neutral-100">{successRate}%</p>
           <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide mt-1">
             Success Rate
+          </p>
+        </div>
+        <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
+          <p className="text-2xl font-bold text-neutral-100">{profile.rating}</p>
+          <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide mt-1">
+            Battle Rating
+          </p>
+        </div>
+        <div className="rounded-lg border border-neutral-800 bg-neutral-900/60 p-4">
+          <p className="text-2xl font-bold text-neutral-100">{winRate}%</p>
+          <p className="text-xs font-medium text-neutral-500 uppercase tracking-wide mt-1">
+            Win Rate
           </p>
         </div>
       </div>

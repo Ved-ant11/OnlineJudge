@@ -21,6 +21,9 @@ router.get("/profile", tokenVerify, async (req: Request, res: Response) => {
         submissions: userSubmissions,
         email: user.email,
         createdAt: user.createdAt,
+        rating: user.rating,
+        battlesPlayed: user.battlesPlayed,
+        battlesWon: user.battlesWon,
       });
   } catch (error) {
     console.error(error);
@@ -151,6 +154,117 @@ router.get("/streak", tokenVerify, async (req: Request, res: Response) => {
       currentStreak,
       maxStreak: user.maxStreak,
       heatmapData,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/:username/public", async (req: Request, res: Response) => {
+  try {
+    const { username } = req.params;
+    const user = await prisma.user.findFirst({
+      where: { username },
+      select: {
+        id: true,
+        username: true,
+        rating: true,
+        battlesPlayed: true,
+        battlesWon: true,
+        createdAt: true,
+        currentStreak: true,
+        maxStreak: true,
+        lastActivityDate: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const solvedSubmissions = await prisma.submission.findMany({
+      where: { userId: user.id, verdict: "AC" },
+      select: { questionId: true },
+      distinct: ["questionId"],
+    });
+    const solvedCount = solvedSubmissions.length;
+
+    const recentSubmissions = await prisma.submission.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
+      take: 20,
+      select: {
+        id: true,
+        language: true,
+        verdict: true,
+        createdAt: true,
+        question: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+      },
+    });
+
+    const now = new Date();
+    const todayMillis = Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate()
+    );
+
+    let currentStreak = user.currentStreak;
+
+    if (user.lastActivityDate) {
+      const lastMillis = Date.UTC(
+        user.lastActivityDate.getUTCFullYear(),
+        user.lastActivityDate.getUTCMonth(),
+        user.lastActivityDate.getUTCDate()
+      );
+
+      const diffDays = Math.round(
+        (todayMillis - lastMillis) / (1000 * 60 * 60 * 24)
+      );
+
+      if (diffDays > 1) {
+        currentStreak = 0;
+      }
+    } else {
+      currentStreak = 0;
+    }
+
+    const oneYearAgo = new Date();
+    oneYearAgo.setUTCFullYear(oneYearAgo.getUTCFullYear() - 1);
+
+    const activities = await prisma.dailyActivity.findMany({
+      where: {
+        userId: user.id,
+        date: { gte: oneYearAgo },
+      },
+      select: { date: true, count: true },
+      orderBy: { date: "asc" },
+    });
+
+    const heatmapData = activities.map((a) => ({
+      date: a.date.toISOString().split("T")[0],
+      count: a.count,
+    }));
+
+    res.status(200).json({
+      username: user.username,
+      rating: user.rating,
+      battlesPlayed: user.battlesPlayed,
+      battlesWon: user.battlesWon,
+      createdAt: user.createdAt,
+      solvedCount,
+      submissions: recentSubmissions,
+      streakData: {
+        currentStreak,
+        maxStreak: user.maxStreak,
+        heatmapData,
+      },
     });
   } catch (error) {
     console.error(error);

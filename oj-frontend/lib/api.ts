@@ -246,3 +246,16 @@ export const logout = async () => {
     credentials: "include",
   });
 };
+
+export const fetchPublicProfile = async (username: string) => {
+  const response = await fetch(`${API_BASE_URL}/user/${username}/public`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+    cache: "no-store",
+  });
+  if (!response.ok) {
+    if (response.status === 404) throw new Error("User not found");
+    throw new Error("Failed to fetch public profile");
+  }
+  return response.json();
+};

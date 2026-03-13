@@ -298,7 +298,16 @@ export default function Battle() {
                         </span>
                       </div>
                       <div className="text-xs text-neutral-600 mt-0.5">
-                        vs {entry.opponent}
+                        vs{" "}
+                        <span 
+                           className="hover:text-white hover:underline underline-offset-2 transition-all cursor-pointer"
+                           onClick={(e) => {
+                             e.stopPropagation();
+                             router.push(`/user/${entry.opponent}`);
+                           }}
+                        >
+                          {entry.opponent}
+                        </span>
                         <span className="mx-1.5">·</span>
                         {entry.opponentRating}
                       </div>
