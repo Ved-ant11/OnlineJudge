@@ -105,13 +105,17 @@ export default function ProblemsPage() {
                   >
                     {question.difficulty}
                   </span>
-                  <span className="text-right text-xs">
+                  <div className="text-right flex justify-end">
                     {isSolved ? (
-                      <span className="text-emerald-400" title="Solved">✓</span>
+                      <div title="Solved" className="text-emerald-500 bg-emerald-500/10 p-1 rounded-full">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
                     ) : (
                       <span className="text-neutral-600">—</span>
                     )}
-                  </span>
+                  </div>
                 </Link>
               );
             },
