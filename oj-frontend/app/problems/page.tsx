@@ -60,23 +60,60 @@ export default function ProblemsPage() {
         Problems
       </h1>
       <div className="flex gap-2 mb-4">
-        <input
-          type="text"
-          placeholder="Search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="bg-neutral-900 border border-neutral-800 text-neutral-300 rounded-md px-3 py-2 text-sm mb-4"
-        />
-        <select
-          value={difficulty}
-          onChange={(e) => setDifficulty(e.target.value)}
-          className="bg-neutral-900 border border-neutral-800 text-neutral-300 rounded-md px-3 py-2 text-sm mb-4"
-        >
-          <option value="all">All</option>
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-        </select>
+        <div className="flex gap-2 mb-4 items-center">
+          <div className="relative group">
+            <svg
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-500 group-focus-within:text-violet-400 transition-colors duration-200"
+              fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round"
+                d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search problems…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="
+                w-full
+                bg-white/[0.03] hover:bg-white/[0.05] focus:bg-white/[0.06]
+                border border-white/[0.08] hover:border-white/[0.14] focus:border-violet-500/60
+                text-neutral-200 placeholder:text-neutral-600
+                rounded-xl pl-9 pr-3 py-2.5
+                text-[13px] font-medium tracking-wide
+                outline-none
+                transition-all duration-200
+                caret-violet-400
+              "
+            />
+          </div>
+
+          <div className="relative flex items-center">
+            <select
+              value={difficulty}
+              onChange={(e) => setDifficulty(e.target.value)}
+              style={{ colorScheme: 'dark' }}
+              className="
+                appearance-none
+                bg-neutral-900 hover:bg-neutral-800
+                border border-neutral-700
+                text-neutral-200
+                rounded-lg pl-3 pr-7 py-2.5 text-[13px]
+                outline-none cursor-pointer
+                transition-colors duration-150
+                focus:border-neutral-500
+              "
+            >
+              <option value="all">All Difficulties</option>
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+            <span className="pointer-events-none absolute right-2.5 text-neutral-500 text-[10px] leading-none">
+              ▾
+            </span>
+          </div>
+        </div>
       </div>
       <div className="rounded-lg border border-neutral-800 overflow-hidden">
         <div className="grid grid-cols-[1fr_100px_80px] gap-4 px-4 py-2.5 bg-neutral-900/60 border-b border-neutral-800 text-xs font-medium text-neutral-500 tracking-wide">
@@ -84,7 +121,6 @@ export default function ProblemsPage() {
           <span>Difficulty</span>
           <span className="text-right">Status</span>
         </div>
-
         <div className="divide-y divide-neutral-800/60">
           {filteredQuestions.map(
             (question, index) => {
