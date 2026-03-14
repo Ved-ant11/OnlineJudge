@@ -7,12 +7,13 @@ import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import reviewRoutes from "./routes/review.routes";
 import battleRoutes from "./routes/battle.routes";
+import discussionRoutes from "./routes/discussion.routes";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
 const app = express();
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: process.env.FRONTEND_URL,
   credentials: true,
 }));
 
@@ -25,6 +26,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/review", reviewRoutes);
 app.use("/api/battle", battleRoutes);
+app.use("/api/discussion", discussionRoutes);
 
 export default app;
 

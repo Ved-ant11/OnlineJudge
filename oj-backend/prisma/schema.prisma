@@ -30,6 +30,7 @@ model User {
   battlesWon      Int       @default(0)
   battlesAsP1     Battle[]  @relation("BattlePlayer1")
   battlesAsP2     Battle[]  @relation("BattlePlayer2")
+  comments        Comment[]
 }
 
 model Question {
@@ -43,6 +44,7 @@ model Question {
   submissions Submission[]
   battles     Battle[]
   createdAt   DateTime     @default(now())
+  comments    Comment[]
 }
 
 model Submission {
@@ -113,6 +115,22 @@ model Battle {
   @@index([player1Id])
   @@index([player2Id])
 }
+
+model Comment {
+  id          String    @id @default(uuid())
+  content     String
+  userId      String
+  questionId  String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question    Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@index([userId])
+}
+
 
 enum BattleStatus {
   WAITING     

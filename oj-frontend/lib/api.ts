@@ -259,3 +259,24 @@ export const fetchPublicProfile = async (username: string) => {
   }
   return response.json();
 };
+
+export const fetchDiscussion = async (questionId: string) => {
+  const response = await fetch(`${API_BASE_URL}/discussion/${questionId}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+    cache: "no-store",
+  });
+  if (!response.ok) throw new Error("Failed to fetch discussion");
+  return response.json();
+};
+
+export const postComment = async (questionId: string, content: string) => {
+  const response = await fetch(`${API_BASE_URL}/discussion/${questionId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ content }),
+  });
+  if (!response.ok) throw new Error("Failed to post comment");
+  return response.json();
+};

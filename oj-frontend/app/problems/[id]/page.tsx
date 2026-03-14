@@ -1,7 +1,6 @@
-import { fetchQuestionById } from "@/lib/api";
-import ReactMarkdown from "react-markdown";
 import CodeSubmission from "@/components/CodeSubmission";
-import SubmissionHistory from "@/components/SubmissionHistory";
+import ProblemTabs from "@/components/ProblemTabs";
+import { fetchQuestionById } from "@/lib/api";
 import Link from "next/link";
 
 type PageProps = {
@@ -49,73 +48,7 @@ export default async function ProblemDetailPage({ params }: PageProps) {
               {question.difficulty}
             </span>
           </div>
-          <div
-            className="mb-8 prose prose-sm prose-invert max-w-none
-              prose-headings:text-neutral-200 prose-headings:font-medium
-              prose-p:text-neutral-400 prose-p:leading-relaxed
-              prose-strong:text-neutral-200
-              prose-code:text-neutral-300 prose-code:bg-neutral-800
-              prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-xs
-              prose-code:before:content-none prose-code:after:content-none
-              prose-ul:text-neutral-400 prose-li:text-neutral-400"
-          >
-            <ReactMarkdown>{question.statement}</ReactMarkdown>
-          </div>
-
-          <div className="mb-8">
-            <h2 className="text-sm font-medium text-neutral-300 mb-4">
-              Examples
-            </h2>
-            <div className="space-y-4">
-              {question.examples.map(
-                (
-                  example: {
-                    input: string;
-                    output: string;
-                    explanation?: string;
-                  },
-                  index: number,
-                ) => (
-                  <div
-                    key={index}
-                    className="rounded-md border border-neutral-800 bg-neutral-900/50 p-4 space-y-3"
-                  >
-                    <p className="text-xs font-medium text-neutral-500 mb-2">
-                      Example {index + 1}
-                    </p>
-                    <div>
-                      <p className="text-xs text-neutral-500 mb-1">Input</p>
-                      <pre className="rounded bg-neutral-900 border border-neutral-800 px-3 py-2 font-mono text-xs text-neutral-300 overflow-x-auto">
-                        {example.input}
-                      </pre>
-                    </div>
-                    <div>
-                      <p className="text-xs text-neutral-500 mb-1">Output</p>
-                      <pre className="rounded bg-neutral-900 border border-neutral-800 px-3 py-2 font-mono text-xs text-neutral-300 overflow-x-auto">
-                        {example.output}
-                      </pre>
-                    </div>
-                    {example.explanation && (
-                      <p className="text-xs text-neutral-500 leading-relaxed">
-                        <span className="text-neutral-400">Explanation: </span>
-                        {example.explanation}
-                      </p>
-                    )}
-                  </div>
-                ),
-              )}
-            </div>
-          </div>
-
-          <div className="mb-8">
-            <h2 className="text-sm font-medium text-neutral-300 mb-3">
-              Constraints
-            </h2>
-            <div className="prose prose-sm prose-invert max-w-none prose-p:text-neutral-400 prose-li:text-neutral-400 prose-li:text-xs prose-p:text-xs">
-              <ReactMarkdown>{question.constraints}</ReactMarkdown>
-            </div>
-          </div>
-          <SubmissionHistory questionId={question.id} />
+          <ProblemTabs question={question} />
         </div>
       </div>
 
