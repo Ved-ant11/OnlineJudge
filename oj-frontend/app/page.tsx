@@ -7,10 +7,12 @@ export default function Home() {
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,rgba(255,255,255,0.04),transparent)]" />
       <section className="relative z-10 mx-auto max-w-5xl px-8 md:px-16 pt-24 pb-32">
 
-        <div className="inline-flex items-center gap-2 border border-neutral-800 rounded-full px-3 py-1 mb-12">
-          <span className="w-1.5 h-1.5 rounded-full bg-neutral-500 animate-pulse" />
-          <span className="font-mono-custom text-[10px] tracking-[0.2em] uppercase text-neutral-600">
-            Online Judge Platform
+        <div className="inline-flex items-center gap-2.5 rounded-full border border-neutral-800/60 bg-[#0d0d0d] px-3.5 py-1.5 mb-12">
+          <svg className="w-3 h-3 text-emerald-500/80" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          <span className="font-mono-custom text-[9.5px] tracking-[0.25em] uppercase text-neutral-500">
+            Master Problem Solving, <span className="text-neutral-300">Not Patterns</span>
           </span>
         </div>
 
