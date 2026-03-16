@@ -8,6 +8,14 @@ type Props = {
   submissionId: string;
 };
 
+interface DiffData {
+  message?: string;
+  input?: string;
+  expected?: string;
+  actual?: string;
+  [key: string]: unknown;
+}
+
 export default function SubmissionStatus({ submissionId }: Props) {
   const [status, setStatus] = useState<string>("LOADING");
   const [result, setResult] = useState<string | null>(null);
@@ -126,7 +134,7 @@ export default function SubmissionStatus({ submissionId }: Props) {
 
   if (status === "COMPLETED" && result) {
     const r = result.toLowerCase();
-    let diffData: Record<string, unknown> | unknown[] | null = null;
+    let diffData: DiffData | null = null;
     if (result && (result.startsWith("{") || result.startsWith("["))) {
       try {
         diffData = JSON.parse(result);
@@ -158,7 +166,7 @@ export default function SubmissionStatus({ submissionId }: Props) {
       <>
         <div className="rounded-md border border-neutral-800 bg-neutral-900/50 p-6">
           <p className={`text-lg font-semibold ${verdictColor}`}>
-            {diffData ? diffData.message : verdictLabel}
+            {diffData ? diffData.message ?? verdictLabel : verdictLabel}
           </p>
           {!diffData && result !== verdictLabel && (
             <p className="mt-2 text-sm text-neutral-400 font-mono bg-neutral-950 p-3 rounded border border-neutral-800/50 whitespace-pre-wrap">
