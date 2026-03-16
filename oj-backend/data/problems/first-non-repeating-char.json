@@ -1,0 +1,68 @@
+{
+  "id": "first-non-repeating-char",
+  "title": "First Non-Repeating Character",
+  "difficulty": "EASY",
+  "statement": "Given a string `s`, find the first character that does not repeat anywhere in the string. Print the character and its 0-based index separated by a space. If all characters repeat, print `-1`.\n\n**Input:** A single string `s`.\n**Output:** Print `char index` or `-1`.",
+  "constraints": "- 1 \u2264 s.length \u2264 10\u2075\n- s consists of lowercase English letters only.",
+  "examples": [
+    {
+      "input": "s = \"leetcode\"",
+      "output": "l 0",
+      "explanation": "'l' at index 0 is the first non-repeating character."
+    },
+    {
+      "input": "s = \"aabb\"",
+      "output": "-1",
+      "explanation": "All characters repeat."
+    },
+    {
+      "input": "s = \"abacabad\"",
+      "output": "c 4",
+      "explanation": "'c' appears once at index 4."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "leetcode",
+      "expectedOutput": "l 0",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "aabb",
+      "expectedOutput": "-1",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "abacabad",
+      "expectedOutput": "c 3",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "z",
+      "expectedOutput": "z 0",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "aabbcc",
+      "expectedOutput": "-1",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "abcabc",
+      "expectedOutput": "-1",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "abacbc",
+      "expectedOutput": "-1",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

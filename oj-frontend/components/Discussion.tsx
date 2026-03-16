@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { fetchDiscussion, postComment, fetchAuthStatus } from "@/lib/api";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type Comment = {
   id: string;
@@ -38,7 +39,7 @@ export default function Discussion({ questionId }: { questionId: string }) {
       setIsLoggedIn(!!res);
     });
     loadDiscussion();
-  }, [questionId]);
+  }, [questionId, loadDiscussion]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,7 +124,7 @@ export default function Discussion({ questionId }: { questionId: string }) {
                 </div>
               </div>
               <div className="prose prose-sm prose-invert max-w-none prose-p:text-neutral-300 prose-pre:bg-neutral-950 prose-pre:border prose-pre:border-neutral-800">
-                <ReactMarkdown>{comment.content}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{comment.content}</ReactMarkdown>
               </div>
             </div>
           ))}

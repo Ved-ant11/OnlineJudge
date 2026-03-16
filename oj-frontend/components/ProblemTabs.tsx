@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import SubmissionHistory from "@/components/SubmissionHistory";
 import Discussion from "@/components/Discussion";
 
@@ -64,7 +65,7 @@ export default function ProblemTabs({ question }: ProblemTabsProps) {
                 prose-code:before:content-none prose-code:after:content-none
                 prose-ul:text-neutral-400 prose-li:text-neutral-400"
             >
-              <ReactMarkdown>{question.statement}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{question.statement}</ReactMarkdown>
             </div>
 
             <div className="mb-8">
@@ -108,7 +109,7 @@ export default function ProblemTabs({ question }: ProblemTabsProps) {
                 Constraints
               </h2>
               <div className="prose prose-sm prose-invert max-w-none prose-p:text-neutral-400 prose-li:text-neutral-400 prose-li:text-xs prose-p:text-xs">
-                <ReactMarkdown>{question.constraints}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{question.constraints}</ReactMarkdown>
               </div>
             </div>
           </>

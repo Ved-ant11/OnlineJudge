@@ -5,6 +5,7 @@ import { fetchAuthStatus, getBattle } from "@/lib/api";
 import ReconnectTimer from "@/components/ReconnectComp";
 import Editor from "@monaco-editor/react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import toast from "react-hot-toast";
 
 type BattleData = {
@@ -172,7 +173,7 @@ export default function BattleArena({ params }: PageProps) {
                 prose-headings:text-neutral-300 prose-headings:font-semibold
                 prose-strong:text-neutral-300
                 prose-li:text-neutral-500">
-                <ReactMarkdown>{question.statement}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{question.statement}</ReactMarkdown>
               </div>
               {question.constraints && (
                 <div className="mt-10 pt-8 border-t border-neutral-800/50">
@@ -180,7 +181,7 @@ export default function BattleArena({ params }: PageProps) {
                     Constraints
                   </span>
                   <div className="prose prose-sm prose-invert max-w-none prose-p:text-neutral-600 prose-li:text-neutral-600 prose-ul:mt-0">
-                    <ReactMarkdown>{question.constraints}</ReactMarkdown>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{question.constraints}</ReactMarkdown>
                   </div>
                 </div>
               )}

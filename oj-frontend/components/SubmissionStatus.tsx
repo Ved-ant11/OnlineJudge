@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { fetchSubmissionStatus, fetchReview } from "@/lib/api";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type Props = {
   submissionId: string;
@@ -11,34 +12,10 @@ export default function SubmissionStatus({ submissionId }: Props) {
   const [status, setStatus] = useState<string>("LOADING");
   const [result, setResult] = useState<string | null>(null);
   const [code, setCode] = useState<string | null>(null);
-  const [_language, setLanguage] = useState<string | null>(null);
-  const [error, _setError] = useState<string | null>(null);
+  const [, setLanguage] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
   const [review, setReview] = useState<string | null>(null);
   const [reviewLoading, setReviewLoading] = useState(false);
-
-/*  useEffect(() => {
-    const poll = async () => {
-      try {
-        const data = await fetchSubmissionStatus(submissionId);
-        setStatus(data.status);
-        setResult(data.result ?? null);
-        setCode(data.code ?? null);
-        setLanguage(data.language ?? null);
-
-        if (data.status === "COMPLETED" || data.status === "FAILED") {
-          clearInterval(interval);
-        }
-      } catch {
-        setError("Failed to load submission status");
-        clearInterval(interval);
-      }
-    };
-
-    poll();
-    const interval = setInterval(poll, 1500);
-
-    return () => clearInterval(interval);
-  }, [submissionId]);*/
 
   useEffect(() => {
     fetchSubmissionStatus(submissionId).then((data) => {
@@ -59,7 +36,7 @@ export default function SubmissionStatus({ submissionId }: Props) {
       let data;
       try {
         data = JSON.parse(event.data);
-      } catch (e) {
+      } catch (_e) {
         console.error("Failed to parse websocket message:", event.data);
         return;
       }
@@ -149,7 +126,7 @@ export default function SubmissionStatus({ submissionId }: Props) {
 
   if (status === "COMPLETED" && result) {
     const r = result.toLowerCase();
-    let diffData: any = null;
+    let diffData: Record<string, unknown> | unknown[] | null = null;
     if (result && (result.startsWith("{") || result.startsWith("["))) {
       try {
         diffData = JSON.parse(result);
@@ -241,7 +218,7 @@ export default function SubmissionStatus({ submissionId }: Props) {
             </button>
             {review && (
               <div className="mt-4 rounded-md border border-neutral-800 bg-neutral-900/50 p-6 prose prose-sm prose-invert max-w-none">
-                <ReactMarkdown>{review}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{review}</ReactMarkdown>
               </div>
             )}
           </div>
