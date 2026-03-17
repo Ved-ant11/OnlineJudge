@@ -8,14 +8,17 @@ import userRoutes from "./routes/user.routes";
 import reviewRoutes from "./routes/review.routes";
 import battleRoutes from "./routes/battle.routes";
 import discussionRoutes from "./routes/discussion.routes";
+import roomRoutes from "./routes/room.routes";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
 const app = express();
-app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  }),
+);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -27,6 +30,6 @@ app.use("/api/user", userRoutes);
 app.use("/api/review", reviewRoutes);
 app.use("/api/battle", battleRoutes);
 app.use("/api/discussion", discussionRoutes);
+app.use("/api/rooms", roomRoutes);
 
 export default app;
-

@@ -26,7 +26,6 @@ export default function CodeSubmission({ questionId }: { questionId: string }) {
 
     try {
       setLoading(true);
-
       const res = await submitSolution({
         code,
         language,

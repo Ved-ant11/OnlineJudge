@@ -19,7 +19,7 @@ model User {
   createdAt   DateTime     @default(now())
   username    String
   email       String       @unique
-  password    String      
+  password    String
   submissions Submission[]
   currentStreak Int      @default(0)
   maxStreak   Int      @default(0)
@@ -31,6 +31,8 @@ model User {
   battlesAsP1     Battle[]  @relation("BattlePlayer1")
   battlesAsP2     Battle[]  @relation("BattlePlayer2")
   comments        Comment[]
+  ownedRooms      Room[]    @relation("RoomOwner")
+  roomParticipants RoomParticipant[]
 }
 
 model Question {
@@ -45,6 +47,7 @@ model Question {
   battles     Battle[]
   createdAt   DateTime     @default(now())
   comments    Comment[]
+  rooms       Room[]
 }
 
 model Submission {
@@ -100,7 +103,7 @@ model Battle {
   questionId    String
   status        BattleStatus  @default(WAITING)
   winnerId      String?
-  player1Time   Int?          
+  player1Time   Int?
   player2Time   Int?
   player1Hints  Int           @default(0)
   player2Hints  Int           @default(0)
@@ -131,12 +134,54 @@ model Comment {
   @@index([userId])
 }
 
+model Room {
+  id          String            @id @default(uuid())
+  code        String            @unique
+  ownerId     String
+  questionId  String?
+  status      RoomStatus        @default(WAITING)
+  createdAt   DateTime          @default(now())
+  startedAt   DateTime?
+  endedAt     DateTime?
+
+  owner       User              @relation("RoomOwner", fields: [ownerId], references: [id])
+  question    Question?         @relation(fields: [questionId], references: [id])
+  participants RoomParticipant[]
+
+  @@index([ownerId])
+  @@index([questionId])
+}
+
+model RoomParticipant {
+  id          String    @id @default(uuid())
+  roomId      String
+  userId      String
+  isReady     Boolean   @default(false)
+  hasFinished Boolean   @default(false)
+  joinedAt    DateTime  @default(now())
+  finishedAt  DateTime?
+
+  room        Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, userId])
+  @@index([roomId])
+  @@index([userId])
+}
+
 
 enum BattleStatus {
-  WAITING     
-  ACTIVE      
-  COMPLETED   
-  ABANDONED   
+  WAITING
+  ACTIVE
+  COMPLETED
+  ABANDONED
+}
+
+enum RoomStatus {
+  WAITING
+  ACTIVE
+  COMPLETED
+  ABANDONED
 }
 
 enum SubmissionStatus {

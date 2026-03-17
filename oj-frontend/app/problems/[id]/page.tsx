@@ -71,7 +71,6 @@ export default async function ProblemDetailPage({ params }: PageProps) {
           </svg>
         </Link>
       </div>
-
     </div>
   );
 }

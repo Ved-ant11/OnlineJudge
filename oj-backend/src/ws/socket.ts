@@ -25,6 +25,24 @@ type BattleRoom = {
   p2DisconnectTimer: NodeJS.Timeout | null;
 };
 
+type CustomRoom = {
+  id: string;
+  players: Map<
+    string,
+    {
+      ws: WebSocket | null;
+      isReady: boolean;
+      username: string;
+      hasFinished: boolean;
+      finishedAt: number | null;
+    }
+  >;
+  startTime: number;
+  questionId: string | null;
+  status: "WAITING" | "ACTIVE" | "COMPLETED";
+  ownerId: string;
+};
+
 const BASE_DURATION = 1200000; // 20 minutes
 
 function getEffectiveTimeout(room: BattleRoom): number {
@@ -104,7 +122,11 @@ export function setupWebSocket(server: Server) {
   const wss = new WebSocketServer({ server });
   const clients = new Map<string, WebSocket>();
   const battleRooms = new Map<string, BattleRoom>();
-  const wsMetadata = new Map<WebSocket, { battleId: string; userId: string }>();
+  const customRooms = new Map<string, CustomRoom>();
+  const wsMetadata = new Map<
+    WebSocket,
+    { battleId?: string; roomId?: string; userId: string }
+  >();
 
   const DISCONNECT_GRACE_MS = 30000;
 
@@ -209,18 +231,32 @@ export function setupWebSocket(server: Server) {
         if (!room) {
           const battle = await prisma.battle.findUnique({
             where: { id: battleId },
-            select: { player1Id: true, player2Id: true, questionId: true, status: true },
+            select: {
+              player1Id: true,
+              player2Id: true,
+              questionId: true,
+              status: true,
+            },
           });
           if (!battle) {
-            ws.send(JSON.stringify({ type: "error", message: "Battle not found" }));
+            ws.send(
+              JSON.stringify({ type: "error", message: "Battle not found" }),
+            );
             return;
           }
           if (battle.status === "COMPLETED" || battle.status === "ABANDONED") {
-            ws.send(JSON.stringify({ type: "error", message: "Battle already ended" }));
+            ws.send(
+              JSON.stringify({
+                type: "error",
+                message: "Battle already ended",
+              }),
+            );
             return;
           }
           if (userId !== battle.player1Id && userId !== battle.player2Id) {
-            ws.send(JSON.stringify({ type: "error", message: "Not a participant" }));
+            ws.send(
+              JSON.stringify({ type: "error", message: "Not a participant" }),
+            );
             return;
           }
 
@@ -244,8 +280,16 @@ export function setupWebSocket(server: Server) {
           room = battleRooms.get(battleId)!;
         }
 
-        if (userId !== room.battlePlayer1Id && userId !== room.battlePlayer2Id) {
-          ws.send(JSON.stringify({ type: "error", message: "Not a participant in this battle" }));
+        if (
+          userId !== room.battlePlayer1Id &&
+          userId !== room.battlePlayer2Id
+        ) {
+          ws.send(
+            JSON.stringify({
+              type: "error",
+              message: "Not a participant in this battle",
+            }),
+          );
           return;
         }
 
@@ -274,16 +318,21 @@ export function setupWebSocket(server: Server) {
               battleId,
               startTime: room.startTime,
               duration: isP1 ? room.p1Duration : room.p2Duration,
-            })
+            }),
           );
         } else if (room.player1 && room.player2) {
           // Both players connected, start countdown if not already counting down
           if (room.startTime === 0) {
             room.startTime = -1; // Indicate countdown in progress to prevent duplicates
 
-            const countdown = JSON.stringify({ type: "battle:countdown", seconds: 3 });
-            if (room.player1?.readyState === WebSocket.OPEN) room.player1.send(countdown);
-            if (room.player2?.readyState === WebSocket.OPEN) room.player2.send(countdown);
+            const countdown = JSON.stringify({
+              type: "battle:countdown",
+              seconds: 3,
+            });
+            if (room.player1?.readyState === WebSocket.OPEN)
+              room.player1.send(countdown);
+            if (room.player2?.readyState === WebSocket.OPEN)
+              room.player2.send(countdown);
 
             const roomRef = room;
             setTimeout(async () => {
@@ -292,10 +341,16 @@ export function setupWebSocket(server: Server) {
               try {
                 await prisma.battle.update({
                   where: { id: battleId },
-                  data: { startedAt: new Date(roomRef.startTime), status: "ACTIVE" },
+                  data: {
+                    startedAt: new Date(roomRef.startTime),
+                    status: "ACTIVE",
+                  },
                 });
               } catch (err) {
-                console.error(`[ws] Failed to persist startedAt for battle ${battleId}:`, err);
+                console.error(
+                  `[ws] Failed to persist startedAt for battle ${battleId}:`,
+                  err,
+                );
               }
 
               if (roomRef.player1?.readyState === WebSocket.OPEN) {
@@ -305,7 +360,7 @@ export function setupWebSocket(server: Server) {
                     battleId,
                     startTime: roomRef.startTime,
                     duration: roomRef.p1Duration,
-                  })
+                  }),
                 );
               }
               if (roomRef.player2?.readyState === WebSocket.OPEN) {
@@ -315,11 +370,12 @@ export function setupWebSocket(server: Server) {
                     battleId,
                     startTime: roomRef.startTime,
                     duration: roomRef.p2Duration,
-                  })
+                  }),
                 );
               }
 
-              if (!roomRef.timer) rescheduleTimer(roomRef, battleId, battleRooms);
+              if (!roomRef.timer)
+                rescheduleTimer(roomRef, battleId, battleRooms);
             }, 3000);
           }
         } else {
@@ -747,6 +803,324 @@ export function setupWebSocket(server: Server) {
           subscriber.quit();
         });
       }
+
+      if (message.type === "room:join") {
+        const { roomId, userId } = message;
+        if (!roomId || !userId) return;
+
+        wsMetadata.set(ws, { roomId, userId });
+
+        let room = customRooms.get(roomId);
+
+        if (!room) {
+          const dbRoom = await prisma.room.findUnique({
+            where: { id: roomId },
+            include: { participants: { include: { user: true } } },
+          });
+          if (!dbRoom) {
+            ws.send(
+              JSON.stringify({ type: "error", message: "Room not found" }),
+            );
+            return;
+          }
+
+          const players = new Map();
+          for (const p of dbRoom.participants) {
+            players.set(p.userId, {
+              ws: null,
+              isReady: p.isReady,
+              username: p.user.username,
+              hasFinished: p.hasFinished,
+              finishedAt: p.finishedAt ? p.finishedAt.getTime() : null,
+            });
+          }
+
+          room = {
+            id: roomId,
+            players,
+            startTime: dbRoom.startedAt ? dbRoom.startedAt.getTime() : 0,
+            questionId: dbRoom.questionId,
+            status: dbRoom.status as any,
+            ownerId: dbRoom.ownerId,
+          };
+          customRooms.set(roomId, room);
+        }
+
+        const player = room.players.get(userId);
+        if (!player) {
+          const user = await prisma.user.findUnique({ where: { id: userId } });
+          if (user) {
+            room.players.set(userId, {
+              ws,
+              isReady: false,
+              username: user.username,
+              hasFinished: false,
+              finishedAt: null,
+            });
+          }
+        } else {
+          player.ws = ws;
+        }
+
+        const playersList = Array.from(room.players.entries()).map(
+          ([id, p]) => ({
+            userId: id,
+            username: p.username,
+            isReady: p.isReady,
+            isConnected: p.ws !== null,
+            hasFinished: p.hasFinished,
+          }),
+        );
+
+        for (const p of room.players.values()) {
+          if (p.ws?.readyState === WebSocket.OPEN) {
+            p.ws.send(
+              JSON.stringify({
+                type: "room:state",
+                players: playersList,
+                status: room.status,
+                ownerId: room.ownerId,
+              }),
+            );
+          }
+        }
+      }
+
+      if (message.type === "room:ready") {
+        const { roomId, userId, isReady } = message;
+        const room = customRooms.get(roomId);
+        if (!room) return;
+
+        const player = room.players.get(userId);
+        if (player) {
+          player.isReady = isReady;
+
+          await prisma.roomParticipant
+            .update({
+              where: { roomId_userId: { roomId, userId } },
+              data: { isReady },
+            })
+            .catch(() => {});
+
+          const playersList = Array.from(room.players.entries()).map(
+            ([id, p]) => ({
+              userId: id,
+              username: p.username,
+              isReady: p.isReady,
+              isConnected: p.ws !== null,
+              hasFinished: p.hasFinished,
+            }),
+          );
+
+          for (const p of room.players.values()) {
+            if (p.ws?.readyState === WebSocket.OPEN) {
+              p.ws.send(
+                JSON.stringify({
+                  type: "room:state",
+                  players: playersList,
+                  status: room.status,
+                  ownerId: room.ownerId,
+                }),
+              );
+            }
+          }
+        }
+      }
+
+      if (message.type === "room:start") {
+        const { roomId, userId } = message;
+        const room = customRooms.get(roomId);
+        if (!room) return;
+
+        if (room.ownerId !== userId) return;
+
+        let allReady = true;
+        for (const p of room.players.values()) {
+          if (!p.isReady) allReady = false;
+        }
+
+        if (!allReady) {
+          ws.send(
+            JSON.stringify({
+              type: "error",
+              message: "Not all players are ready",
+            }),
+          );
+          return;
+        }
+
+        const questions = await prisma.question.findMany({
+          select: { id: true },
+        });
+        if (questions.length === 0) return;
+        const randomQ = questions[Math.floor(Math.random() * questions.length)];
+
+        room.questionId = randomQ.id;
+        room.status = "ACTIVE";
+        room.startTime = Date.now();
+
+        await prisma.room
+          .update({
+            where: { id: roomId },
+            data: {
+              status: "ACTIVE",
+              startedAt: new Date(room.startTime),
+              questionId: randomQ.id,
+            },
+          })
+          .catch(() => {});
+
+        for (const p of room.players.values()) {
+          if (p.ws?.readyState === WebSocket.OPEN) {
+            p.ws.send(
+              JSON.stringify({
+                type: "room:started",
+                questionId: room.questionId,
+                startTime: room.startTime,
+              }),
+            );
+          }
+        }
+      }
+
+      if (message.type === "room:end") {
+        const { roomId, userId } = message;
+        const room = customRooms.get(roomId);
+        if (!room || room.ownerId !== userId) return;
+
+        room.status = "COMPLETED";
+
+        await prisma.room
+          .update({
+            where: { id: roomId },
+            data: { status: "COMPLETED", endedAt: new Date() },
+          })
+          .catch(() => {});
+
+        const leaderboard = Array.from(room.players.values())
+          .filter((p) => p.hasFinished && p.finishedAt)
+          .sort((a, b) => a.finishedAt! - b.finishedAt!)
+          .map((p) => ({
+            username: p.username,
+            time: p.finishedAt! - room.startTime,
+          }));
+
+        for (const p of room.players.values()) {
+          if (p.ws?.readyState === WebSocket.OPEN) {
+            p.ws.send(
+              JSON.stringify({
+                type: "room:ended",
+                leaderboard,
+              }),
+            );
+          }
+        }
+      }
+
+      if (message.type === "room:submit") {
+        const { roomId, userId, code, language } = message;
+        const room = customRooms.get(roomId);
+        if (!room || room.status !== "ACTIVE" || !room.questionId) return;
+
+        const player = room.players.get(userId);
+        if (!player || player.hasFinished) return;
+
+        const testCases = await prisma.testCase.findMany({
+          where: { questionId: room.questionId },
+          orderBy: { order: "asc" },
+        });
+
+        const result = await judgeSubmission({ language, code, testCases });
+
+        try {
+          await prisma.submission.create({
+            data: {
+              userId,
+              questionId: room.questionId,
+              code,
+              language,
+              status: SubmissionStatus.COMPLETED,
+              verdict: result.verdict,
+              result: result.message,
+            },
+          });
+        } catch (err) {}
+
+        for (const p of room.players.values()) {
+          if (p.ws?.readyState === WebSocket.OPEN) {
+            p.ws.send(
+              JSON.stringify({
+                type: "room:submission",
+                userId,
+                username: player?.username,
+                verdict: result.verdict,
+              }),
+            );
+          }
+        }
+
+        if (result.verdict === Verdict.AC) {
+          player.hasFinished = true;
+          player.finishedAt = Date.now();
+
+          await prisma.roomParticipant
+            .update({
+              where: { roomId_userId: { roomId, userId } },
+              data: {
+                hasFinished: true,
+                finishedAt: new Date(player.finishedAt),
+              },
+            })
+            .catch(() => {});
+
+          let allFinished = true;
+          for (const p of room.players.values()) {
+            if (!p.hasFinished) allFinished = false;
+          }
+
+          for (const p of room.players.values()) {
+            if (p.ws?.readyState === WebSocket.OPEN) {
+              p.ws.send(
+                JSON.stringify({
+                  type: "room:finished",
+                  userId,
+                  username: player?.username,
+                }),
+              );
+            }
+          }
+
+          if (allFinished) {
+            room.status = "COMPLETED";
+
+            await prisma.room
+              .update({
+                where: { id: roomId },
+                data: { status: "COMPLETED", endedAt: new Date() },
+              })
+              .catch(() => {});
+
+            const leaderboard = Array.from(room.players.values())
+              .filter((p) => p.hasFinished && p.finishedAt)
+              .sort((a, b) => a.finishedAt! - b.finishedAt!)
+              .map((p) => ({
+                username: p.username,
+                time: p.finishedAt! - room.startTime,
+              }));
+
+            for (const p of room.players.values()) {
+              if (p.ws?.readyState === WebSocket.OPEN) {
+                p.ws.send(
+                  JSON.stringify({
+                    type: "room:ended",
+                    leaderboard,
+                  }),
+                );
+              }
+            }
+          }
+        }
+      }
     });
 
     ws.on("close", () => {
@@ -756,7 +1130,40 @@ export function setupWebSocket(server: Server) {
       wsMetadata.delete(ws);
       if (!meta) return;
 
-      const { battleId, userId } = meta;
+      const { battleId, roomId, userId } = meta;
+
+      if (roomId) {
+        const cRoom = customRooms.get(roomId);
+        if (cRoom) {
+          const player = cRoom.players.get(userId);
+          if (player) {
+            player.ws = null;
+          }
+          const playersList = Array.from(cRoom.players.entries()).map(
+            ([id, p]) => ({
+              userId: id,
+              username: p.username,
+              isReady: p.isReady,
+              isConnected: p.ws !== null,
+              hasFinished: p.hasFinished,
+            }),
+          );
+          for (const p of cRoom.players.values()) {
+            if (p.ws?.readyState === WebSocket.OPEN) {
+              p.ws.send(
+                JSON.stringify({
+                  type: "room:state",
+                  players: playersList,
+                  status: cRoom.status,
+                  ownerId: cRoom.ownerId,
+                }),
+              );
+            }
+          }
+        }
+      }
+
+      if (!battleId) return;
       const room = battleRooms.get(battleId);
       if (!room) return;
 

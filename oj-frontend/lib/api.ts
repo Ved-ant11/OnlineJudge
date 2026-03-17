@@ -133,7 +133,6 @@ export const fetchLeaderboard = async () => {
   const response = await fetch(`${API_BASE_URL}/user/leaderboard`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
-    credentials: "include",
     cache: "no-store",
   });
   if (!response.ok) throw new Error("Failed to fetch leaderboard");
@@ -278,5 +277,41 @@ export const postComment = async (questionId: string, content: string) => {
     body: JSON.stringify({ content }),
   });
   if (!response.ok) throw new Error("Failed to post comment");
+  return response.json();
+};
+
+export const createRoom = async () => {
+  const response = await fetch(`${API_BASE_URL}/rooms`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    cache: "no-store",
+  });
+  if (!response.ok) throw new Error("Failed to create room");
+  return response.json();
+};
+
+export const joinRoom = async (code: string) => {
+  const response = await fetch(`${API_BASE_URL}/rooms/${code}/join`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    cache: "no-store",
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || "Failed to join room");
+  }
+  return response.json();
+};
+
+export const fetchRoom = async (roomId: string) => {
+  const response = await fetch(`${API_BASE_URL}/rooms/${roomId}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    cache: "no-store",
+  });
+  if (!response.ok) throw new Error("Failed to fetch room");
   return response.json();
 };

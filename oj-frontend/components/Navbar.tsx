@@ -5,7 +5,6 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 h-12 border-b border-neutral-800/60 bg-[#0a0a0a]/90 backdrop-blur-sm">
       <div className="mx-auto flex h-full max-w-screen-xl items-center justify-between px-8">
-
         <div className="flex items-center gap-6">
           <Link
             href="/"
@@ -18,9 +17,10 @@ export default function Navbar() {
 
           <div className="flex items-center gap-5">
             {[
-              { label: "Problems",    href: "/problems"    },
-              { label: "Contribute",  href: "/contribute"  },
+              { label: "Problems", href: "/problems" },
+              { label: "Contribute", href: "/contribute" },
               { label: "Leaderboard", href: "/leaderboard" },
+              { label: "Rooms", href: "/rooms" },
             ].map((l) => (
               <Link
                 key={l.label}
