@@ -1,0 +1,74 @@
+{
+  "id": "signal-amplifier",
+  "title": "Signal Amplifier",
+  "difficulty": "EASY",
+  "statement": "You have an array of signal readings. You may choose one contiguous subarray and **double every value** in it. Maximize the total sum of the array after at most one doubling.\n\n**Input:** First line: n. Second line: n space-separated integers.\n**Output:** Maximum total sum.",
+  "constraints": "- 1 \u2264 n \u2264 10\u2075\n- -10\u2074 \u2264 arr[i] \u2264 10\u2074",
+  "examples": [
+    {
+      "input": "5\n1 -2 3 4 -1",
+      "output": "12",
+      "explanation": "Total=5. Double [3,4] (sum=7): new total = 5+7=12."
+    },
+    {
+      "input": "3\n-1 -2 -3",
+      "output": "-6",
+      "explanation": "All values negative. Doubling makes it worse. Best: don't double anything."
+    },
+    {
+      "input": "3\n1 2 3",
+      "output": "12",
+      "explanation": "Total=6. Double all [1,2,3]: gain 6 more. Total=12."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "5\n1 -2 3 4 -1",
+      "expectedOutput": "12",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "3\n-1 -2 -3",
+      "expectedOutput": "-6",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "3\n1 2 3",
+      "expectedOutput": "12",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1\n5",
+      "expectedOutput": "10",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "5\n-3 1 2 -1 4",
+      "expectedOutput": "9",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "4\n-2 -1 1 2",
+      "expectedOutput": "3",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "5\n3 3 3 3 3",
+      "expectedOutput": "30",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "4\n1 -1 1 -1",
+      "expectedOutput": "2",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

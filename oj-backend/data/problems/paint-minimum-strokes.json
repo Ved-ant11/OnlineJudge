@@ -1,0 +1,74 @@
+{
+  "id": "paint-minimum-strokes",
+  "title": "Minimum Painting Strokes",
+  "difficulty": "HARD",
+  "statement": "You have a row of `n` cells to paint. Each stroke paints a contiguous subarray one color. You want to paint the entire row to match a given color sequence. Strokes can be applied in any order and a later stroke overwrites earlier ones. Find the **minimum number of strokes**.\n\n**Input:** First line: n. Second line: n space-separated color values.\n**Output:** Minimum number of strokes.",
+  "constraints": "- 1 \u2264 n \u2264 500\n- 1 \u2264 colors[i] \u2264 n",
+  "examples": [
+    {
+      "input": "5\n1 2 1 2 1",
+      "output": "3",
+      "explanation": "Stroke 1(entire row, color1), stroke 2(col1,color2), stroke 4(col3,color2). 3 strokes."
+    },
+    {
+      "input": "3\n1 1 1",
+      "output": "1",
+      "explanation": "One stroke covers everything."
+    },
+    {
+      "input": "4\n1 2 3 4",
+      "output": "4",
+      "explanation": "All different, need 4 strokes."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "5\n1 2 1 2 1",
+      "expectedOutput": "3",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "3\n1 1 1",
+      "expectedOutput": "1",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "4\n1 2 3 4",
+      "expectedOutput": "4",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1\n1",
+      "expectedOutput": "1",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "6\n1 2 1 1 2 1",
+      "expectedOutput": "3",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "5\n1 2 3 2 1",
+      "expectedOutput": "3",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "7\n2 1 2 1 2 1 2",
+      "expectedOutput": "4",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "6\n1 2 2 1 1 2",
+      "expectedOutput": "3",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

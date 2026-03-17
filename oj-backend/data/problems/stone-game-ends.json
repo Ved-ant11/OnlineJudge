@@ -1,0 +1,74 @@
+{
+  "id": "stone-game-ends",
+  "title": "Stone Game",
+  "difficulty": "EASY",
+  "statement": "Two players take turns removing stones from a pile. On each turn, a player may remove **1, 2, or 3** stones from **either end** of the row. The player who takes the **last stone wins**. Both play optimally. Given n stones, who wins?\n\n**Input:** Single integer n.\n**Output:** FIRST or SECOND.",
+  "constraints": "- 1 \u2264 n \u2264 10\u2079",
+  "examples": [
+    {
+      "input": "4",
+      "output": "SECOND",
+      "explanation": "With 4 stones, whatever the first player takes (1-3), the second can always take the rest. Second wins."
+    },
+    {
+      "input": "5",
+      "output": "FIRST",
+      "explanation": "First player takes 1, leaving 4 for second \u2014 second then loses."
+    },
+    {
+      "input": "1",
+      "output": "FIRST",
+      "explanation": "First player takes the only stone and wins."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "4",
+      "expectedOutput": "SECOND",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "5",
+      "expectedOutput": "FIRST",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1",
+      "expectedOutput": "FIRST",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "2",
+      "expectedOutput": "FIRST",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "3",
+      "expectedOutput": "FIRST",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "8",
+      "expectedOutput": "SECOND",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "12",
+      "expectedOutput": "SECOND",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "13",
+      "expectedOutput": "FIRST",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

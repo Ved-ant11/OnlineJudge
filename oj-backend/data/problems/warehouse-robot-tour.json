@@ -1,0 +1,74 @@
+{
+  "id": "warehouse-robot-tour",
+  "title": "Warehouse Robot Tour",
+  "difficulty": "MEDIUM",
+  "statement": "A warehouse robot starts at the origin (0,0) and must visit a set of delivery points and return home. Travel cost is Manhattan distance. Given the delivery points, find the **minimum total travel distance** for a round trip that visits all points exactly once.\n\n**Input:** First line: n. Next n lines: x y coordinates.\n**Output:** Minimum total distance.",
+  "constraints": "- 0 \u2264 n \u2264 15\n- -1000 \u2264 x, y \u2264 1000",
+  "examples": [
+    {
+      "input": "2\n1 0\n0 1",
+      "output": "4",
+      "explanation": "Route: (0,0)\u2192(1,0)\u2192(0,1)\u2192(0,0). Distance: 1+2+1=4."
+    },
+    {
+      "input": "1\n1 1",
+      "output": "4",
+      "explanation": "(0,0)\u2192(1,1)\u2192(0,0): 2+2=4."
+    },
+    {
+      "input": "0",
+      "output": "0",
+      "explanation": "No deliveries, robot stays home."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "2\n1 0\n0 1",
+      "expectedOutput": "4",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "1\n1 1",
+      "expectedOutput": "4",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "0",
+      "expectedOutput": "0",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "3\n0 1\n1 0\n1 1",
+      "expectedOutput": "4",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "2\n2 0\n0 2",
+      "expectedOutput": "8",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "3\n1 0\n2 0\n3 0",
+      "expectedOutput": "6",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "4\n1 1\n-1 1\n1 -1\n-1 -1",
+      "expectedOutput": "8",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "2\n0 3\n0 -3",
+      "expectedOutput": "12",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

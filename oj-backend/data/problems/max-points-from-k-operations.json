@@ -1,0 +1,74 @@
+{
+  "id": "max-points-from-k-operations",
+  "title": "Maximum Points from K Operations",
+  "difficulty": "HARD",
+  "statement": "You have array `nums`. Each operation: pick the **maximum** element, add it to your score, replace it with `ceil(value / 3)`. Perform exactly `k` operations to maximize total score.\n\n**Input:** First line: space-separated integers. Second line: k.\n**Output:** Maximum score mod 10^9+7.",
+  "constraints": "- 1 \u2264 nums.length \u2264 10\u2075\n- 1 \u2264 nums[i] \u2264 10\u2079\n- 1 \u2264 k \u2264 10\u2075",
+  "examples": [
+    {
+      "input": "10 10 10\n3",
+      "output": "30",
+      "explanation": "Pick each 10 once. Score=30."
+    },
+    {
+      "input": "1 10 3 3\n3",
+      "output": "17",
+      "explanation": "Pick 10\u21924\u21923. Score=10+4+3=17."
+    },
+    {
+      "input": "10\n4",
+      "output": "17",
+      "explanation": "10\u21924\u21922\u21921. Score=10+4+2+1=17."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "10 10 10\n3",
+      "expectedOutput": "30",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "1 10 3 3\n3",
+      "expectedOutput": "17",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "10\n4",
+      "expectedOutput": "17",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1\n1",
+      "expectedOutput": "1",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1000000000\n1",
+      "expectedOutput": "1000000000",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "5 5 5 5\n8",
+      "expectedOutput": "28",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "1 2 3 4 5 6 7 8 9 10\n5",
+      "expectedOutput": "40",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "100 100\n10",
+      "expectedOutput": "304",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

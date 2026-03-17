@@ -1,0 +1,74 @@
+{
+  "id": "fence-coloring",
+  "title": "Fence Coloring",
+  "difficulty": "EASY",
+  "statement": "You are painting a fence of `n` posts using `k` colors. The only rule: **no three consecutive posts** may have the same color. Count the number of valid colorings modulo 10\u2079+7.\n\n**Input:** Single line: n k.\n**Output:** Number of valid colorings mod 10\u2079+7.",
+  "constraints": "- 1 \u2264 n \u2264 10\u2075\n- 1 \u2264 k \u2264 10\u2075",
+  "examples": [
+    {
+      "input": "3 2",
+      "output": "6",
+      "explanation": "8 total colorings minus RRR and BBB = 6."
+    },
+    {
+      "input": "1 3",
+      "output": "3",
+      "explanation": "Any of 3 colors for a single post."
+    },
+    {
+      "input": "4 2",
+      "output": "10",
+      "explanation": "16 total minus 6 invalid (sequences with 3+ consecutive same)."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "3 2",
+      "expectedOutput": "6",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "1 3",
+      "expectedOutput": "3",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "4 2",
+      "expectedOutput": "10",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1 1",
+      "expectedOutput": "1",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "2 2",
+      "expectedOutput": "4",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "3 3",
+      "expectedOutput": "24",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "5 2",
+      "expectedOutput": "16",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "4 3",
+      "expectedOutput": "66",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

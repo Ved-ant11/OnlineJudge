@@ -1,0 +1,68 @@
+{
+  "id": "path-sum-with-obstacles",
+  "title": "Grid Max Path Sum With Obstacles",
+  "difficulty": "MEDIUM",
+  "statement": "Given an n\u00d7m grid where `-1` represents an obstacle, find the **maximum sum path** from top-left to bottom-right moving only right or down. Return `-1` if no path exists.\n\n**Input:** First line: n m. Next n lines: m space-separated integers (-1 = obstacle).\n**Output:** Maximum path sum or -1.",
+  "constraints": "- 1 \u2264 n, m \u2264 200\n- -100 \u2264 grid[i][j] \u2264 100\n- -1 denotes obstacle; start and end are never obstacles",
+  "examples": [
+    {
+      "input": "3 3\n1 2 3\n4 -1 6\n7 8 9",
+      "output": "29",
+      "explanation": "Path 1\u21924\u21927\u21928\u21929=29 avoids obstacle at (1,1)."
+    },
+    {
+      "input": "2 2\n0 -1\n-1 0",
+      "output": "-1",
+      "explanation": "Both paths blocked."
+    },
+    {
+      "input": "2 2\n1 2\n3 4",
+      "output": "8",
+      "explanation": "1\u21923\u21924=8 beats 1\u21922\u21924=7."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "3 3\n1 2 3\n4 -1 6\n7 8 9",
+      "expectedOutput": "29",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "2 2\n0 -1\n-1 0",
+      "expectedOutput": "-1",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "2 2\n1 2\n3 4",
+      "expectedOutput": "8",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1 1\n5",
+      "expectedOutput": "5",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "3 3\n1 -1 1\n1 1 1\n1 -1 1",
+      "expectedOutput": "5",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "2 3\n1 2 3\n4 5 6",
+      "expectedOutput": "16",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "3 3\n-1 0 0\n0 0 0\n0 0 0",
+      "expectedOutput": "-1",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

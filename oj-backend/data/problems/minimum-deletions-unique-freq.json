@@ -1,0 +1,74 @@
+{
+  "id": "minimum-deletions-unique-freq",
+  "title": "Minimum Deletions for Unique Frequencies",
+  "difficulty": "EASY",
+  "statement": "Given a string, find the **minimum number of character deletions** so that all character frequencies are unique (no two distinct characters share the same non-zero count).\n\n**Input:** A single lowercase string.\n**Output:** Minimum deletions.",
+  "constraints": "- 1 \u2264 s.length \u2264 10\u2075\n- s consists of lowercase English letters",
+  "examples": [
+    {
+      "input": "aab",
+      "output": "0",
+      "explanation": "freq(a)=2, freq(b)=1. Already unique."
+    },
+    {
+      "input": "aaabbbcc",
+      "output": "2",
+      "explanation": "freq(a)=3, freq(b)=3, freq(c)=2. Delete 2 b's \u2192 freqs 3,1,2. Unique. 2 deletions."
+    },
+    {
+      "input": "aabbcc",
+      "output": "3",
+      "explanation": "freq(a)=freq(b)=freq(c)=2. Reduce: 2,1,0 \u2192 delete 1 b, delete both c's = 3 deletions."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "aab",
+      "expectedOutput": "0",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "aaabbbcc",
+      "expectedOutput": "2",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "aabbcc",
+      "expectedOutput": "3",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "a",
+      "expectedOutput": "0",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "abcabc",
+      "expectedOutput": "3",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "aaaa",
+      "expectedOutput": "0",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "zzyyxx",
+      "expectedOutput": "3",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "abababababab",
+      "expectedOutput": "1",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

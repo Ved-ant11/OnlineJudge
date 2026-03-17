@@ -1,0 +1,74 @@
+{
+  "id": "group-shifted-strings",
+  "title": "Group Shifted Strings",
+  "difficulty": "EASY",
+  "statement": "Two strings belong to the same **shift group** if one can be obtained from the other by shifting every character by the same amount cyclically (z wraps to a). Given a list of lowercase strings, return the **size of the largest group**.\n\n**Input:** Space-separated strings.\n**Output:** Size of the largest shift group.",
+  "constraints": "- 1 \u2264 n \u2264 10\u2074\n- 1 \u2264 length of each string \u2264 20\n- All strings lowercase",
+  "examples": [
+    {
+      "input": "abc bcd xyz az ba",
+      "output": "3",
+      "explanation": "abc\u2192bcd\u2192xyz all shift by 1 \u2014 same group (size 3). az and ba both have inter-char difference of 25 \u2014 same group (size 2). Largest=3."
+    },
+    {
+      "input": "a b c d",
+      "output": "4",
+      "explanation": "All single characters belong to the same shift group."
+    },
+    {
+      "input": "abc ab",
+      "output": "1",
+      "explanation": "Different lengths can never be in the same group. Each alone."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "abc bcd xyz az ba",
+      "expectedOutput": "3",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "a b c d",
+      "expectedOutput": "4",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "abc ab",
+      "expectedOutput": "1",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "az ba",
+      "expectedOutput": "2",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "abc",
+      "expectedOutput": "1",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "hello ifmmp",
+      "expectedOutput": "2",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "mz na",
+      "expectedOutput": "2",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "a z m g",
+      "expectedOutput": "4",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

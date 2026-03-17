@@ -1,0 +1,74 @@
+{
+  "id": "zero-array-operations",
+  "title": "Zero Array in Minimum Operations",
+  "difficulty": "EASY",
+  "statement": "You have an array of non-negative integers. In one operation, pick any subarray and decrement every element in it by 1 (elements already at 0 are unaffected). Find the **minimum number of operations** to make the entire array zero.\n\n**Input:** Space-separated non-negative integers.\n**Output:** Minimum operations.",
+  "constraints": "- 1 \u2264 n \u2264 10\u2075\n- 0 \u2264 nums[i] \u2264 10\u2074",
+  "examples": [
+    {
+      "input": "3 2 1 4 2",
+      "output": "4",
+      "explanation": "Answer = max(nums) = 4. You always need at least max(nums) operations, and that many always suffice."
+    },
+    {
+      "input": "0 0 0",
+      "output": "0",
+      "explanation": "Already zero."
+    },
+    {
+      "input": "5 5 5",
+      "output": "5",
+      "explanation": "Decrement entire array 5 times."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "3 2 1 4 2",
+      "expectedOutput": "4",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "0 0 0",
+      "expectedOutput": "0",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "5 5 5",
+      "expectedOutput": "5",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1",
+      "expectedOutput": "1",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1 2 3 2 1",
+      "expectedOutput": "3",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "0 10 0",
+      "expectedOutput": "10",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "7 0 3 0 5",
+      "expectedOutput": "7",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "1 1 1 1 1",
+      "expectedOutput": "1",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "id": "card-shuffle-check",
+  "title": "Valid Card Shuffle",
+  "difficulty": "MEDIUM",
+  "statement": "Two card piles are being riffle-shuffled. At each step, the top card from either pile is placed next. Given two piles and a resulting sequence, determine if the sequence is a **valid interleaving** of the two piles (maintaining each pile's original order).\n\n**Input:** First line: pile 1 (space-separated). Second line: pile 2. Third line: target sequence.\n**Output:** YES or NO.",
+  "constraints": "- 1 \u2264 total cards \u2264 3000\n- Card values are distinct positive integers",
+  "examples": [
+    {
+      "input": "1 2 3\n4 5 6\n1 4 2 5 3 6",
+      "output": "YES",
+      "explanation": "Perfect interleave: alternating from each pile."
+    },
+    {
+      "input": "1 2\n3 4\n3 2 1 4",
+      "output": "NO",
+      "explanation": "3 from pile 2, then 2 from pile 1 \u2014 but pile 1's top is 1, not 2. Invalid."
+    },
+    {
+      "input": "1 3\n2 4\n2 1 3 4",
+      "output": "YES",
+      "explanation": "2 from pile 2, 1 from pile 1, 3 from pile 1, 4 from pile 2."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "1 2 3\n4 5 6\n1 4 2 5 3 6",
+      "expectedOutput": "YES",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "1 2\n3 4\n3 2 1 4",
+      "expectedOutput": "NO",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1 3\n2 4\n2 1 3 4",
+      "expectedOutput": "YES",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1 2 3\n4 5 6\n4 1 5 2 6 3",
+      "expectedOutput": "YES",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1 2\n3 4\n1 3 4 2",
+      "expectedOutput": "YES",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "1 3 5\n2 4 6\n1 2 3 4 5 6",
+      "expectedOutput": "YES",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "1 2\n3 4\n1 2 4 3",
+      "expectedOutput": "NO",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "5 3 1\n4 2 6\n5 4 3 2 1 6",
+      "expectedOutput": "YES",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

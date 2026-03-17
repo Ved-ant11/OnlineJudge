@@ -1,0 +1,74 @@
+{
+  "id": "matrix-chain-order",
+  "title": "Matrix Chain Multiplication",
+  "difficulty": "MEDIUM",
+  "statement": "You need to multiply a chain of matrices. Matrix `i` has dimensions `dims[i-1] \u00d7 dims[i]`. The cost of multiplying an `a\u00d7b` matrix by a `b\u00d7c` matrix is `a\u00d7b\u00d7c`. Find the **minimum total cost** to multiply all matrices in the chain.\n\n**Input:** Space-separated dimensions array (length = number of matrices + 1).\n**Output:** Minimum multiplication cost.",
+  "constraints": "- 2 \u2264 dims.length \u2264 500\n- 1 \u2264 dims[i] \u2264 500",
+  "examples": [
+    {
+      "input": "40 20 30 10 30",
+      "output": "26000",
+      "explanation": "Optimal parenthesization gives 26000 operations."
+    },
+    {
+      "input": "10 30 5 60",
+      "output": "4500",
+      "explanation": "Multiply (A\u00d7B)\u00d7C: (10\u00d730\u00d75)+(10\u00d75\u00d760)=1500+3000=4500."
+    },
+    {
+      "input": "1 2 3 4",
+      "output": "18",
+      "explanation": "Multiply (A\u00d7B)\u00d7C first: (1\u00d72\u00d73)+(1\u00d73\u00d74)=6+12=18."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "40 20 30 10 30",
+      "expectedOutput": "26000",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "10 30 5 60",
+      "expectedOutput": "4500",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1 2 3 4",
+      "expectedOutput": "18",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "2 2 2 2",
+      "expectedOutput": "16",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "5 10 3 12 5 50 6",
+      "expectedOutput": "2010",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "3 2",
+      "expectedOutput": "0",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "10 100 5 50",
+      "expectedOutput": "7500",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "2 3 4 5",
+      "expectedOutput": "58",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

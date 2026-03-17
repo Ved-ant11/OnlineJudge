@@ -1,0 +1,68 @@
+{
+  "id": "grid-infection-spread",
+  "title": "Grid Infection Spread",
+  "difficulty": "MEDIUM",
+  "statement": "You have an n\u00d7m binary grid. `1` = infected, `0` = healthy. Every minute, a healthy cell becomes infected if it has **at least 2 infected neighbors** (4-directional). Return the minutes elapsed until no more spread occurs, and the total infected cells at the end.\n\n**Input:** First line: n m. Next n lines: m space-separated 0s and 1s.\n**Output:** Two integers \u2014 minutes and total infected cells.",
+  "constraints": "- 1 \u2264 n, m \u2264 200\n- Grid contains only 0 and 1",
+  "examples": [
+    {
+      "input": "3 3\n1 1 1\n1 0 1\n1 1 1",
+      "output": "1 9",
+      "explanation": "Center cell has 4 infected neighbors \u2014 gets infected in minute 1. All 9 cells infected."
+    },
+    {
+      "input": "3 3\n1 0 0\n0 0 0\n0 0 1",
+      "output": "0 2",
+      "explanation": "No healthy cell has 2+ infected neighbors. No spread. Total=2."
+    },
+    {
+      "input": "2 2\n0 1\n1 0",
+      "output": "1 4",
+      "explanation": "(0,0) and (1,1) each have 2 infected neighbors \u2014 both infected in minute 1. Total=4."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "3 3\n1 1 1\n1 0 1\n1 1 1",
+      "expectedOutput": "1 9",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "3 3\n1 0 0\n0 0 0\n0 0 1",
+      "expectedOutput": "0 2",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "2 2\n0 1\n1 0",
+      "expectedOutput": "1 4",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1 1\n1",
+      "expectedOutput": "0 1",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1 1\n0",
+      "expectedOutput": "0 0",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "3 3\n1 0 1\n0 0 0\n1 0 1",
+      "expectedOutput": "2 9",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "4 4\n1 1 0 0\n1 0 0 0\n0 0 0 1\n0 0 1 1",
+      "expectedOutput": "4 16",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

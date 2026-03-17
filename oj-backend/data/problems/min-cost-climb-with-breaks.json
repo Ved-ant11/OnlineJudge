@@ -1,0 +1,74 @@
+{
+  "id": "min-cost-climb-with-breaks",
+  "title": "Minimum Cost Climb with Breaks",
+  "difficulty": "HARD",
+  "statement": "You have a staircase of `n` steps. Step `i` has a cost `cost[i]` to step on. After stepping on any step, you may jump 1 or 2 steps forward. You must reach the top (beyond the last step).\n\nAdditionally, you have `k` **break tokens**: each break token lets you skip one step for free (zero cost). Find the **minimum cost** to reach the top using at most `k` tokens.\n\n**Input:** First line: space-separated costs. Second line: k.\n**Output:** Minimum cost.",
+  "constraints": "- 1 \u2264 n \u2264 1000\n- 0 \u2264 cost[i] \u2264 999\n- 0 \u2264 k \u2264 n",
+  "examples": [
+    {
+      "input": "10 15 20\n0",
+      "output": "15",
+      "explanation": "No tokens. Skip step 0: step on step 1 (15), jump to top. Or step 0+2=12, step0+step2=30. Min=15."
+    },
+    {
+      "input": "10 15 20\n1",
+      "output": "0",
+      "explanation": "Use token to skip step 1. Jump over step 0 and step 2. Cost=0."
+    },
+    {
+      "input": "1 100 1 1 1 100 1 1 100 1\n0",
+      "output": "6",
+      "explanation": "Skip the 100-cost steps using the jump mechanic. Optimal path costs 6."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "10 15 20\n0",
+      "expectedOutput": "15",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "10 15 20\n1",
+      "expectedOutput": "0",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1 100 1 1 1 100 1 1 100 1\n0",
+      "expectedOutput": "6",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "0\n0",
+      "expectedOutput": "0",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1 2 3 4 5\n2",
+      "expectedOutput": "0",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "5 4 3 2 1\n1",
+      "expectedOutput": "3",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "10 15 20 25 30\n0",
+      "expectedOutput": "30",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "1 1 1 1 1 1 1 1 1 1\n3",
+      "expectedOutput": "2",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

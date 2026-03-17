@@ -1,0 +1,74 @@
+{
+  "id": "tiling-board",
+  "title": "Tiling a Board",
+  "difficulty": "EASY",
+  "statement": "Count the number of ways to completely tile a `2 \u00d7 N` board using `1 \u00d7 2` dominoes. Return the answer modulo 10\u2079+7.\n\n**Input:** Single integer N.\n**Output:** Number of tilings mod 10\u2079+7.",
+  "constraints": "- 0 \u2264 N \u2264 10\u2075",
+  "examples": [
+    {
+      "input": "2",
+      "output": "2",
+      "explanation": "Two verticals, or two horizontals."
+    },
+    {
+      "input": "3",
+      "output": "3",
+      "explanation": "Three tilings for a 2\u00d73 board."
+    },
+    {
+      "input": "0",
+      "output": "1",
+      "explanation": "Empty board has exactly one tiling (do nothing)."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "2",
+      "expectedOutput": "2",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "3",
+      "expectedOutput": "3",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "0",
+      "expectedOutput": "1",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1",
+      "expectedOutput": "1",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "4",
+      "expectedOutput": "5",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "5",
+      "expectedOutput": "8",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "10",
+      "expectedOutput": "89",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "30",
+      "expectedOutput": "1346269",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

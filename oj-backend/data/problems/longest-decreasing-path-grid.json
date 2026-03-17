@@ -1,0 +1,74 @@
+{
+  "id": "longest-decreasing-path-grid",
+  "title": "Longest Escape Route",
+  "difficulty": "EASY",
+  "statement": "You are trapped in a grid of altitude values. You can only step to an **adjacent cell** (up, down, left, right) with a **strictly lower** altitude. Starting from the best possible cell, what is the **longest route** you can take?\n\n**Input:** First line: n m. Next n lines: m space-separated integers.\n**Output:** Length of the longest strictly decreasing path (in cells).",
+  "constraints": "- 1 \u2264 n, m \u2264 200\n- 0 \u2264 grid[i][j] \u2264 10\u2079",
+  "examples": [
+    {
+      "input": "3 3\n9 9 4\n6 6 8\n2 1 1",
+      "output": "4",
+      "explanation": "Best path: 9\u21926\u21922\u21921, length 4."
+    },
+    {
+      "input": "3 3\n3 4 5\n3 2 6\n2 2 1",
+      "output": "4",
+      "explanation": "Best path: 6\u21925\u21924\u21922 or 6\u21924\u21923\u21922, length 4."
+    },
+    {
+      "input": "1 1\n1",
+      "output": "1",
+      "explanation": "Single cell, path length 1."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "3 3\n9 9 4\n6 6 8\n2 1 1",
+      "expectedOutput": "4",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "3 3\n3 4 5\n3 2 6\n2 2 1",
+      "expectedOutput": "4",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1 1\n1",
+      "expectedOutput": "1",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "3 3\n5 4 3\n6 5 4\n7 6 5",
+      "expectedOutput": "5",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1 5\n1 2 3 4 5",
+      "expectedOutput": "5",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "1 5\n5 4 3 2 1",
+      "expectedOutput": "5",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "2 2\n1 3\n2 4",
+      "expectedOutput": "3",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "2 2\n9 8\n7 6",
+      "expectedOutput": "3",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

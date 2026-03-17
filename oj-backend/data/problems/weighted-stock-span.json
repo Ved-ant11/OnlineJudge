@@ -1,0 +1,68 @@
+{
+  "id": "weighted-stock-span",
+  "title": "Weighted Stock Span",
+  "difficulty": "MEDIUM",
+  "statement": "The **span** of a stock on day `i` is the number of consecutive days ending at day `i` where the price \u2264 prices[i]. The **weighted span** is the sum of `span[i] \u00d7 prices[i]` for all days. Compute it.\n\n**Input:** Space-separated stock prices.\n**Output:** Single integer \u2014 the weighted span.",
+  "constraints": "- 1 \u2264 n \u2264 10\u2075\n- 1 \u2264 prices[i] \u2264 10\u2075",
+  "examples": [
+    {
+      "input": "100 80 60 70 60 75 85",
+      "output": "1250",
+      "explanation": "Spans: [1,1,1,2,1,4,6]. Weighted: 100+80+60+140+60+300+510=1250."
+    },
+    {
+      "input": "10 20 30",
+      "output": "140",
+      "explanation": "Spans: [1,2,3]. Weighted: 10+40+90=140."
+    },
+    {
+      "input": "5 5 5",
+      "output": "30",
+      "explanation": "Spans: [1,2,3]. Weighted: 5+10+15=30."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "100 80 60 70 60 75 85",
+      "expectedOutput": "1250",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "10 20 30",
+      "expectedOutput": "140",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "5 5 5",
+      "expectedOutput": "30",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1",
+      "expectedOutput": "1",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "5 4 3 2 1",
+      "expectedOutput": "15",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "1 2 1 2 1",
+      "expectedOutput": "15",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "3 1 4 1 5 9 2 6",
+      "expectedOutput": "110",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

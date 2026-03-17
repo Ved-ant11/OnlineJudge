@@ -1,0 +1,74 @@
+{
+  "id": "token-balance-game",
+  "title": "Token Balance Game",
+  "difficulty": "EASY",
+  "statement": "Two players A and B take turns picking tokens from a row. A always picks from the **left end**, B always picks from the **right end**, A goes first. Return A's total score minus B's total score after all tokens are taken.\n\n**Input:** Space-separated integers (token values, can be negative).\n**Output:** A's score minus B's score.",
+  "constraints": "- 1 \u2264 n \u2264 10\u2075\n- -10\u2074 \u2264 tokens[i] \u2264 10\u2074",
+  "examples": [
+    {
+      "input": "5 3 1 4 2",
+      "output": "3",
+      "explanation": "A picks 5,3,1 (indices 0,2,4). B picks 2,4 (from right). A=9, B=6. Diff=3."
+    },
+    {
+      "input": "3 9 1 2",
+      "output": "9",
+      "explanation": "A picks 3,9. B picks 2,1. A=12, B=3. Diff=9."
+    },
+    {
+      "input": "1 2 3",
+      "output": "0",
+      "explanation": "A picks 1,2. B picks 3. A=3, B=3. Diff=0."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "5 3 1 4 2",
+      "expectedOutput": "3",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "3 9 1 2",
+      "expectedOutput": "9",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1 2 3",
+      "expectedOutput": "0",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1",
+      "expectedOutput": "1",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1 2",
+      "expectedOutput": "-1",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "10 10 10 10",
+      "expectedOutput": "0",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "-5 3 -2 4",
+      "expectedOutput": "-4",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "1 -1 1 -1 1",
+      "expectedOutput": "1",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

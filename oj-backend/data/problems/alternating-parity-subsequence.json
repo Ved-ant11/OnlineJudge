@@ -1,0 +1,74 @@
+{
+  "id": "alternating-parity-subsequence",
+  "title": "Alternating Parity Subsequence",
+  "difficulty": "EASY",
+  "statement": "Given an array of positive integers, find the length of the **longest subsequence** where values alternate strictly between odd and even (can start with either).\n\n**Input:** Space-separated positive integers.\n**Output:** Length of the longest alternating parity subsequence.",
+  "constraints": "- 1 \u2264 n \u2264 10\u2075\n- 1 \u2264 nums[i] \u2264 10\u2076",
+  "examples": [
+    {
+      "input": "1 2 3 4 5",
+      "output": "5",
+      "explanation": "o,e,o,e,o \u2014 already alternating. Length=5."
+    },
+    {
+      "input": "1 3 5 7",
+      "output": "1",
+      "explanation": "All odd. Best is any single element. Length=1."
+    },
+    {
+      "input": "2 4 1 3",
+      "output": "2",
+      "explanation": "Parities: e,e,o,o. Best alternating: pick one e and one o = length 2."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "1 2 3 4 5",
+      "expectedOutput": "5",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "1 3 5 7",
+      "expectedOutput": "1",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "2 4 1 3",
+      "expectedOutput": "2",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1",
+      "expectedOutput": "1",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "2 1 4 3 1 2",
+      "expectedOutput": "5",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "1 2 1 2 1 2",
+      "expectedOutput": "6",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "4 6 8 1 3 5",
+      "expectedOutput": "2",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "2 1 1 2 1 2 1",
+      "expectedOutput": "6",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

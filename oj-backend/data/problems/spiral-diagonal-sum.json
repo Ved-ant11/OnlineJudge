@@ -1,0 +1,68 @@
+{
+  "id": "spiral-diagonal-sum",
+  "title": "Spiral Diagonal Union Sum",
+  "difficulty": "EASY",
+  "statement": "Given an n\u00d7n matrix, compute the sum of all elements that lie on **either diagonal OR the outermost ring**, without double-counting.\n\n**Input:** First line: n. Next n lines: n space-separated integers.\n**Output:** Sum of all qualifying elements.",
+  "constraints": "- 1 \u2264 n \u2264 100\n- -10\u00b3 \u2264 matrix[i][j] \u2264 10\u00b3",
+  "examples": [
+    {
+      "input": "3\n1 2 3\n4 5 6\n7 8 9",
+      "output": "45",
+      "explanation": "For n=3 the union of diagonals and outer ring covers all 9 elements. Sum=45."
+    },
+    {
+      "input": "2\n1 2\n3 4",
+      "output": "10",
+      "explanation": "All elements qualify. Sum=10."
+    },
+    {
+      "input": "1\n7",
+      "output": "7",
+      "explanation": "Single element."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "3\n1 2 3\n4 5 6\n7 8 9",
+      "expectedOutput": "45",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "2\n1 2\n3 4",
+      "expectedOutput": "10",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1\n7",
+      "expectedOutput": "7",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "4\n1 2 3 4\n5 6 7 8\n9 10 11 12\n13 14 15 16",
+      "expectedOutput": "136",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "3\n0 0 0\n0 0 0\n0 0 0",
+      "expectedOutput": "0",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "3\n-1 2 3\n4 -5 6\n7 8 -9",
+      "expectedOutput": "15",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "5\n1 1 1 1 1\n1 1 1 1 1\n1 1 1 1 1\n1 1 1 1 1\n1 1 1 1 1",
+      "expectedOutput": "21",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

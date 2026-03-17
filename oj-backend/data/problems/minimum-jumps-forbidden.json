@@ -1,0 +1,68 @@
+{
+  "id": "minimum-jumps-forbidden",
+  "title": "Minimum Jumps Past Forbidden Positions",
+  "difficulty": "HARD",
+  "statement": "You stand at position 0. Each turn: jump forward `a` OR jump backward `b` (cannot go below 0, cannot make two consecutive backward jumps). Some positions are forbidden. Find minimum jumps to reach `x`, or `-1`.\n\n**Input:** First line: a b x. Second line: space-separated forbidden positions, or `none`.\n**Output:** Minimum jumps or -1.",
+  "constraints": "- 1 \u2264 a, b, x \u2264 2000\n- 0 \u2264 |forbidden| \u2264 200",
+  "examples": [
+    {
+      "input": "2 3 9\nnone",
+      "output": "7",
+      "explanation": "BFS optimal: 0\u21922\u21924\u21926\u21928\u21925\u21927\u21929. 7 jumps."
+    },
+    {
+      "input": "2 3 9\n1 2 3 4 5 6 7 8",
+      "output": "-1",
+      "explanation": "All intermediate positions forbidden."
+    },
+    {
+      "input": "1 1 5\nnone",
+      "output": "5",
+      "explanation": "5 forward jumps."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "2 3 9\nnone",
+      "expectedOutput": "7",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "2 3 9\n1 2 3 4 5 6 7 8",
+      "expectedOutput": "-1",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1 1 5\nnone",
+      "expectedOutput": "5",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "2 1 4\n3",
+      "expectedOutput": "2",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "3 2 10\n4 5 6 7 8 9",
+      "expectedOutput": "-1",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "5 3 15\n3 6",
+      "expectedOutput": "3",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "1 2 6\n2 4",
+      "expectedOutput": "-1",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

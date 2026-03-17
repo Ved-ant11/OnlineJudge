@@ -1,0 +1,74 @@
+{
+  "id": "concert-seating",
+  "title": "Concert Seating",
+  "difficulty": "EASY",
+  "statement": "There are `n` seats in a row, each with a comfort score. You need to seat exactly `k` people such that **no two people sit in adjacent seats**. Maximize the total comfort.\n\n**Input:** First line: space-separated comfort scores. Second line: k.\n**Output:** Maximum total comfort.",
+  "constraints": "- 1 \u2264 n \u2264 10\u2075\n- 1 \u2264 k \u2264 \u2308n/2\u2309\n- 1 \u2264 comfort[i] \u2264 10\u2076",
+  "examples": [
+    {
+      "input": "1 2 3\n2",
+      "output": "4",
+      "explanation": "Seat people at positions 0 and 2: comfort 1+3=4."
+    },
+    {
+      "input": "5 5 5 5 5\n3",
+      "output": "15",
+      "explanation": "Seat at positions 0, 2, 4: 5+5+5=15."
+    },
+    {
+      "input": "1 2 3 4 5\n2",
+      "output": "8",
+      "explanation": "Seat at positions 2 and 4: 3+5=8."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "1 2 3\n2",
+      "expectedOutput": "4",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "5 5 5 5 5\n3",
+      "expectedOutput": "15",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1 2 3 4 5\n2",
+      "expectedOutput": "8",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1\n1",
+      "expectedOutput": "1",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1 2\n1",
+      "expectedOutput": "2",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "10 1 10 1 10\n3",
+      "expectedOutput": "30",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "3 1 4 1 5 9 2 6\n3",
+      "expectedOutput": "19",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "1 1000000 1 1000000 1\n2",
+      "expectedOutput": "2000000",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

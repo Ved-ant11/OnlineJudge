@@ -1,0 +1,74 @@
+{
+  "id": "circular-gas-station",
+  "title": "Circular Gas Station",
+  "difficulty": "EASY",
+  "statement": "There are `n` gas stations on a circular route. Station `i` has `fuel[i]` liters available and costs `cost[i]` liters to reach the next station. Find the **starting station** index from which you can complete the full loop without running out of fuel. Return -1 if impossible.\n\n**Input:** First line: n. Second line: fuel values. Third line: cost values.\n**Output:** Starting station index or -1.",
+  "constraints": "- 1 \u2264 n \u2264 10\u2075\n- 0 \u2264 fuel[i], cost[i] \u2264 10\u2074",
+  "examples": [
+    {
+      "input": "5\n1 2 3 4 5\n3 4 5 1 2",
+      "output": "3",
+      "explanation": "Start at station 3 (fuel 4, cost 1). Net gains: +1,+3,-2,-3,-1. All prefix sums \u2265 0 when starting at 3."
+    },
+    {
+      "input": "3\n2 3 4\n3 4 3",
+      "output": "-1",
+      "explanation": "Total fuel=9, total cost=10. Impossible."
+    },
+    {
+      "input": "1\n1\n1",
+      "output": "0",
+      "explanation": "Single station, fuel equals cost."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "5\n1 2 3 4 5\n3 4 5 1 2",
+      "expectedOutput": "3",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "3\n2 3 4\n3 4 3",
+      "expectedOutput": "-1",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1\n1\n1",
+      "expectedOutput": "0",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1\n2\n1",
+      "expectedOutput": "0",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1\n1\n2",
+      "expectedOutput": "-1",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "3\n3 3 3\n3 3 3",
+      "expectedOutput": "0",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "5\n5 1 2 3 4\n4 4 1 5 1",
+      "expectedOutput": "4",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "4\n1 2 3 4\n2 3 4 1",
+      "expectedOutput": "3",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

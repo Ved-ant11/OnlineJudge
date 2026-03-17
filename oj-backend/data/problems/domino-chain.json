@@ -1,0 +1,74 @@
+{
+  "id": "domino-chain",
+  "title": "Domino Chain",
+  "difficulty": "EASY",
+  "statement": "You are given a set of dominoes, each represented as a pair `[a, b]`. You may flip any domino (turning `[a,b]` into `[b,a]`). Determine if you can arrange **all** dominoes end-to-end in a single chain where every adjacent pair shares a matching number.\n\n**Input:** First line: n (number of dominoes). Next n lines: a b.\n**Output:** YES or NO.",
+  "constraints": "- 0 \u2264 n \u2264 10\u2075\n- 1 \u2264 a, b \u2264 100",
+  "examples": [
+    {
+      "input": "3\n1 2\n2 3\n3 4",
+      "output": "YES",
+      "explanation": "[1,2]\u2192[2,3]\u2192[3,4] forms a valid chain."
+    },
+    {
+      "input": "2\n1 2\n3 4",
+      "output": "NO",
+      "explanation": "No way to connect domino [1,2] with [3,4]."
+    },
+    {
+      "input": "3\n1 2\n2 3\n3 1",
+      "output": "YES",
+      "explanation": "Forms a cycle: valid chain exists."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "3\n1 2\n2 3\n3 4",
+      "expectedOutput": "YES",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "2\n1 2\n3 4",
+      "expectedOutput": "NO",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "3\n1 2\n2 3\n3 1",
+      "expectedOutput": "YES",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "0",
+      "expectedOutput": "YES",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1\n3 3",
+      "expectedOutput": "YES",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "3\n1 1\n1 2\n2 2",
+      "expectedOutput": "YES",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "3\n1 3\n2 4\n3 2",
+      "expectedOutput": "YES",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "4\n1 2\n1 3\n2 4\n3 4",
+      "expectedOutput": "YES",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}

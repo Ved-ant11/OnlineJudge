@@ -1,0 +1,62 @@
+{
+  "id": "bus-route-hops",
+  "title": "Minimum Bus Route Hops",
+  "difficulty": "MEDIUM",
+  "statement": "You are at stop `source` and want to reach `target`. Each bus route loops through its stops. Each new bus boarded counts as one hop. Find minimum hops, or `-1` if impossible.\n\n**Input:** First line: source target. Second line: r (number of routes). Next r lines: stops on each route.\n**Output:** Minimum hops or -1.",
+  "constraints": "- 0 \u2264 stop values \u2264 10\u2076\n- 1 \u2264 r \u2264 500\n- 1 \u2264 route length \u2264 10\u2075",
+  "examples": [
+    {
+      "input": "1 6\n3\n1 2 7\n3 6 7\n1 3 5",
+      "output": "2",
+      "explanation": "Board route 0 at stop 1, ride to stop 7 (hop 1). Board route 1 at stop 7, ride to stop 6 (hop 2)."
+    },
+    {
+      "input": "3 3\n1\n1 2 3",
+      "output": "0",
+      "explanation": "Source equals target."
+    },
+    {
+      "input": "0 1\n1\n2 3 4",
+      "output": "-1",
+      "explanation": "Neither stop 0 nor 1 is on any route."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "1 6\n3\n1 2 7\n3 6 7\n1 3 5",
+      "expectedOutput": "2",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "3 3\n1\n1 2 3",
+      "expectedOutput": "0",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "0 1\n1\n2 3 4",
+      "expectedOutput": "-1",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "0 4\n2\n0 1 2\n2 3 4",
+      "expectedOutput": "2",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1 1\n1\n1 2 3",
+      "expectedOutput": "0",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "5 10\n2\n5 6 7 8 9 10\n1 2 3 4 5",
+      "expectedOutput": "1",
+      "order": 6,
+      "isHidden": true
+    }
+  ]
+}

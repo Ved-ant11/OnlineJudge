@@ -1,0 +1,74 @@
+{
+  "id": "task-scheduler-cooldown",
+  "title": "Task Scheduler with Cooldown",
+  "difficulty": "MEDIUM",
+  "statement": "You have a list of tasks (uppercase letters). After executing a task, you must wait at least `n` intervals before running the **same task** again. Idle intervals fill gaps. Find the **minimum total time** to finish all tasks.\n\n**Input:** First line: space-separated task characters. Second line: cooldown n.\n**Output:** Minimum total time units.",
+  "constraints": "- 1 \u2264 tasks.length \u2264 10\u2074\n- 0 \u2264 n \u2264 100\n- Tasks are uppercase A-Z",
+  "examples": [
+    {
+      "input": "A A A B B B\n2",
+      "output": "8",
+      "explanation": "Schedule: A B _ A B _ A B. Time=8."
+    },
+    {
+      "input": "A A A B B B\n0",
+      "output": "6",
+      "explanation": "No cooldown. Execute all 6 back-to-back."
+    },
+    {
+      "input": "A A A A B C D\n3",
+      "output": "13",
+      "explanation": "maxFreq=4(A). Formula: (4-1)*4+1=13 > len=7."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "A A A B B B\n2",
+      "expectedOutput": "8",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "A A A B B B\n0",
+      "expectedOutput": "6",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "A A A A B C D\n3",
+      "expectedOutput": "13",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "A\n0",
+      "expectedOutput": "1",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "A A\n2",
+      "expectedOutput": "4",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "A B C D E F\n2",
+      "expectedOutput": "6",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "A A A A A A B B B B B B C\n2",
+      "expectedOutput": "17",
+      "order": 7,
+      "isHidden": true
+    },
+    {
+      "input": "A B A B A B A B\n2",
+      "expectedOutput": "11",
+      "order": 8,
+      "isHidden": true
+    }
+  ]
+}
