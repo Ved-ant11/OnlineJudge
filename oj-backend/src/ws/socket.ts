@@ -1,11 +1,11 @@
 import { WebSocketServer, WebSocket } from "ws";
 import { Server } from "http";
 import { createClient } from "redis";
-import { judgeSubmission } from "../worker/judge";
 import prisma from "../db/client";
 import { Verdict, SubmissionStatus } from "../generated/prisma/client";
 import { calculateNewRating } from "../utils/elo";
 import { updateStreak } from "../utils/streak";
+import redis from "../redis/client";
 
 type BattleRoom = {
   player1: WebSocket | null;
@@ -119,6 +119,19 @@ function isRoomPlayer1(room: BattleRoom, userId: string): boolean {
 }
 
 export function setupWebSocket(server: Server) {
+  const subscriber = createClient({
+    url: process.env.REDIS_URL || "redis://localhost:6379",
+  });
+  subscriber.connect();
+  const verdictListeners = new Map<string, (msg: string) => void>();
+  subscriber.pSubscribe("verdict:*", (msg, channel) => {
+    const subId = channel.replace("verdict:", "");
+    const listener = verdictListeners.get(subId);
+    if (listener) {
+      listener(msg);
+      verdictListeners.delete(subId);
+    }
+  });
   const wss = new WebSocketServer({ server });
   const clients = new Map<string, WebSocket>();
   const battleRooms = new Map<string, BattleRoom>();
@@ -129,6 +142,11 @@ export function setupWebSocket(server: Server) {
   >();
 
   const DISCONNECT_GRACE_MS = 30000;
+
+  // rate limiting 30 msgs per 10 seconds per connection
+  const WS_RATE_LIMIT_MAX = 30;
+  const WS_RATE_LIMIT_WINDOW_MS = 10000;
+  const wsRateLimit = new Map<WebSocket, { count: number; resetAt: number }>();
 
   async function handleDisconnectForfeit(
     battleId: string,
@@ -214,6 +232,20 @@ export function setupWebSocket(server: Server) {
     console.log("Client connected");
 
     ws.on("message", async (data) => {
+      // rate limiting check
+      const now = Date.now();
+      let rl = wsRateLimit.get(ws);
+      if (!rl || now > rl.resetAt) {
+        rl = { count: 0, resetAt: now + WS_RATE_LIMIT_WINDOW_MS };
+        wsRateLimit.set(ws, rl);
+      }
+      rl.count++;
+      if (rl.count > WS_RATE_LIMIT_MAX) {
+        ws.send(JSON.stringify({ type: "error", message: "Rate limit exceeded" }));
+        ws.close(1008, "Rate limit exceeded");
+        return;
+      }
+
       let message: any;
       try {
         message = JSON.parse(data.toString());
@@ -439,152 +471,156 @@ export function setupWebSocket(server: Server) {
           );
           return;
         }
-        const testCases = await prisma.testCase.findMany({
-          where: { questionId: battle.questionId },
-          orderBy: { order: "asc" },
+        // push to redis queue
+        const submission = await prisma.submission.create({
+          data: {
+            userId,
+            questionId: battle.questionId,
+            code,
+            language,
+            status: SubmissionStatus.QUEUED,
+          },
         });
+        await redis.lPush("oj:submissions", submission.id);
 
-        const result = await judgeSubmission({ language, code, testCases });
-        try {
-          const submission = await prisma.submission.create({
-            data: {
-              userId,
-              questionId: battle.questionId,
-              code,
-              language,
-              status: SubmissionStatus.COMPLETED,
-              verdict: result.verdict,
-              result: result.message,
-            },
-          });
-          console.log(
-            `[ws] Created battle submission record ${submission.id} for user ${userId}`,
-          );
-          room[isPlayer1 ? "p1LastSubmitTime" : "p2LastSubmitTime"] =
-            Date.now();
-        } catch (err) {
-          console.error(`[ws] Failed to create submission record:`, err);
-        }
+        room[isPlayer1 ? "p1LastSubmitTime" : "p2LastSubmitTime"] = Date.now();
+        console.log(
+          `[ws] Queued battle submission ${submission.id} for user ${userId}`,
+        );
 
-        if (result.verdict === Verdict.AC) {
-          const timeTaken = Date.now() - room.startTime;
-          if (room.timer) clearTimeout(room.timer);
-          room.timer = null;
-
-          const loserId = isPlayer1 ? battle.player2Id : battle.player1Id;
-
-          const checkStatus = await prisma.battle.findUnique({
-            where: { id: battleId },
-            select: { status: true },
-          });
-          if (checkStatus?.status !== "ACTIVE") {
-            ws.send(
-              JSON.stringify({
-                type: "battle:result",
-                battleId,
-                won: false,
-                message:
-                  "Battle already ended before your submission was judged.",
-              }),
-            );
-            return;
-          }
-
-          await prisma.battle.update({
-            where: { id: battleId },
-            data: {
-              status: "COMPLETED",
-              winnerId: userId,
-              endedAt: new Date(),
-              [isPlayer1 ? "player1Time" : "player2Time"]: timeTaken,
-            },
-          });
-
-          // Update streak for the winner
+        // Listen for verdict via shared subscriber
+        verdictListeners.set(submission.id, async (msg) => {
           try {
-            await updateStreak(userId);
-          } catch (err) {
-            console.error(
-              `[ws] Failed to update streak for user ${userId}:`,
-              err,
-            );
-          }
+            const result = JSON.parse(msg);
+            const currentRoom = battleRooms.get(battleId);
+            if (!currentRoom) return;
 
-          // Calculate and update Elo
-          const [winner, loser] = await Promise.all([
-            prisma.user.findUnique({ where: { id: userId } }),
-            prisma.user.findUnique({ where: { id: loserId } }),
-          ]);
+            if (result.verdict === Verdict.AC) {
+              const timeTaken = Date.now() - currentRoom.startTime;
+              if (currentRoom.timer) clearTimeout(currentRoom.timer);
+              currentRoom.timer = null;
 
-          if (winner && loser) {
-            const { winnerNew, loserNew } = calculateNewRating(
-              winner.rating,
-              loser.rating,
-              winner.battlesPlayed,
-              loser.battlesPlayed,
-            );
+              const loserId = isPlayer1 ? battle.player2Id : battle.player1Id;
 
-            await Promise.all([
-              prisma.user.update({
-                where: { id: winner.id },
+              const checkStatus = await prisma.battle.findUnique({
+                where: { id: battleId },
+                select: { status: true },
+              });
+              if (checkStatus?.status !== "ACTIVE") {
+                if (ws.readyState === WebSocket.OPEN) {
+                  ws.send(
+                    JSON.stringify({
+                      type: "battle:result",
+                      battleId,
+                      won: false,
+                      message:
+                        "Battle already ended before your submission was judged.",
+                    }),
+                  );
+                }
+                return;
+              }
+
+              await prisma.battle.update({
+                where: { id: battleId },
                 data: {
-                  rating: winnerNew,
-                  battlesPlayed: { increment: 1 },
-                  battlesWon: { increment: 1 },
+                  status: "COMPLETED",
+                  winnerId: userId,
+                  endedAt: new Date(),
+                  [isPlayer1 ? "player1Time" : "player2Time"]: timeTaken,
                 },
-              }),
-              prisma.user.update({
-                where: { id: loser.id },
-                data: { rating: loserNew, battlesPlayed: { increment: 1 } },
-              }),
-            ]);
+              });
 
-            // Notify winner
-            ws.send(
-              JSON.stringify({
-                type: "battle:result",
-                battleId,
-                won: true,
-                timeTaken,
-                eloChange: winnerNew - winner.rating,
-                newRating: winnerNew,
-              }),
-            );
+              try {
+                await updateStreak(userId);
+              } catch (err) {
+                console.error(
+                  `[ws] Failed to update streak for user ${userId}:`,
+                  err,
+                );
+              }
 
-            // Notify loser
-            if (opponent?.readyState === WebSocket.OPEN) {
-              opponent.send(
-                JSON.stringify({
-                  type: "battle:result",
-                  battleId,
-                  won: false,
-                  eloChange: loserNew - loser.rating,
-                  newRating: loserNew,
-                }),
-              );
+              const [winner, loser] = await Promise.all([
+                prisma.user.findUnique({ where: { id: userId } }),
+                prisma.user.findUnique({ where: { id: loserId } }),
+              ]);
+
+              if (winner && loser) {
+                const { winnerNew, loserNew } = calculateNewRating(
+                  winner.rating,
+                  loser.rating,
+                  winner.battlesPlayed,
+                  loser.battlesPlayed,
+                );
+
+                await Promise.all([
+                  prisma.user.update({
+                    where: { id: winner.id },
+                    data: {
+                      rating: winnerNew,
+                      battlesPlayed: { increment: 1 },
+                      battlesWon: { increment: 1 },
+                    },
+                  }),
+                  prisma.user.update({
+                    where: { id: loser.id },
+                    data: { rating: loserNew, battlesPlayed: { increment: 1 } },
+                  }),
+                ]);
+
+                if (ws.readyState === WebSocket.OPEN) {
+                  ws.send(
+                    JSON.stringify({
+                      type: "battle:result",
+                      battleId,
+                      won: true,
+                      timeTaken,
+                      eloChange: winnerNew - winner.rating,
+                      newRating: winnerNew,
+                    }),
+                  );
+                }
+
+                const opponentWs = isPlayer1 ? currentRoom.player2 : currentRoom.player1;
+                if (opponentWs?.readyState === WebSocket.OPEN) {
+                  opponentWs.send(
+                    JSON.stringify({
+                      type: "battle:result",
+                      battleId,
+                      won: false,
+                      eloChange: loserNew - loser.rating,
+                      newRating: loserNew,
+                    }),
+                  );
+                }
+              }
+
+              battleRooms.delete(battleId);
+            } else {
+              if (ws.readyState === WebSocket.OPEN) {
+                ws.send(
+                  JSON.stringify({
+                    type: "battle:verdict",
+                    verdict: result.verdict,
+                    message: result.result,
+                  }),
+                );
+              }
+
+              const opponentWs = isPlayer1 ? currentRoom.player2 : currentRoom.player1;
+              if (opponentWs?.readyState === WebSocket.OPEN) {
+                opponentWs.send(
+                  JSON.stringify({
+                    type: "battle:opponent_submitted",
+                    verdict: result.verdict,
+                  }),
+                );
+              }
             }
+          } catch (err) {
+            console.error(`[ws] Error handling battle verdict:`, err);
           }
-
-          battleRooms.delete(battleId);
-        } else {
-          // Non-AC verdict — notify submitter and opponent
-          ws.send(
-            JSON.stringify({
-              type: "battle:verdict",
-              verdict: result.verdict,
-              message: result.message,
-            }),
-          );
-
-          if (opponent?.readyState === WebSocket.OPEN) {
-            opponent.send(
-              JSON.stringify({
-                type: "battle:opponent_submitted",
-                verdict: result.verdict,
-              }),
-            );
-          }
-        }
+        });
       }
       if (message.type === "battle:leave") {
         const { battleId, userId } = message;
@@ -791,16 +827,8 @@ export function setupWebSocket(server: Server) {
       }
 
       if (message.type === "subscribe") {
-        clients.set(message.submissionId, ws);
-        console.log(`Subscribed to submission ${message.submissionId}`);
-        const subscriber = createClient({
-          url: process.env.REDIS_URL || "redis://localhost:6379",
-        });
-        await subscriber.connect();
-        await subscriber.subscribe(`verdict:${message.submissionId}`, (msg) => {
-          ws.send(msg);
-          subscriber.unsubscribe();
-          subscriber.quit();
+        verdictListeners.set(message.submissionId, (msg) => {
+          if (ws.readyState === WebSocket.OPEN) ws.send(msg);
         });
       }
 
@@ -1025,106 +1053,116 @@ export function setupWebSocket(server: Server) {
         const player = room.players.get(userId);
         if (!player || player.hasFinished) return;
 
-        const testCases = await prisma.testCase.findMany({
-          where: { questionId: room.questionId },
-          orderBy: { order: "asc" },
+        // push to redis queue
+        const submission = await prisma.submission.create({
+          data: {
+            userId,
+            questionId: room.questionId,
+            code,
+            language,
+            status: SubmissionStatus.QUEUED,
+          },
         });
+        await redis.lPush("oj:submissions", submission.id);
 
-        const result = await judgeSubmission({ language, code, testCases });
+        console.log(
+          `[ws] Queued room submission ${submission.id} for user ${userId}`,
+        );
+        const capturedRoomId = roomId;
+        const capturedQuestionId = room.questionId;
+        verdictListeners.set(submission.id, async (msg) => {
+          try {
+            const result = JSON.parse(msg);
+            const currentRoom = customRooms.get(capturedRoomId);
+            if (!currentRoom || currentRoom.status !== "ACTIVE") return;
 
-        try {
-          await prisma.submission.create({
-            data: {
-              userId,
-              questionId: room.questionId,
-              code,
-              language,
-              status: SubmissionStatus.COMPLETED,
-              verdict: result.verdict,
-              result: result.message,
-            },
-          });
-        } catch (err) {}
+            const currentPlayer = currentRoom.players.get(userId);
+            if (!currentPlayer || currentPlayer.hasFinished) return;
 
-        for (const p of room.players.values()) {
-          if (p.ws?.readyState === WebSocket.OPEN) {
-            p.ws.send(
-              JSON.stringify({
-                type: "room:submission",
-                userId,
-                username: player?.username,
-                verdict: result.verdict,
-              }),
-            );
-          }
-        }
-
-        if (result.verdict === Verdict.AC) {
-          player.hasFinished = true;
-          player.finishedAt = Date.now();
-
-          await prisma.roomParticipant
-            .update({
-              where: { roomId_userId: { roomId, userId } },
-              data: {
-                hasFinished: true,
-                finishedAt: new Date(player.finishedAt),
-              },
-            })
-            .catch(() => {});
-
-          let allFinished = true;
-          for (const p of room.players.values()) {
-            if (!p.hasFinished) allFinished = false;
-          }
-
-          for (const p of room.players.values()) {
-            if (p.ws?.readyState === WebSocket.OPEN) {
-              p.ws.send(
-                JSON.stringify({
-                  type: "room:finished",
-                  userId,
-                  username: player?.username,
-                }),
-              );
-            }
-          }
-
-          if (allFinished) {
-            room.status = "COMPLETED";
-
-            await prisma.room
-              .update({
-                where: { id: roomId },
-                data: { status: "COMPLETED", endedAt: new Date() },
-              })
-              .catch(() => {});
-
-            const leaderboard = Array.from(room.players.values())
-              .filter((p) => p.hasFinished && p.finishedAt)
-              .sort((a, b) => a.finishedAt! - b.finishedAt!)
-              .map((p) => ({
-                username: p.username,
-                time: p.finishedAt! - room.startTime,
-              }));
-
-            for (const p of room.players.values()) {
+            for (const p of currentRoom.players.values()) {
               if (p.ws?.readyState === WebSocket.OPEN) {
                 p.ws.send(
                   JSON.stringify({
-                    type: "room:ended",
-                    leaderboard,
+                    type: "room:submission",
+                    userId,
+                    username: currentPlayer.username,
+                    verdict: result.verdict,
                   }),
                 );
               }
             }
+
+            if (result.verdict === Verdict.AC) {
+              currentPlayer.hasFinished = true;
+              currentPlayer.finishedAt = Date.now();
+
+              await prisma.roomParticipant
+                .update({
+                  where: { roomId_userId: { roomId: capturedRoomId, userId } },
+                  data: {
+                    hasFinished: true,
+                    finishedAt: new Date(currentPlayer.finishedAt),
+                  },
+                })
+                .catch(() => {});
+
+              let allFinished = true;
+              for (const p of currentRoom.players.values()) {
+                if (!p.hasFinished) allFinished = false;
+              }
+
+              for (const p of currentRoom.players.values()) {
+                if (p.ws?.readyState === WebSocket.OPEN) {
+                  p.ws.send(
+                    JSON.stringify({
+                      type: "room:finished",
+                      userId,
+                      username: currentPlayer.username,
+                    }),
+                  );
+                }
+              }
+
+              if (allFinished) {
+                currentRoom.status = "COMPLETED";
+
+                await prisma.room
+                  .update({
+                    where: { id: capturedRoomId },
+                    data: { status: "COMPLETED", endedAt: new Date() },
+                  })
+                  .catch(() => {});
+
+                const leaderboard = Array.from(currentRoom.players.values())
+                  .filter((p) => p.hasFinished && p.finishedAt)
+                  .sort((a, b) => a.finishedAt! - b.finishedAt!)
+                  .map((p) => ({
+                    username: p.username,
+                    time: p.finishedAt! - currentRoom.startTime,
+                  }));
+
+                for (const p of currentRoom.players.values()) {
+                  if (p.ws?.readyState === WebSocket.OPEN) {
+                    p.ws.send(
+                      JSON.stringify({
+                        type: "room:ended",
+                        leaderboard,
+                      }),
+                    );
+                  }
+                }
+              }
+            }
+          } catch (err) {
+            console.error(`[ws] Error handling room verdict:`, err);
           }
-        }
+        });
       }
     });
 
     ws.on("close", () => {
       console.log("Client disconnected");
+      wsRateLimit.delete(ws);
 
       const meta = wsMetadata.get(ws);
       wsMetadata.delete(ws);

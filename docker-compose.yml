@@ -11,22 +11,33 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   backend:
     build: ./oj-backend
     ports:
       - "5000:5000"
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-
     environment:
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/oj
       REDIS_URL: redis://redis:6379
@@ -37,12 +48,13 @@ services:
     build: ./oj-backend
     command: npm run worker
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock     
     environment:
-      # same env vars as backend
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/oj
       REDIS_URL: redis://redis:6379
       JWT_SECRET: ${JWT_SECRET}

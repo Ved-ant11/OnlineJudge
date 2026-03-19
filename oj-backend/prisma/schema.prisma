@@ -33,6 +33,7 @@ model User {
   comments        Comment[]
   ownedRooms      Room[]    @relation("RoomOwner")
   roomParticipants RoomParticipant[]
+  feedbacks       Feedback[]
 }
 
 model Question {
@@ -169,6 +170,26 @@ model RoomParticipant {
   @@index([userId])
 }
 
+model Feedback {
+  id          String            @id @default(uuid())
+  userId      String?
+  category    FeedbackCategory
+  content     String
+  rating      Int               @default(0)
+  createdAt   DateTime          @default(now())
+
+  user        User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+}
+
+
+enum FeedbackCategory {
+  IMPROVEMENT
+  LIKED
+  BUG
+  OTHER
+}
 
 enum BattleStatus {
   WAITING
@@ -205,3 +226,4 @@ enum Difficulty {
   MEDIUM
   HARD
 }
+

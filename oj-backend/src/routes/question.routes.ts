@@ -1,18 +1,21 @@
 import { Router, Request, Response } from "express";
 import prisma from "../db/client";
 import tokenVerify from "../middleware/auth";
+import { cached, invalidateCache } from "../redis/cache";
 
 const router = Router();
 
 router.get("/", async (_req: Request, res: Response) => {
   try {
-    const questions = await prisma.question.findMany({
-      select: {
-        id: true,
-        title: true,
-        difficulty: true,
-      },
-    });
+    const questions = await cached("cache:questions:list", 60, () =>
+      prisma.question.findMany({
+        select: {
+          id: true,
+          title: true,
+          difficulty: true,
+        },
+      }),
+    );
 
     return res.status(200).json(questions);
   } catch {
@@ -24,17 +27,19 @@ router.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    const question = await prisma.question.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        title: true,
-        difficulty: true,
-        statement: true,
-        examples: true,
-        constraints: true,
-      },
-    });
+    const question = await cached(`cache:questions:${id}`, 300, () =>
+      prisma.question.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          title: true,
+          difficulty: true,
+          statement: true,
+          examples: true,
+          constraints: true,
+        },
+      }),
+    );
 
     if (!question) {
       return res.status(404).json({ error: "Question not found" });
@@ -78,6 +83,7 @@ router.post("/", tokenVerify, async (req: Request, res: Response) => {
         })),
       });
     }
+    await invalidateCache("cache:questions:list");
     return res.status(201).json(question);
   } catch {
     return res.status(500).json({ error: "Internal Server Error" });

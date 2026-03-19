@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import prisma from "../db/client";
 import tokenVerify from "../middleware/auth";
+import { cached } from "../redis/cache";
 
 const router = Router();
 
@@ -67,24 +68,26 @@ router.get("/me", tokenVerify, async (req: Request, res: Response) => {
 
 router.get("/leaderboard", async (_req: Request, res: Response) => {
   try {
-    const users = await prisma.user.findMany({
-      select: {
-        username: true,
-        submissions: {
-          where: { verdict: "AC" },
-          select: { questionId: true },
-          distinct: ["questionId"],
+    const leaderboard = await cached("cache:leaderboard", 30, async () => {
+      const users = await prisma.user.findMany({
+        select: {
+          username: true,
+          submissions: {
+            where: { verdict: "AC" },
+            select: { questionId: true },
+            distinct: ["questionId"],
+          },
         },
-      },
-    });
+      });
 
-    const leaderboard = users
-      .map((u) => ({
-        username: u.username,
-        solvedCount: u.submissions.length,
-      }))
-      .filter((u) => u.solvedCount > 0)
-      .sort((a, b) => b.solvedCount - a.solvedCount);
+      return users
+        .map((u) => ({
+          username: u.username,
+          solvedCount: u.submissions.length,
+        }))
+        .filter((u) => u.solvedCount > 0)
+        .sort((a, b) => b.solvedCount - a.solvedCount);
+    });
 
     res.status(200).json(leaderboard);
   } catch (error) {

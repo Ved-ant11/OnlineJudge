@@ -315,3 +315,35 @@ export const fetchRoom = async (roomId: string) => {
   if (!response.ok) throw new Error("Failed to fetch room");
   return response.json();
 };
+
+export const fetchFeedback = async () => {
+  const response = await fetch(`${API_BASE_URL}/feedback`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+    cache: "no-store",
+  });
+  if (!response.ok) throw new Error("Failed to fetch feedback");
+  return response.json();
+};
+
+export const submitFeedback = async ({
+  category,
+  content,
+  rating,
+}: {
+  category: string;
+  content: string;
+  rating: number;
+}) => {
+  const response = await fetch(`${API_BASE_URL}/feedback`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ category, content, rating }),
+  });
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.error || "Failed to submit feedback");
+  }
+  return response.json();
+};

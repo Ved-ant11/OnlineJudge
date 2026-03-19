@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm ci --omit=dev
 
 COPY . .
 
@@ -14,8 +14,8 @@ ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 
 RUN npx prisma generate
 
-RUN npx tsc                
+RUN npx tsc
 
 EXPOSE 5000
 
-CMD ["npm", "run", "dev"]
+CMD ["node", "dist/index.js"]

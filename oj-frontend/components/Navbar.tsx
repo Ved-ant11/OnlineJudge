@@ -26,6 +26,7 @@ export default function Navbar() {
               { label: "Contribute",  href: "/contribute"  },
               { label: "Leaderboard", href: "/leaderboard" },
               { label: "Rooms",       href: "/rooms"       },
+              { label: "Feedback",    href: "/feedback"    },
             ].map((l) => (
               <Link
                 key={l.label}
