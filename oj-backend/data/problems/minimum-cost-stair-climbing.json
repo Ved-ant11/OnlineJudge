@@ -1,0 +1,68 @@
+{
+  "id": "minimum-cost-stair-climbing",
+  "title": "Minimum Cost Stair Climbing",
+  "difficulty": "EASY",
+  "statement": "You are given an array `cost` where `cost[i]` is the cost to step on stair `i`. Once you pay the cost, you can climb 1 or 2 stairs. You can start from index 0 or 1. Find the minimum cost to reach the top (beyond the last stair).\n\n**Input:** Space-separated non-negative integers.\n**Output:** Print the minimum cost.",
+  "constraints": "- 2 \u2264 cost.length \u2264 1000\n- 0 \u2264 cost[i] \u2264 999",
+  "examples": [
+    {
+      "input": "cost=[10,15,20]",
+      "output": "15",
+      "explanation": "Start at index 1, pay 15, jump 2. Cost=15."
+    },
+    {
+      "input": "cost=[1,100,1,1,1,100,1,1,100,1]",
+      "output": "6",
+      "explanation": "Optimal path costs 6."
+    },
+    {
+      "input": "cost=[1,2]",
+      "output": "1",
+      "explanation": "Start at 0, pay 1, jump 2 to top."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "10 15 20",
+      "expectedOutput": "15",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "1 100 1 1 1 100 1 1 100 1",
+      "expectedOutput": "6",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1 2",
+      "expectedOutput": "1",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "0 0 0 0",
+      "expectedOutput": "0",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1 2 3 4",
+      "expectedOutput": "4",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "5 5 5 5",
+      "expectedOutput": "10",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "10 100",
+      "expectedOutput": "10",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

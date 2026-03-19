@@ -1,0 +1,68 @@
+{
+  "id": "max-sum-circular-subarray",
+  "title": "Maximum Sum Circular Subarray",
+  "difficulty": "MEDIUM",
+  "statement": "Given a circular integer array (the last element is adjacent to the first), find the maximum sum of a non-empty subarray.\n\n**Input:** Space-separated integers.\n**Output:** Print the maximum circular subarray sum.",
+  "constraints": "- 1 \u2264 nums.length \u2264 3 \u00d7 10\u2074\n- -3 \u00d7 10\u2074 \u2264 nums[i] \u2264 3 \u00d7 10\u2074",
+  "examples": [
+    {
+      "input": "nums=[1,-2,3,-2]",
+      "output": "3",
+      "explanation": "Subarray [3] has sum 3."
+    },
+    {
+      "input": "nums=[5,-3,5]",
+      "output": "10",
+      "explanation": "Circular subarray [5,5] wraps around, sum=10."
+    },
+    {
+      "input": "nums=[-3,-2,-3]",
+      "output": "-2",
+      "explanation": "All negative, max single element=-2."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "1 -2 3 -2",
+      "expectedOutput": "3",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "5 -3 5",
+      "expectedOutput": "10",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "-3 -2 -3",
+      "expectedOutput": "-2",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "3 1 2",
+      "expectedOutput": "6",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1 -2 3 -2 5",
+      "expectedOutput": "7",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "-1",
+      "expectedOutput": "-1",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "2 -1 2 -1 2",
+      "expectedOutput": "6",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "id": "fast-power",
+  "title": "Fast Power \u2014 Recursive Exponentiation",
+  "difficulty": "EASY",
+  "statement": "Given a base `b` and exponent `e`, compute `b^e` using recursive fast exponentiation (divide and conquer). Do not use built-in power functions.\n\n**Input:**\n- Line 1: integer `b`.\n- Line 2: integer `e`.\n\n**Output:** Print `b^e`.",
+  "constraints": "- 1 \u2264 b \u2264 10\n- 0 \u2264 e \u2264 30\n- Result fits in a 64-bit integer.",
+  "examples": [
+    {
+      "input": "b=2, e=10",
+      "output": "1024",
+      "explanation": "2^10 = 1024."
+    },
+    {
+      "input": "b=3, e=5",
+      "output": "243",
+      "explanation": "3^5 = 243."
+    },
+    {
+      "input": "b=5, e=0",
+      "output": "1",
+      "explanation": "Anything to the power 0 is 1."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "2\n10",
+      "expectedOutput": "1024",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "3\n5",
+      "expectedOutput": "243",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "5\n0",
+      "expectedOutput": "1",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1\n100",
+      "expectedOutput": "1",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "7\n3",
+      "expectedOutput": "343",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "2\n20",
+      "expectedOutput": "1048576",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "10\n5",
+      "expectedOutput": "100000",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

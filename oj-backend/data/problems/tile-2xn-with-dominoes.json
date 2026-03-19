@@ -1,0 +1,68 @@
+{
+  "id": "tile-2xn-with-dominoes",
+  "title": "Tiling 2\u00d7N Floor with 1\u00d72 Dominoes",
+  "difficulty": "EASY",
+  "statement": "Given a floor of size `2 \u00d7 n`, find the number of ways to tile it using `1 \u00d7 2` dominoes (placed horizontally or vertically).\n\nThis follows the Fibonacci sequence: `f(1)=1, f(2)=2, f(n)=f(n-1)+f(n-2)`.\n\n**Input:** A single integer `n`.\n**Output:** Print the number of ways to tile.",
+  "constraints": "- 1 \u2264 n \u2264 50",
+  "examples": [
+    {
+      "input": "n = 1",
+      "output": "1",
+      "explanation": "Only one vertical domino fits."
+    },
+    {
+      "input": "n = 2",
+      "output": "2",
+      "explanation": "Two verticals or two horizontals."
+    },
+    {
+      "input": "n = 4",
+      "output": "5",
+      "explanation": "Five distinct tilings."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "1",
+      "expectedOutput": "1",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "2",
+      "expectedOutput": "2",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "4",
+      "expectedOutput": "5",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "3",
+      "expectedOutput": "3",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "7",
+      "expectedOutput": "21",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "10",
+      "expectedOutput": "89",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "20",
+      "expectedOutput": "10946",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

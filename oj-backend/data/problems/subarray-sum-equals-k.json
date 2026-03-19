@@ -1,0 +1,68 @@
+{
+  "id": "subarray-sum-equals-k",
+  "title": "Count Subarrays with Sum Equal to K",
+  "difficulty": "MEDIUM",
+  "statement": "Given an array of integers and an integer `k`, return the total number of contiguous subarrays whose sum equals `k`. Use prefix sums with a hashmap for `O(n)` time.\n\n**Input:**\n- Line 1: space-separated integers.\n- Line 2: integer `k`.\n\n**Output:** Print the count.",
+  "constraints": "- 1 \u2264 nums.length \u2264 2 \u00d7 10\u2074\n- -10\u00b3 \u2264 nums[i] \u2264 10\u00b3\n- -10\u2077 \u2264 k \u2264 10\u2077",
+  "examples": [
+    {
+      "input": "[1,1,1], k=2",
+      "output": "2",
+      "explanation": "[1,1] at indices 0-1 and 1-2."
+    },
+    {
+      "input": "[1,2,3], k=3",
+      "output": "2",
+      "explanation": "[3] and [1,2]."
+    },
+    {
+      "input": "[1], k=1",
+      "output": "1",
+      "explanation": "Single element equals k."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "1 1 1\n2",
+      "expectedOutput": "2",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "1 2 3\n3",
+      "expectedOutput": "2",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1\n1",
+      "expectedOutput": "1",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "-1 -1 1\n0",
+      "expectedOutput": "1",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1 2 1 2 1\n3",
+      "expectedOutput": "4",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "0 0 0\n0",
+      "expectedOutput": "6",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "1 2 3 4 5\n5",
+      "expectedOutput": "2",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

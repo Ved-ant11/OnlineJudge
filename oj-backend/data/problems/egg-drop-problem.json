@@ -1,0 +1,68 @@
+{
+  "id": "egg-drop-problem",
+  "title": "Egg Drop \u2014 Minimum Trials",
+  "difficulty": "HARD",
+  "statement": "You have `e` eggs and a building with `f` floors. Find the minimum number of trials needed in the worst case to determine the critical floor (the highest floor from which an egg won't break).\n\n**Input:**\n- Line 1: integer `e` (eggs).\n- Line 2: integer `f` (floors).\n\n**Output:** Print the minimum trials in worst case.",
+  "constraints": "- 1 \u2264 e \u2264 100\n- 1 \u2264 f \u2264 10000",
+  "examples": [
+    {
+      "input": "e=1, f=7",
+      "output": "7",
+      "explanation": "With 1 egg, must try every floor linearly."
+    },
+    {
+      "input": "e=2, f=6",
+      "output": "3",
+      "explanation": "Try floor 3, then 5 or 1-2. Min worst case=3."
+    },
+    {
+      "input": "e=2, f=10",
+      "output": "4",
+      "explanation": "Optimal strategy takes at most 4 trials."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "1\n7",
+      "expectedOutput": "7",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "2\n6",
+      "expectedOutput": "3",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "2\n10",
+      "expectedOutput": "4",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "3\n14",
+      "expectedOutput": "4",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "2\n100",
+      "expectedOutput": "14",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "1\n1",
+      "expectedOutput": "1",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "3\n25",
+      "expectedOutput": "5",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

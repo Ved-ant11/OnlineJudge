@@ -1,0 +1,68 @@
+{
+  "id": "josephus-problem",
+  "title": "Josephus Problem",
+  "difficulty": "MEDIUM",
+  "statement": "`n` people stand in a circle. Starting from position 0, every `k`th person is eliminated. Find the 0-indexed position of the last survivor.\n\nUse the recursive formula: `J(1,k)=0`, `J(n,k)=(J(n-1,k)+k) % n`.\n\n**Input:**\n- Line 1: integer `n` (people).\n- Line 2: integer `k` (every kth eliminated).\n\n**Output:** Print the 0-indexed position of the survivor.",
+  "constraints": "- 1 \u2264 n \u2264 10\u2074\n- 1 \u2264 k \u2264 10\u2074",
+  "examples": [
+    {
+      "input": "n=7, k=3",
+      "output": "3",
+      "explanation": "Elimination order: 2,5,1,6,4,0. Survivor at position 3."
+    },
+    {
+      "input": "n=6, k=2",
+      "output": "4",
+      "explanation": "Survivor at position 4."
+    },
+    {
+      "input": "n=1, k=1",
+      "output": "0",
+      "explanation": "Only one person."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "7\n3",
+      "expectedOutput": "3",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "6\n2",
+      "expectedOutput": "4",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1\n1",
+      "expectedOutput": "0",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "5\n2",
+      "expectedOutput": "2",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "10\n3",
+      "expectedOutput": "3",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "4\n1",
+      "expectedOutput": "3",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "2\n2",
+      "expectedOutput": "1",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "id": "count-occurrences-sorted-array",
+  "title": "Count Occurrences in Sorted Array",
+  "difficulty": "EASY",
+  "statement": "Given a sorted array and a target integer, count how many times the target appears. Use binary search for `O(log n)` complexity.\n\n**Input:**\n- Line 1: space-separated sorted integers.\n- Line 2: integer `target`.\n\n**Output:** Print the count.",
+  "constraints": "- 0 \u2264 arr.length \u2264 10\u2075\n- -10\u2079 \u2264 arr[i] \u2264 10\u2079\n- Array is sorted in non-decreasing order.",
+  "examples": [
+    {
+      "input": "arr=[1,1,2,2,2,3,3], target=2",
+      "output": "3",
+      "explanation": "2 appears at indices 2,3,4."
+    },
+    {
+      "input": "arr=[1,1,2,2,2,3,3], target=4",
+      "output": "0",
+      "explanation": "4 not in array."
+    },
+    {
+      "input": "arr=[5,5,5,5,5], target=5",
+      "output": "5",
+      "explanation": "All elements are 5."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "1 1 2 2 2 3 3\n2",
+      "expectedOutput": "3",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "1 1 2 2 2 3 3\n4",
+      "expectedOutput": "0",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "5 5 5 5 5\n5",
+      "expectedOutput": "5",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1 2 3 4 5\n3",
+      "expectedOutput": "1",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "\n1",
+      "expectedOutput": "0",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "1 1 1 2 2\n1",
+      "expectedOutput": "3",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "1 1 1 1\n2",
+      "expectedOutput": "0",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "id": "count-subsets-given-sum",
+  "title": "Count Subsets with Given Sum",
+  "difficulty": "MEDIUM",
+  "statement": "Given an array of non-negative integers and a target sum, count the number of subsets whose elements sum to the target.\n\n**Input:**\n- Line 1: space-separated non-negative integers.\n- Line 2: integer `target`.\n\n**Output:** Print the count of subsets.",
+  "constraints": "- 1 \u2264 arr.length \u2264 30\n- 0 \u2264 arr[i] \u2264 100\n- 0 \u2264 target \u2264 1000",
+  "examples": [
+    {
+      "input": "arr=[2,3,5,6,8,10], target=10",
+      "output": "3",
+      "explanation": "Subsets: {2,8}, {2,3,5}, {10}."
+    },
+    {
+      "input": "arr=[1,1,1,1], target=2",
+      "output": "6",
+      "explanation": "C(4,2)=6 ways."
+    },
+    {
+      "input": "arr=[1,2,3], target=6",
+      "output": "1",
+      "explanation": "Only {1,2,3}."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "2 3 5 6 8 10\n10",
+      "expectedOutput": "3",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "1 1 1 1\n2",
+      "expectedOutput": "6",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1 2 3\n6",
+      "expectedOutput": "1",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1 2 3\n0",
+      "expectedOutput": "1",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "3 3 3\n6",
+      "expectedOutput": "3",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "1\n1",
+      "expectedOutput": "1",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "5 10 15\n20",
+      "expectedOutput": "1",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

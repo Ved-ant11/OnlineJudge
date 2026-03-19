@@ -1,0 +1,68 @@
+{
+  "id": "minimum-jumps-to-end",
+  "title": "Minimum Number of Jumps to Reach End",
+  "difficulty": "MEDIUM",
+  "statement": "Given an array where `arr[i]` is the maximum jump length from position `i`, find the minimum number of jumps to reach the last index from index 0. Return `-1` if unreachable.\n\n**Input:** Space-separated non-negative integers.\n**Output:** Print the minimum jumps or `-1`.",
+  "constraints": "- 1 \u2264 arr.length \u2264 10\u2074\n- 0 \u2264 arr[i] \u2264 1000",
+  "examples": [
+    {
+      "input": "[2,3,1,1,4]",
+      "output": "2",
+      "explanation": "Jump 1 to index 1, then 3 to end."
+    },
+    {
+      "input": "[2,3,0,1,4]",
+      "output": "2",
+      "explanation": "Jump 1 to index 1, then to end."
+    },
+    {
+      "input": "[3,2,1,0,4]",
+      "output": "-1",
+      "explanation": "Index 3 is always 0, cannot proceed."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "2 3 1 1 4",
+      "expectedOutput": "2",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "2 3 0 1 4",
+      "expectedOutput": "2",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "3 2 1 0 4",
+      "expectedOutput": "-1",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "0",
+      "expectedOutput": "0",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1 1 1 1 1",
+      "expectedOutput": "4",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "5 1 1 1 1",
+      "expectedOutput": "1",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "0 1",
+      "expectedOutput": "-1",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

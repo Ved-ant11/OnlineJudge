@@ -1,0 +1,68 @@
+{
+  "id": "integer-square-root",
+  "title": "Integer Square Root",
+  "difficulty": "EASY",
+  "statement": "Given a non-negative integer `x`, return the floor of its square root without using any built-in power or square root functions. Use binary search for `O(log x)` complexity.\n\n**Input:** A single non-negative integer `x`.\n**Output:** Print the floor square root.",
+  "constraints": "- 0 \u2264 x \u2264 2\u00b3\u00b9 - 1",
+  "examples": [
+    {
+      "input": "x = 4",
+      "output": "2",
+      "explanation": "\u221a4 = 2."
+    },
+    {
+      "input": "x = 8",
+      "output": "2",
+      "explanation": "\u221a8 = 2.82..., floor = 2."
+    },
+    {
+      "input": "x = 26",
+      "output": "5",
+      "explanation": "\u221a26 = 5.09..., floor = 5."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "4",
+      "expectedOutput": "2",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "8",
+      "expectedOutput": "2",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "26",
+      "expectedOutput": "5",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "0",
+      "expectedOutput": "0",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1",
+      "expectedOutput": "1",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "16",
+      "expectedOutput": "4",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "2147395600",
+      "expectedOutput": "46340",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

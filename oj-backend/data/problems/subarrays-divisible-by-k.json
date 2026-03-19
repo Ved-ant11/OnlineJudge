@@ -1,0 +1,68 @@
+{
+  "id": "subarrays-divisible-by-k",
+  "title": "Number of Subarrays Divisible by K",
+  "difficulty": "MEDIUM",
+  "statement": "Given an integer array `nums` and integer `k`, return the number of non-empty subarrays whose sum is divisible by `k`.\n\nUse prefix sums and modular arithmetic.\n\n**Input:**\n- Line 1: space-separated integers.\n- Line 2: integer `k`.\n\n**Output:** Print the count.",
+  "constraints": "- 1 \u2264 nums.length \u2264 3 \u00d7 10\u2074\n- -10\u2074 \u2264 nums[i] \u2264 10\u2074\n- 2 \u2264 k \u2264 10\u2074",
+  "examples": [
+    {
+      "input": "nums=[4,5,0,-2,-3,1], k=5",
+      "output": "7",
+      "explanation": "7 subarrays have sum divisible by 5."
+    },
+    {
+      "input": "nums=[5], k=5",
+      "output": "1",
+      "explanation": "[5] is divisible by 5."
+    },
+    {
+      "input": "nums=[1,2,3], k=3",
+      "output": "3",
+      "explanation": "[3],[1,2],[1,2,3] are divisible by 3."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "4 5 0 -2 -3 1\n5",
+      "expectedOutput": "7",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "5\n5",
+      "expectedOutput": "1",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1 2 3\n3",
+      "expectedOutput": "3",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "2 2 2 2 2\n2",
+      "expectedOutput": "15",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1 2 3 4 5\n5",
+      "expectedOutput": "4",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "0 0 0\n1",
+      "expectedOutput": "6",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "7\n7",
+      "expectedOutput": "1",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "id": "subarrays-product-less-k",
+  "title": "Number of Subarrays with Product Less Than K",
+  "difficulty": "MEDIUM",
+  "statement": "Given an array of positive integers `nums` and integer `k`, return the number of contiguous subarrays where the product of all elements is strictly less than `k`.\n\n**Input:**\n- Line 1: space-separated positive integers.\n- Line 2: integer `k`.\n\n**Output:** Print the count.",
+  "constraints": "- 1 \u2264 nums.length \u2264 3 \u00d7 10\u2074\n- 1 \u2264 nums[i] \u2264 1000\n- 0 \u2264 k \u2264 10\u2076",
+  "examples": [
+    {
+      "input": "nums=[10,5,2,6], k=100",
+      "output": "8",
+      "explanation": "8 subarrays have product < 100."
+    },
+    {
+      "input": "nums=[1,2,3], k=0",
+      "output": "0",
+      "explanation": "k=0, no products less than 0."
+    },
+    {
+      "input": "nums=[2,3,4], k=10",
+      "output": "4",
+      "explanation": "[2],[3],[4],[2,3] all < 10."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "10 5 2 6\n100",
+      "expectedOutput": "8",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "1 2 3\n0",
+      "expectedOutput": "0",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "2 3 4\n10",
+      "expectedOutput": "4",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1 1 1\n1",
+      "expectedOutput": "0",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1 1 1\n2",
+      "expectedOutput": "6",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "5\n5",
+      "expectedOutput": "0",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "1 2 3 4 5\n10",
+      "expectedOutput": "8",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

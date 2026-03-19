@@ -1,0 +1,68 @@
+{
+  "id": "coin-change-minimum",
+  "title": "Coin Change \u2014 Minimum Coins",
+  "difficulty": "MEDIUM",
+  "statement": "Given coin denominations and an amount, find the minimum number of coins needed to make the amount. Return `-1` if impossible.\n\n**Input:**\n- Line 1: space-separated coin denominations.\n- Line 2: integer `amount`.\n\n**Output:** Print the minimum coins or `-1`.",
+  "constraints": "- 1 \u2264 coins.length \u2264 12\n- 1 \u2264 coins[i] \u2264 2\u00b3\u00b9 - 1\n- 0 \u2264 amount \u2264 10\u2074",
+  "examples": [
+    {
+      "input": "coins=[1,5,6,9], amount=11",
+      "output": "2",
+      "explanation": "5+6=11 or 2+9=11. Min=2."
+    },
+    {
+      "input": "coins=[2], amount=3",
+      "output": "-1",
+      "explanation": "Cannot make 3 with only 2s."
+    },
+    {
+      "input": "coins=[1,2,5], amount=11",
+      "output": "3",
+      "explanation": "5+5+1=11."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "1 5 6 9\n11",
+      "expectedOutput": "2",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "2\n3",
+      "expectedOutput": "-1",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1 2 5\n11",
+      "expectedOutput": "3",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1\n0",
+      "expectedOutput": "0",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "1 5 6 9\n0",
+      "expectedOutput": "0",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "3 5\n11",
+      "expectedOutput": "3",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "186 419 83 408\n6249",
+      "expectedOutput": "20",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

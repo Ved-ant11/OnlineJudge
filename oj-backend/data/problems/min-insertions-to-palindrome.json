@@ -1,0 +1,68 @@
+{
+  "id": "min-insertions-to-palindrome",
+  "title": "Minimum Insertions to Make String Palindrome",
+  "difficulty": "MEDIUM",
+  "statement": "Given a string `s`, find the minimum number of characters to insert to make it a palindrome.\n\nThis equals `length(s) - LPS(s)` where LPS is the longest palindromic subsequence.\n\n**Input:** A single string `s`.\n**Output:** Print the minimum insertions.",
+  "constraints": "- 1 \u2264 s.length \u2264 500\n- s consists of lowercase English letters.",
+  "examples": [
+    {
+      "input": "s = \"ab\"",
+      "output": "1",
+      "explanation": "Insert 'b' at start or 'a' at end."
+    },
+    {
+      "input": "s = \"aa\"",
+      "output": "0",
+      "explanation": "Already a palindrome."
+    },
+    {
+      "input": "s = \"mbadm\"",
+      "output": "2",
+      "explanation": "\"mbadbm\" or \"mbdadm\" \u2014 2 insertions."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "ab",
+      "expectedOutput": "1",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "aa",
+      "expectedOutput": "0",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "mbadm",
+      "expectedOutput": "2",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "abcd",
+      "expectedOutput": "3",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "abcba",
+      "expectedOutput": "0",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "a",
+      "expectedOutput": "0",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "abcde",
+      "expectedOutput": "4",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

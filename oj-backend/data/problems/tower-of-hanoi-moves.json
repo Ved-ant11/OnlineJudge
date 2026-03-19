@@ -1,0 +1,68 @@
+{
+  "id": "tower-of-hanoi-moves",
+  "title": "Tower of Hanoi \u2014 Count Moves",
+  "difficulty": "EASY",
+  "statement": "Given `n` disks, find the minimum number of moves required to move all disks from peg A to peg C using peg B as auxiliary. You can only move one disk at a time and cannot place a larger disk on a smaller one.\n\nThe formula is `2^n - 1`.\n\n**Input:** A single integer `n`.\n**Output:** Print the minimum number of moves.",
+  "constraints": "- 1 \u2264 n \u2264 30",
+  "examples": [
+    {
+      "input": "n = 1",
+      "output": "1",
+      "explanation": "Move disk 1 from A to C."
+    },
+    {
+      "input": "n = 2",
+      "output": "3",
+      "explanation": "A\u2192B, A\u2192C, B\u2192C."
+    },
+    {
+      "input": "n = 3",
+      "output": "7",
+      "explanation": "Seven moves minimum."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "1",
+      "expectedOutput": "1",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "2",
+      "expectedOutput": "3",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "3",
+      "expectedOutput": "7",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "4",
+      "expectedOutput": "15",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "10",
+      "expectedOutput": "1023",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "20",
+      "expectedOutput": "1048575",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "30",
+      "expectedOutput": "1073741823",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "id": "allocate-minimum-pages",
+  "title": "Allocate Minimum Pages",
+  "difficulty": "HARD",
+  "statement": "Given `n` books with page counts and `m` students, allocate books (contiguous ranges only) such that the maximum pages any student reads is minimized. Each student gets at least one book.\n\n**Input:**\n- Line 1: two integers `n` and `m`.\n- Line 2: space-separated page counts.\n\n**Output:** Print the minimized maximum pages, or `-1` if impossible.",
+  "constraints": "- 1 \u2264 m \u2264 n \u2264 10\u2075\n- 1 \u2264 pages[i] \u2264 10\u2076",
+  "examples": [
+    {
+      "input": "n=4, m=2, pages=[12,34,67,90]",
+      "output": "113",
+      "explanation": "Split: [12,34,67] and [90]. Max=113."
+    },
+    {
+      "input": "n=4, m=2, pages=[10,20,30,40]",
+      "output": "60",
+      "explanation": "Split: [10,20,30] and [40]. Max=60."
+    },
+    {
+      "input": "n=4, m=5, pages=[5,5,5,5]",
+      "output": "-1",
+      "explanation": "More students than books."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "4 2\n12 34 67 90",
+      "expectedOutput": "113",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "4 2\n10 20 30 40",
+      "expectedOutput": "60",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "4 5\n5 5 5 5",
+      "expectedOutput": "-1",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "1 1\n10",
+      "expectedOutput": "10",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "4 4\n5 5 5 5",
+      "expectedOutput": "5",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "5 3\n1 2 3 4 5",
+      "expectedOutput": "6",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "3 2\n100 1 1",
+      "expectedOutput": "100",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}

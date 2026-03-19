@@ -1,0 +1,68 @@
+{
+  "id": "dice-throw-count-ways",
+  "title": "Dice Throw \u2014 Count Ways to Reach Sum",
+  "difficulty": "MEDIUM",
+  "statement": "Given `N` dice each with `F` faces (numbered 1 to F), count the number of ways to get a sum equal to `S`.\n\n**Input:**\n- Line 1: three integers `N`, `F`, and `S`.\n\n**Output:** Print the count of ways.",
+  "constraints": "- 1 \u2264 N \u2264 50\n- 1 \u2264 F \u2264 20\n- N \u2264 S \u2264 N\u00d7F",
+  "examples": [
+    {
+      "input": "N=2, F=6, S=7",
+      "output": "6",
+      "explanation": "(1,6),(2,5),(3,4),(4,3),(5,2),(6,1) = 6 ways."
+    },
+    {
+      "input": "N=2, F=4, S=5",
+      "output": "4",
+      "explanation": "(1,4),(2,3),(3,2),(4,1) = 4 ways."
+    },
+    {
+      "input": "N=1, F=6, S=3",
+      "output": "1",
+      "explanation": "Only (3)."
+    }
+  ],
+  "testCases": [
+    {
+      "input": "2 6 7",
+      "expectedOutput": "6",
+      "order": 1,
+      "isHidden": false
+    },
+    {
+      "input": "2 4 5",
+      "expectedOutput": "4",
+      "order": 2,
+      "isHidden": false
+    },
+    {
+      "input": "1 6 3",
+      "expectedOutput": "1",
+      "order": 3,
+      "isHidden": false
+    },
+    {
+      "input": "3 6 8",
+      "expectedOutput": "21",
+      "order": 4,
+      "isHidden": true
+    },
+    {
+      "input": "2 6 12",
+      "expectedOutput": "1",
+      "order": 5,
+      "isHidden": true
+    },
+    {
+      "input": "2 6 2",
+      "expectedOutput": "1",
+      "order": 6,
+      "isHidden": true
+    },
+    {
+      "input": "3 4 6",
+      "expectedOutput": "10",
+      "order": 7,
+      "isHidden": true
+    }
+  ]
+}
