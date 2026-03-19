@@ -39,7 +39,7 @@ export default function Discussion({ questionId }: { questionId: string }) {
       setIsLoggedIn(!!res);
     });
     loadDiscussion();
-  }, [questionId]);
+  }, [questionId, loadDiscussion]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -44,7 +44,7 @@ export default function SubmissionStatus({ submissionId }: Props) {
       let data;
       try {
         data = JSON.parse(event.data);
-      } catch (_e) {
+      } catch {
         console.error("Failed to parse websocket message:", event.data);
         return;
       }

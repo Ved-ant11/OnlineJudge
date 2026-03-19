@@ -83,8 +83,9 @@ export default function FeedbackPage() {
       setTimeout(() => setSuccess(false), 3000);
       const updated = await fetchFeedback();
       setFeedbackList(updated);
-    } catch (err: any) {
-      setError(err.message || "Failed to submit. Are you logged in?");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to submit. Are you logged in?";
+      setError(message);
     } finally {
       setSubmitting(false);
     }
