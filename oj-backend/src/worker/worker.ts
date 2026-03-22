@@ -1,3 +1,4 @@
+import "dotenv/config";
 import redis, { connectRedis } from "../redis/client";
 import prisma from "../db/client";
 import { SubmissionStatus, Verdict } from "../generated/prisma/client";
