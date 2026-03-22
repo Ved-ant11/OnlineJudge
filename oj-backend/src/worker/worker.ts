@@ -240,7 +240,7 @@ const worker = async () => {
 
   while (!isShuttingDown) {
     try {
-      const res = await redis.blPop(QUEUE_KEY, 5);
+      const res = await redis.blPop(QUEUE_KEY, 60);
       if (!res?.element) continue;
 
       log(`Dequeued submission: ${res.element}`);
