@@ -29,45 +29,49 @@ const logError = (msg: string, err?: unknown) => {
 };
 
 const recoverStaleSubmissions = async () => {
-  const stale = await prisma.submission.findMany({
-    where: {
-      status: SubmissionStatus.RUNNING,
-      lastStartedAt: {
-        lt: new Date(Date.now() - RUNNING_TIMEOUT_MS),
+  try {
+    const stale = await prisma.submission.findMany({
+      where: {
+        status: SubmissionStatus.RUNNING,
+        lastStartedAt: {
+          lt: new Date(Date.now() - RUNNING_TIMEOUT_MS),
+        },
       },
-    },
-  });
+    });
 
-  if (stale.length > 0) {
-    log(`Found ${stale.length} stale submission(s) to recover`);
-  }
-
-  for (const sub of stale) {
-    if (sub.attempts >= MAX_ATTEMPTS) {
-      log(
-        `Stale submission ${sub.id} exceeded max attempts (${sub.attempts}/${MAX_ATTEMPTS}), marking TLE`,
-      );
-      await prisma.submission.update({
-        where: { id: sub.id },
-        data: {
-          status: SubmissionStatus.COMPLETED,
-          verdict: Verdict.TLE,
-          result: "System timeout - max attempts exceeded",
-        },
-      });
-    } else {
-      log(
-        `Re-queuing stale submission ${sub.id} (attempt ${sub.attempts}/${MAX_ATTEMPTS})`,
-      );
-      await prisma.submission.update({
-        where: { id: sub.id },
-        data: {
-          status: SubmissionStatus.QUEUED,
-        },
-      });
-
-      await redis.lPush(QUEUE_KEY, sub.id);
+    if (stale.length > 0) {
+      log(`Found ${stale.length} stale submission(s) to recover`);
     }
+
+    for (const sub of stale) {
+      if (sub.attempts >= MAX_ATTEMPTS) {
+        log(
+          `Stale submission ${sub.id} exceeded max attempts (${sub.attempts}/${MAX_ATTEMPTS}), marking TLE`,
+        );
+        await prisma.submission.update({
+          where: { id: sub.id },
+          data: {
+            status: SubmissionStatus.COMPLETED,
+            verdict: Verdict.TLE,
+            result: "System timeout - max attempts exceeded",
+          },
+        });
+      } else {
+        log(
+          `Re-queuing stale submission ${sub.id} (attempt ${sub.attempts}/${MAX_ATTEMPTS})`,
+        );
+        await prisma.submission.update({
+          where: { id: sub.id },
+          data: {
+            status: SubmissionStatus.QUEUED,
+          },
+        });
+
+        await redis.lPush(QUEUE_KEY, sub.id);
+      }
+    }
+  } catch (err) {
+    logError("Failed to recover stale submissions (transient database error?)", err);
   }
 };
 
