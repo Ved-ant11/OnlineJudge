@@ -1,0 +1,67 @@
+{
+  "id": "topological-sort",
+  "name": "Topological Sort",
+  "icon": "📋",
+  "prerequisites": ["Graphs", "DFS", "BFS", "Queue"],
+  "coreIntuition": "Topological sort orders the nodes of a DAG (Directed Acyclic Graph) so that every edge goes from earlier to later in the ordering. It answers: **in what order should I process these things if some things depend on others?** Course prerequisites, build dependencies, task scheduling — all topological sort. The key insight: start with nodes that have no dependencies (in-degree 0), process them, remove their edges, and repeat.",
+  "mentalModel": "Think of university course prerequisites. You can't take 'Data Structures' before 'Intro to Programming'. Topological sort gives you a valid semester-by-semester order. The algorithm: find all courses with no prerequisites (in-degree 0), take them first, then update — any course whose only prerequisite you just took now has no prerequisites and can be taken next.",
+  "whenToUse": [
+    "The problem involves ordering with dependencies (prerequisites, build order, task scheduling)",
+    "You need to detect if a dependency graph has cycles (no valid topological order exists)",
+    "You need the 'number of levels' in a dependency chain (longest path in a DAG)",
+    "The problem involves compiling or processing things in dependency order"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Build the directed graph and compute in-degrees",
+      "detail": "For each dependency A → B ('A must come before B'), add edge A → B and increment in-degree of B."
+    },
+    {
+      "step": "2. Initialize with all in-degree 0 nodes",
+      "detail": "These have no dependencies and can be processed first. Add them all to a queue."
+    },
+    {
+      "step": "3. Process BFS-style (Kahn's algorithm)",
+      "detail": "Dequeue a node, add it to the result. For each neighbor, decrement its in-degree. If in-degree reaches 0, enqueue it. Repeat until queue is empty."
+    },
+    {
+      "step": "4. Check for cycles",
+      "detail": "If the result has fewer nodes than the graph, there's a cycle — no valid topological order exists. This is how you detect cycles in directed graphs using topological sort."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Forgetting to check for cycles",
+      "howToAvoid": "After Kahn's algorithm, if result.length < total nodes, there's a cycle. Always check this — many problems ask 'is it possible?' before asking 'what's the order?'"
+    },
+    {
+      "trap": "Confusing topological sort on undirected graphs",
+      "howToAvoid": "Topological sort only works on DIRECTED acyclic graphs. Undirected graphs with cycles can't have a topological order. If the graph is undirected, this technique doesn't apply."
+    },
+    {
+      "trap": "Not recognizing disguised topological sort problems",
+      "howToAvoid": "If a problem says 'order things such that X comes before Y', 'find a valid sequence respecting constraints', or 'detect circular dependencies' — it's topological sort."
+    }
+  ],
+  "interviewVariantStrategy": "Topological sort interview problems: (1) **Course schedule** — can you take all courses? Is there a cycle? What's a valid order? (2) **Build order** — compile dependencies. (3) **Alien dictionary** — infer character ordering from sorted words, build graph, topological sort. (4) **Parallel processing** — how many 'rounds' to complete all tasks? (BFS layers = parallel rounds). (5) **Sequence reconstruction** — is there a unique topological order? The twist: 'alien dictionary' is a classic disguised topological sort — you build the graph from comparing adjacent words, then topological sort the characters.",
+  "resources": [
+    {
+      "title": "William Fiset — Topological Sort",
+      "url": "https://www.youtube.com/watch?v=eL-KzMXSXXI",
+      "type": "video",
+      "why": "Clear visual walkthrough of both Kahn's algorithm and DFS-based topological sort"
+    },
+    {
+      "title": "CP-Algorithms — Topological Sort",
+      "url": "https://cp-algorithms.com/graph/topological-sort.html",
+      "type": "article",
+      "why": "Both BFS and DFS approaches with correct implementations and applications"
+    },
+    {
+      "title": "NeetCode — Course Schedule Problems",
+      "url": "https://www.youtube.com/watch?v=EgI5nU9etnU",
+      "type": "video",
+      "why": "Practical interview walkthrough of topological sort problems with clear explanations"
+    }
+  ]
+}

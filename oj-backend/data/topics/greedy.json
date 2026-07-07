@@ -1,0 +1,68 @@
+{
+  "id": "greedy",
+  "name": "Greedy",
+  "icon": "🎯",
+  "prerequisites": ["Arrays", "Sorting"],
+  "coreIntuition": "A greedy algorithm makes the locally optimal choice at each step, hoping it leads to the globally optimal solution. The hard part isn't coding — it's **proving** that greedy works. Most problems where greedy seems right but you can't prove it are actually DP problems. The distinguishing feature: in greedy problems, making the best local choice never prevents you from making the best future choices. This is called the 'greedy choice property'.",
+  "mentalModel": "Imagine filling a backpack with items at a buffet. If items can be divided (fractional knapsack), always grab the most valuable-per-weight item first — greedy works perfectly. But if items can't be divided (0/1 knapsack), taking the locally best item might prevent you from fitting a better combination — greedy fails, use DP. The question is always: does committing to this choice now block better choices later?",
+  "whenToUse": [
+    "You need an optimal solution and local choices don't conflict with global optimality",
+    "The problem has the 'greedy choice property' — the locally optimal choice is part of the globally optimal solution",
+    "The problem involves scheduling, interval selection, or activity selection",
+    "Sorting the input by some criterion simplifies the problem into a scanning pass",
+    "You can prove that no local choice ever makes the remaining problem harder"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Identify the greedy criterion — sort by what?",
+      "detail": "Most greedy algorithms start with sorting. The key question: by which attribute do you sort? By deadline? By profit? By start time? By end time? The sorting criterion IS the greedy strategy."
+    },
+    {
+      "step": "2. Construct the solution greedily",
+      "detail": "After sorting, scan through the items and make the locally optimal decision at each step. For interval scheduling: always pick the interval that ends earliest. For activity selection: always pick the most profitable available activity."
+    },
+    {
+      "step": "3. Prove correctness (the exchange argument)",
+      "detail": "To prove greedy works, use the exchange argument: assume the optimal solution differs from greedy at some step. Show you can 'exchange' the optimal's choice for greedy's choice without making the solution worse. This proves greedy is at least as good."
+    },
+    {
+      "step": "4. If you can't prove it, it might not be greedy",
+      "detail": "If you can find a counterexample (an input where greedy gives the wrong answer), it's not a greedy problem. Try DP instead. Many problems LOOK greedy but aren't."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Assuming greedy works without proof",
+      "howToAvoid": "Always construct a small counterexample attempt. If you can't find one AND you can sketch the exchange argument, greedy is likely correct. If you find one, use DP."
+    },
+    {
+      "trap": "Wrong sorting criterion",
+      "howToAvoid": "For interval scheduling, sort by END time, not start time. For job scheduling with deadlines, sort by deadline. The right criterion is the one that leaves the most room for future choices."
+    },
+    {
+      "trap": "Greedy gives a valid solution but not the optimal one",
+      "howToAvoid": "A greedy solution that's valid isn't necessarily optimal. Always check against the optimal. If greedy gives 'a' solution but not 'the best' solution, you need DP."
+    }
+  ],
+  "interviewVariantStrategy": "Greedy problems in interviews fall into categories: (1) **Interval scheduling** — sort by end time, pick non-overlapping. (2) **Huffman-style merging** — always merge the two smallest (minimum cost to connect ropes). (3) **Task scheduling** — sort by deadline or processing time. (4) **Gas station / circular tour** — track cumulative surplus. The twist interviewers add: they'll present a problem where greedy almost works but doesn't quite — to see if you can spot the counterexample and switch to DP. Always ask yourself: 'Can I construct an input where greedy gives the wrong answer?'",
+  "resources": [
+    {
+      "title": "MIT 6.046J — Greedy Algorithms",
+      "url": "https://www.youtube.com/watch?v=tKwnms5iRBU",
+      "type": "video",
+      "why": "MIT lecture on the theory of greedy algorithms — covers the exchange argument proof technique"
+    },
+    {
+      "title": "CP-Algorithms — Greedy Problems",
+      "url": "https://cp-algorithms.com/",
+      "type": "article",
+      "why": "Reference implementations of classic greedy algorithms with correctness proofs"
+    },
+    {
+      "title": "Striver — Greedy Algorithm Problems",
+      "url": "https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2",
+      "type": "course",
+      "why": "Curated greedy problem set that teaches the difference between 'greedy works' and 'greedy doesn't work' scenarios"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "id": "heap",
+  "name": "Heap",
+  "icon": "⛰️",
+  "prerequisites": ["Arrays", "Trees"],
+  "coreIntuition": "A heap gives you O(1) access to the min (or max) element and O(log n) insertion and removal. The key insight: **use a heap whenever you repeatedly need the best/worst element from a changing collection**. If you're scanning through data and need to efficiently track 'the K largest' or 'the next closest' or 'the most frequent', a heap is your answer.",
+  "mentalModel": "Imagine a tournament bracket where the winner always bubbles to the top. When the champion is removed, the runner-up takes over with minimal reorganization. A heap maintains this property: the root is always the min (or max), and every insertion/removal maintains this invariant with just O(log n) work — a path from leaf to root.",
+  "whenToUse": [
+    "You need to repeatedly extract the minimum or maximum element",
+    "The problem asks for the K smallest/largest elements",
+    "You need to merge K sorted lists efficiently",
+    "The problem involves a priority queue (process items by priority)",
+    "You need the running median from a stream of numbers"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Identify what 'best' means — min or max?",
+      "detail": "Min-heap gives you the smallest element. Max-heap gives you the largest. For 'K largest elements', use a min-heap of size K (the smallest of the K largest is at the top). This counterintuitive choice is key."
+    },
+    {
+      "step": "2. Determine what goes into the heap",
+      "detail": "Often you don't heap all elements. For 'K closest points', heap only K points. For 'merge K sorted lists', heap only the current head of each list. The heap size is often K, not N."
+    },
+    {
+      "step": "3. Define the heap ordering (custom comparator)",
+      "detail": "For complex objects, define comparison by the relevant attribute. For merge K lists: compare by the value at each list's current position. For task scheduling: compare by priority or deadline."
+    },
+    {
+      "step": "4. Consider the two-heap technique",
+      "detail": "For running median: maintain a max-heap for the lower half and a min-heap for the upper half. The median is always at one of the two tops. This generalizes to any 'split at a boundary' problem."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Using min-heap when you need max-heap or vice versa",
+      "howToAvoid": "For 'K largest': min-heap of size K (pop when too large, the smallest of the large ones gets removed). For 'K smallest': max-heap of size K. The heap removes the LEAST important, keeping the MOST important."
+    },
+    {
+      "trap": "Not realizing that a sorted array is a heap",
+      "howToAvoid": "If your data is static (no insertions after setup), sort it and use indexing — faster than building and maintaining a heap."
+    },
+    {
+      "trap": "Heap with custom objects — forgetting to define comparison",
+      "howToAvoid": "Always provide a custom comparator. Heap by tuple (priority, value) where priority determines order."
+    }
+  ],
+  "interviewVariantStrategy": "Heap problems cluster around: (1) **Top-K**: K largest/smallest/closest/frequent elements. (2) **Merge K sorted things**: lists, arrays, intervals — heap the current element from each source. (3) **Running statistics**: median from stream (two heaps), max from stream (one heap). (4) **Task scheduling**: process by priority (heap as priority queue). (5) **Minimum cost combination**: always combine the two cheapest (Huffman-style). The interview twist: recognizing that a problem NEEDS a heap. Signal: you're processing a stream and need to efficiently maintain the best/worst from what you've seen so far.",
+  "resources": [
+    {
+      "title": "NeetCode — Heap / Priority Queue",
+      "url": "https://www.youtube.com/watch?v=t0Cq6tVNRBA",
+      "type": "video",
+      "why": "Practical walkthrough of heap operations and common interview patterns"
+    },
+    {
+      "title": "VisuAlgo — Binary Heap",
+      "url": "https://visualgo.net/en/heap",
+      "type": "visualizer",
+      "why": "Interactive heap visualization — watch insert, extract-min, and heapify step by step"
+    },
+    {
+      "title": "Abdul Bari — Heap & Priority Queue",
+      "url": "https://www.youtube.com/watch?v=HqPJF2L5h9U",
+      "type": "video",
+      "why": "Clear explanation of heap internals, array representation, and why it's O(log n)"
+    }
+  ]
+}

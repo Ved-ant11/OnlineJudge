@@ -1,0 +1,68 @@
+{
+  "id": "hash-map",
+  "name": "Hash Map",
+  "icon": "🗂️",
+  "prerequisites": ["Arrays"],
+  "coreIntuition": "A hash map gives you O(1) average-time lookup, insertion, and deletion. But the deeper insight is: **hash maps let you trade space for time**. Whenever your algorithm has an inner loop that searches for something, ask: 'Can I precompute this into a hash map and look it up in O(1)?' This single question eliminates O(n²) algorithms across dozens of problem types.",
+  "mentalModel": "Think of a hash map as a magical dictionary where looking up any word is instant. The power isn't in the data structure itself — it's in what you STORE in it. Store element → index for 'find matching pairs'. Store prefix_sum → count for 'subarrays with sum K'. Store character → frequency for 'anagram detection'. The art is deciding what to store as key and value.",
+  "whenToUse": [
+    "You need O(1) lookups by some key",
+    "You're counting frequencies of elements",
+    "You need to find pairs/groups with a specific relationship (two sum, anagrams)",
+    "You want to eliminate an inner loop that searches for a complement or match",
+    "You need to track 'have I seen this before?' efficiently"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Identify the lookup — what are you searching for?",
+      "detail": "In the brute force, there's usually a search: 'for each element, find another element that...' This search is what the hash map replaces. Identify what you're looking for (complement, matching value, first occurrence)."
+    },
+    {
+      "step": "2. Decide what to store as key and value",
+      "detail": "Key = what you look up. Value = what you need when you find it. For two sum: key = target - nums[i], value = index i. For anagram grouping: key = sorted string, value = list of original strings."
+    },
+    {
+      "step": "3. Determine when to look up vs when to insert",
+      "detail": "Order matters. For two sum, you look up BEFORE inserting (so you don't match an element with itself). For some problems, you build the map first and then query it."
+    },
+    {
+      "step": "4. Handle collisions and edge cases",
+      "detail": "What if two elements have the same key? Do you need the first occurrence, last occurrence, or all occurrences? This determines whether your value is a single item, a list, or a counter."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Using a hash map when the key space is small and contiguous",
+      "howToAvoid": "If keys are integers from 0 to 25 (like lowercase letters), use an array of size 26 — it's faster and uses less memory than a hash map."
+    },
+    {
+      "trap": "Forgetting that hash maps don't preserve order",
+      "howToAvoid": "If you need insertion order, use a LinkedHashMap (Java) or maintain a separate list. If you need sorted order, use a TreeMap/SortedDict instead."
+    },
+    {
+      "trap": "Not handling the case where the key doesn't exist",
+      "howToAvoid": "Always check if the key exists before accessing, or use getOrDefault/defaultdict to handle missing keys gracefully."
+    }
+  ],
+  "interviewVariantStrategy": "Hash maps appear in 4 major disguises: (1) **Complement search** — two sum, pair finding: store each element and look up its complement. (2) **Frequency counting** — anagrams, character matching: store character → count. (3) **Prefix sum + hash map** — subarray problems: store prefix_sum → index/count to find subarrays with specific properties. (4) **Grouping** — group anagrams, group shifted strings: define a canonical key that identifies the group. When a problem seems to need O(n²), ask: 'Is there a hash map key that would let me find what I need in O(1)?'",
+  "resources": [
+    {
+      "title": "NeetCode — Two Sum & Hash Map Patterns",
+      "url": "https://www.youtube.com/watch?v=KLlXCFG5TnA",
+      "type": "video",
+      "why": "Builds intuition for when and how to use hash maps through the classic Two Sum and its variants"
+    },
+    {
+      "title": "Back to Back SWE — Hash Tables Deep Dive",
+      "url": "https://www.youtube.com/watch?v=shs0KM3wKv8",
+      "type": "video",
+      "why": "Explains hash table internals (hashing, collisions, load factor) so you understand the performance guarantees"
+    },
+    {
+      "title": "Visualize Hash Table Operations",
+      "url": "https://www.cs.usfca.edu/~galles/visualization/OpenHash.html",
+      "type": "visualizer",
+      "why": "Interactive visualization of hash table operations — see how collisions are handled"
+    }
+  ]
+}

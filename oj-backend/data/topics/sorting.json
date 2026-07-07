@@ -1,0 +1,68 @@
+{
+  "id": "sorting",
+  "name": "Sorting",
+  "icon": "📈",
+  "prerequisites": ["Arrays"],
+  "coreIntuition": "Sorting isn't just about 'putting things in order'. It's about **creating structure that makes other operations efficient**. A sorted array enables binary search (O(log n) lookup), makes duplicates adjacent (easy dedup), enables two-pointer techniques, and turns many O(n²) problems into O(n log n). The real skill: recognizing when sorting the input is the first step toward a solution.",
+  "mentalModel": "Sorting is a pre-processing step that transforms chaos into order. Once sorted, the array has a property: arr[i] <= arr[i+1]. This simple property unlocks: binary search, two pointers, greedy scanning, merge operations, and range queries. When facing a hard problem, ask: 'Would this be easy if the input were sorted? Can I afford to sort it?'",
+  "whenToUse": [
+    "You need to find pairs/groups with specific sum or difference properties",
+    "The problem asks about median, percentiles, or relative ordering",
+    "Sorting is a preprocessing step for two pointers or binary search",
+    "You need to process items by priority (earliest deadline, highest value)",
+    "The problem involves intervals (sort by start/end time)"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Can you sort without losing information?",
+      "detail": "If the answer depends on original positions, sorting destroys that information unless you sort (value, index) pairs. If original order doesn't matter, sort freely."
+    },
+    {
+      "step": "2. What to sort by?",
+      "detail": "Sort by the attribute that reveals structure. For intervals: sort by start time (for merging) or end time (for scheduling). For events: sort by time. The choice of sort key is often the insight."
+    },
+    {
+      "step": "3. Which sorting algorithm?",
+      "detail": "In interviews, use the language's built-in sort (O(n log n)). Know merge sort (stable, good for linked lists, enables inversion counting) and quicksort (in-place, average O(n log n)). For special cases: counting sort (O(n+k) for small value ranges)."
+    },
+    {
+      "step": "4. Custom comparators",
+      "detail": "Many problems need custom sort orders. 'Largest number from array' → compare by string concatenation order. 'Sort by frequency' → sort by count, then by value. Master custom comparators."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Forgetting that sorting is O(n log n) — it may dominate the total complexity",
+      "howToAvoid": "If the rest of your algorithm is O(n), sorting makes the whole thing O(n log n). That's usually fine, but verify it meets the problem's constraints."
+    },
+    {
+      "trap": "Unstable sort when stability matters",
+      "howToAvoid": "If equal elements must retain their original relative order, use a stable sort (merge sort). Most language built-in sorts are stable (Python, Java) but C++ std::sort is not."
+    },
+    {
+      "trap": "Sorting when a simpler structure suffices",
+      "howToAvoid": "For 'top K elements', you don't need to sort the whole array — use a heap (O(n log k)) or quickselect (O(n) average). Don't sort when you only need partial order."
+    }
+  ],
+  "interviewVariantStrategy": "Sorting problems in interviews: (1) **Custom comparators**: 'arrange numbers to form the largest number' — compare by concatenation. (2) **Sorting as preprocessing**: sort then apply two pointers, greedy, or binary search. (3) **Non-comparison sorts**: counting sort for small ranges, radix sort for fixed-width integers. (4) **Sorting-related algorithms**: merge sort for inversion counting, quickselect for kth element. The trick: many problems that don't mention sorting become trivial after sorting. Always ask: 'What would this look like if the input were sorted?'",
+  "resources": [
+    {
+      "title": "VisuAlgo — Sorting Algorithms",
+      "url": "https://visualgo.net/en/sorting",
+      "type": "visualizer",
+      "why": "Watch every sorting algorithm animate step-by-step — the best way to build intuition for how each one works"
+    },
+    {
+      "title": "Abdul Bari — Sorting Algorithms Comparison",
+      "url": "https://www.youtube.com/watch?v=pkkFqlG0Hds",
+      "type": "video",
+      "why": "Clear comparison of all major sorting algorithms with complexity analysis and when to use each"
+    },
+    {
+      "title": "CP-Algorithms — Sorting and Related",
+      "url": "https://cp-algorithms.com/",
+      "type": "article",
+      "why": "Reference implementations with analysis for merge sort inversions, radix sort, and custom comparators"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "id": "dynamic-programming",
+  "name": "Dynamic Programming",
+  "icon": "🧩",
+  "prerequisites": ["Recursion", "Arrays"],
+  "coreIntuition": "Dynamic programming is NOT a technique you 'apply' — it's an observation about problem structure. When a problem has **overlapping subproblems** (the same smaller problem is solved repeatedly) and **optimal substructure** (the optimal solution is built from optimal solutions to smaller pieces), you can store and reuse subproblem results instead of recomputing them. DP doesn't make problems easier — it makes the recursive solution you already have faster.",
+  "mentalModel": "Start by thinking recursively: 'How can I break this problem into smaller versions of itself?' Write the recurrence relation first — don't think about tables or bottom-up. Once you have a correct recursive solution, DP is just adding a cache. The table is an optimization, not the starting point. Think of DP as **smart recursion** — you're not learning a new algorithm, you're making recursion efficient by remembering what you already computed.",
+  "whenToUse": [
+    "The problem asks for an optimal value (minimum cost, maximum profit, number of ways)",
+    "You can define the answer in terms of answers to smaller subproblems (recurrence relation)",
+    "The same subproblems appear multiple times when you draw the recursion tree",
+    "The problem involves making sequential choices where each choice affects future options",
+    "Greedy doesn't work because you need to consider multiple paths"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Define the state — what parameters uniquely identify a subproblem?",
+      "detail": "This is the single most important step. Ask: 'What information do I need to make the next decision?' For knapsack: (item index, remaining capacity). For LIS: (ending index). The state IS your recurrence parameter — get this wrong and everything else falls apart."
+    },
+    {
+      "step": "2. Write the recurrence relation",
+      "detail": "Express dp[state] in terms of dp[smaller states]. This IS the core logic. For 0/1 knapsack: dp[i][w] = max(dp[i-1][w], dp[i-1][w-weight[i]] + value[i]). Don't think about code yet — write the math."
+    },
+    {
+      "step": "3. Identify the base cases",
+      "detail": "What's the smallest subproblem you can solve directly? For knapsack: dp[0][w] = 0 (no items). For fibonacci: dp[0] = 0, dp[1] = 1. Base cases are where the recursion stops."
+    },
+    {
+      "step": "4. Determine the computation order",
+      "detail": "If you go bottom-up, you need to fill the table so that every cell you reference is already computed. Follow the direction of the recurrence: if dp[i] depends on dp[i-1], iterate i from 0 upward."
+    },
+    {
+      "step": "5. Optimize space if possible",
+      "detail": "If dp[i] only depends on dp[i-1], you don't need the full table — just two rows (or even one). This is a mechanical optimization after you have the correct recurrence."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Trying to find the 'DP pattern' instead of thinking about the problem",
+      "howToAvoid": "Don't ask 'is this a knapsack problem?' Ask 'what's the recurrence?' Every DP problem has a unique recurrence — learn to derive it, not to pattern-match."
+    },
+    {
+      "trap": "Wrong state definition — missing a parameter or adding unnecessary ones",
+      "howToAvoid": "Test your state by asking: 'Given these parameters, can I make the next decision without any other information?' If yes, the state is complete. If no, you're missing a parameter."
+    },
+    {
+      "trap": "Confusing top-down and bottom-up, and not knowing when to use which",
+      "howToAvoid": "Top-down (memoized recursion) is easier to write and think about — start there. Bottom-up is an optimization for when you need space efficiency or iterative performance. They compute the same thing."
+    },
+    {
+      "trap": "Forgetting that DP requires optimal substructure — not just overlapping subproblems",
+      "howToAvoid": "Verify: does the optimal solution to the full problem actually contain optimal solutions to subproblems? If a locally suboptimal choice might lead to a globally optimal solution, DP might not work (and you may need a different approach)."
+    }
+  ],
+  "interviewVariantStrategy": "Interviewers twist DP problems by: (1) **Changing the objective** — 'count the number of ways' vs 'find the minimum cost' vs 'is it possible'. Same recurrence structure, different combination operation (addition for counting, min/max for optimization, OR for feasibility). (2) **Adding dimensions** — 'now you have a cooldown period' adds a state parameter. (3) **Disguising as a different problem** — 'longest palindromic subsequence' is really 'LCS of string with its reverse'. The defense: always derive the recurrence from scratch. Ask 'what choices do I have at step i?' and 'how does each choice affect the remaining problem?' — this works for ANY DP problem, even ones you've never seen.",
+  "resources": [
+    {
+      "title": "MIT 6.006 — Dynamic Programming (Erik Demaine)",
+      "url": "https://www.youtube.com/watch?v=OQ5jsbhAv_M",
+      "type": "video",
+      "why": "The gold standard DP lecture — teaches the SRTBOT framework for systematically solving any DP problem"
+    },
+    {
+      "title": "Aditya Verma — DP Playlist (Hindi)",
+      "url": "https://www.youtube.com/playlist?list=PL_z_8CaSLPWekqhdCPmFohncHwz8TY2Go",
+      "type": "video",
+      "why": "48 videos building DP understanding from first principles — the recursion-tree approach is excellent"
+    },
+    {
+      "title": "AtCoder DP Contest — Educational DP Problems",
+      "url": "https://atcoder.jp/contests/dp",
+      "type": "course",
+      "why": "26 carefully designed DP problems (A-Z) that progressively teach every important DP pattern. The best practice set that exists."
+    },
+    {
+      "title": "CP-Algorithms — Dynamic Programming",
+      "url": "https://cp-algorithms.com/dynamic_programming/",
+      "type": "article",
+      "why": "Reference-quality explanations with mathematical rigor for each DP technique"
+    }
+  ]
+}

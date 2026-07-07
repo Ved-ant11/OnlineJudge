@@ -1,0 +1,72 @@
+{
+  "id": "sliding-window",
+  "name": "Sliding Window",
+  "icon": "🪟",
+  "prerequisites": ["Arrays", "Hash Map", "Two Pointers"],
+  "coreIntuition": "Sliding window optimizes problems about contiguous subarrays/substrings by maintaining a window [left, right] and sliding it across the input. Instead of recomputing everything for each possible subarray (O(n²)), you add the new element, remove the old one, and update your answer — O(n) total. The core insight: if moving right expands the window and moving left shrinks it, and your window property is monotonic, sliding window works.",
+  "mentalModel": "Imagine looking through a window at a train passing by. You see a fixed-width section at a time. As the train moves, one car enters your view on the right and one leaves on the left. You don't re-examine every car — you just update based on what entered and what left. Variable-width windows are the same idea, but the window expands and contracts based on a condition.",
+  "whenToUse": [
+    "The problem asks about contiguous subarrays or substrings",
+    "You need to find a subarray with a specific property (sum = K, at most K distinct, no repeats)",
+    "The brute force checks all O(n²) subarrays",
+    "The window property is monotonic — expanding the window can only make it 'more' or 'less' valid",
+    "The problem asks for minimum/maximum length subarray satisfying a condition"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Identify: is this a fixed-size or variable-size window?",
+      "detail": "Fixed-size: 'maximum sum of K consecutive elements'. Variable-size: 'shortest subarray with sum ≥ target'. Fixed-size is simpler — just slide. Variable-size requires expanding and contracting."
+    },
+    {
+      "step": "2. Define the window state",
+      "detail": "What information do you maintain about the current window? A running sum? A frequency map? A count of distinct elements? This state must be updatable in O(1) when you add/remove an element."
+    },
+    {
+      "step": "3. Define the validity condition",
+      "detail": "When is the window 'valid'? For 'longest substring without repeating characters': valid = no character appears more than once. For 'minimum window substring': valid = all required characters are present."
+    },
+    {
+      "step": "4. Expand right, then shrink left",
+      "detail": "Move right to expand the window (add element, update state). When the window becomes invalid (or, for minimization, while it's still valid), move left to shrink (remove element, update state). This two-step dance is the core loop."
+    },
+    {
+      "step": "5. Update the answer at the right moment",
+      "detail": "For 'longest valid window': update answer whenever the window is valid. For 'shortest valid window': update answer when you're about to shrink a valid window. Getting this timing right is crucial."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Using sliding window when the property isn't monotonic",
+      "howToAvoid": "Sliding window requires: if a window is too large/invalid, shrinking it moves toward valid. If shrinking can make it MORE invalid, sliding window doesn't apply (consider prefix sums + binary search instead)."
+    },
+    {
+      "trap": "Off-by-one with window boundaries",
+      "howToAvoid": "Be consistent: is the window [left, right] inclusive on both ends? Or [left, right) half-open? Choose one convention and stick with it."
+    },
+    {
+      "trap": "Not considering negative numbers",
+      "howToAvoid": "Sliding window for 'subarray sum = K' only works for positive numbers (because adding elements always increases sum). With negatives, use prefix sums + hash map instead."
+    }
+  ],
+  "interviewVariantStrategy": "Sliding window problems come in 3 flavors: (1) **Fixed-size window**: 'max sum of K elements', 'all anagram occurrences in a string'. Straightforward — slide and update. (2) **Variable-size, find longest**: 'longest substring with at most K distinct characters'. Expand right, shrink left only when invalid. (3) **Variable-size, find shortest**: 'minimum window substring', 'smallest subarray with sum ≥ S'. Expand right until valid, then shrink left while still valid, updating the answer. The variant twist: sometimes you need to combine sliding window with hash maps (frequency counting) or with two pointers. Recognize the flavor, apply the template, focus your energy on defining the right window state.",
+  "resources": [
+    {
+      "title": "NeetCode — Sliding Window Pattern",
+      "url": "https://www.youtube.com/watch?v=1pkOgXD63yU",
+      "type": "video",
+      "why": "Clear explanation of both fixed and variable window techniques with multiple examples"
+    },
+    {
+      "title": "Aditya Verma — Sliding Window Playlist",
+      "url": "https://www.youtube.com/playlist?list=PL_z_8CaSLPWeM8BDJmIYDp7P6qcDgvnmK",
+      "type": "video",
+      "why": "Systematic breakdown of the sliding window technique with a reusable template approach"
+    },
+    {
+      "title": "LeetCode — Sliding Window Problems Collection",
+      "url": "https://leetcode.com/tag/sliding-window/",
+      "type": "course",
+      "why": "Practice problems organized by difficulty — start easy and build up to hard variants"
+    }
+  ]
+}

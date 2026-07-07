@@ -1,0 +1,64 @@
+{
+  "id": "queue",
+  "name": "Queue",
+  "icon": "🚶‍♂️",
+  "prerequisites": ["Arrays"],
+  "coreIntuition": "A queue processes elements in FIFO order — first in, first out. While simple as a data structure, the queue's algorithmic power comes from BFS (layer-by-layer exploration) and from the **monotonic deque** — a double-ended queue that maintains elements in sorted order, enabling O(1) minimum/maximum over a sliding window. If you see 'sliding window minimum/maximum', think deque.",
+  "mentalModel": "A queue is a line at a ticket counter — first person in line gets served first. A deque is a double-ended line where you can enter and exit from both ends. The monotonic deque is a clever twist: whenever a new person joins, everyone shorter (or less important) in front of them is removed, because they'll never be 'seen' — the new person will outlast them in the window.",
+  "whenToUse": [
+    "You need BFS (Breadth-First Search) — the queue maintains exploration order",
+    "You need to process tasks in order of arrival (FIFO)",
+    "You need sliding window minimum/maximum (monotonic deque)",
+    "The problem involves scheduling or buffering with FIFO semantics",
+    "You need to implement a circular buffer or ring buffer"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Is this a BFS problem?",
+      "detail": "If you need shortest path in unweighted graph or level-order traversal, use a queue for BFS. This is the most common use of queues in interviews."
+    },
+    {
+      "step": "2. Is this a sliding window min/max problem?",
+      "detail": "If you need the minimum or maximum in every window of size K, use a monotonic deque. Maintain elements in increasing order (for min) or decreasing order (for max). Pop from back when violated, pop from front when out of window."
+    },
+    {
+      "step": "3. Is order preservation important?",
+      "detail": "Queues preserve insertion order. If you need FIFO processing (first task submitted gets processed first), use a queue. If priority matters more than order, use a heap instead."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Using a list as a queue (O(n) dequeue from front)",
+      "howToAvoid": "Use a proper deque (collections.deque in Python, ArrayDeque in Java). Popping from the front of a list/array is O(n) due to shifting."
+    },
+    {
+      "trap": "Confusing queue (FIFO) with stack (LIFO) in BFS/DFS",
+      "howToAvoid": "Queue → BFS (layer by layer). Stack → DFS (depth first). Swapping them changes the algorithm entirely."
+    },
+    {
+      "trap": "Not removing expired elements from monotonic deque",
+      "howToAvoid": "Store indices in the deque, not values. At each step, check if the front index is out of the current window and pop if so."
+    }
+  ],
+  "interviewVariantStrategy": "Queue interview problems: (1) **BFS** — the most common queue application. (2) **Sliding window maximum** — monotonic deque. (3) **Design problems** — implement a queue using stacks, implement a circular queue, implement a recent counter. (4) **Task scheduling** — process tasks in FIFO order with constraints. The twist: 'sliding window maximum' sounds like a brute force problem but is O(n) with a monotonic deque. Recognizing this is the key interview insight for queues beyond BFS.",
+  "resources": [
+    {
+      "title": "NeetCode — Monotonic Deque Pattern",
+      "url": "https://www.youtube.com/watch?v=DfljaUwZsOk",
+      "type": "video",
+      "why": "Clear explanation of the monotonic deque technique for sliding window maximum/minimum"
+    },
+    {
+      "title": "VisuAlgo — Queue Visualization",
+      "url": "https://visualgo.net/en/list",
+      "type": "visualizer",
+      "why": "Interactive visualization of queue operations to understand FIFO behavior"
+    },
+    {
+      "title": "CP-Algorithms — Minimum Queue",
+      "url": "https://cp-algorithms.com/data_structures/stack_queue_modification.html",
+      "type": "article",
+      "why": "Shows how to augment a queue to support O(1) minimum/maximum queries"
+    }
+  ]
+}

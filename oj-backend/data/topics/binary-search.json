@@ -1,0 +1,82 @@
+{
+  "id": "binary-search",
+  "name": "Binary Search",
+  "icon": "🔍",
+  "prerequisites": ["Arrays", "Sorting"],
+  "coreIntuition": "Binary search is NOT about 'searching a sorted array'. It's about **eliminating half the search space at each step using a monotonic predicate**. Any time you can define a yes/no question where the answer flips from false to true (or vice versa) across an ordered space, binary search applies — even if there's no array involved at all.",
+  "mentalModel": "Imagine you're playing a guessing game: 'I'm thinking of a number between 1 and 1000.' You don't guess randomly — you guess 500, then based on 'higher/lower', you halve the remaining range. Now generalize: the 'number' can be anything (a capacity, a distance, a time), and the 'higher/lower' is your predicate function. Binary search is just this game formalized.",
+  "whenToUse": [
+    "You need to find an exact value or boundary in a sorted/monotonic space",
+    "The problem asks for 'minimum X such that…' or 'maximum X such that…'",
+    "You can define a predicate (canAchieve, isValid, isFeasible) that is monotonically true/false",
+    "The brute force is linear search over possible answers, and you notice a monotonic property",
+    "The problem mentions sorted arrays, rotated arrays, or searching"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Define the search space",
+      "detail": "What are ALL possible answers? This could be array indices [0, n-1], a value range [1, max], or even a continuous domain [0.0, 1e9]. Don't limit yourself to array indices."
+    },
+    {
+      "step": "2. Define the predicate",
+      "detail": "Write a function canAchieve(x) or isValid(x) that returns true/false. This is the hardest and most important part — if you can define this clearly, the binary search is trivial. Example: 'Can I ship all packages in D days with capacity x?' → true/false."
+    },
+    {
+      "step": "3. Verify monotonicity",
+      "detail": "Prove to yourself that the predicate flips exactly once across the search space. If canAchieve(5) = true, is canAchieve(6) also true? If yes, you have monotonicity and binary search works."
+    },
+    {
+      "step": "4. Choose your boundary convention",
+      "detail": "Decide: are you looking for the FIRST true, or the LAST false? This determines whether you set lo=mid+1 or hi=mid. Pick one convention and stick with it — inconsistency causes bugs."
+    },
+    {
+      "step": "5. Handle edge cases by tracing small inputs",
+      "detail": "Always trace your loop with a 2-element search space [lo, lo+1]. Does it terminate? Does it pick the right element? This catches off-by-one bugs before they happen."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Off-by-one errors with lo, hi, and mid",
+      "howToAvoid": "Use a consistent template. If you use lo < hi with hi = mid and lo = mid + 1, the answer is at lo when the loop ends. Trace through a 2-element case every time."
+    },
+    {
+      "trap": "Not recognizing binary search applies (especially 'binary search on the answer')",
+      "howToAvoid": "Key phrases: 'minimize the maximum', 'maximum the minimum', 'find the smallest X such that', 'what's the minimum capacity/speed/value'. These almost always signal binary search on the answer."
+    },
+    {
+      "trap": "Integer overflow when computing mid",
+      "howToAvoid": "Use mid = lo + (hi - lo) / 2 instead of (lo + hi) / 2 to prevent overflow in languages without arbitrary precision."
+    },
+    {
+      "trap": "Infinite loop when lo = hi - 1 and mid rounds down to lo",
+      "howToAvoid": "If you use lo = mid (not mid + 1), you need mid = lo + (hi - lo + 1) / 2 (round up) to make progress. Or restructure to always use lo = mid + 1."
+    }
+  ],
+  "interviewVariantStrategy": "Interviewers have 3 favorite ways to disguise binary search: (1) **Binary search on the answer** — instead of searching an array, you're searching over possible answer values. 'Minimum capacity to ship packages in D days' → binary search over capacities. (2) **Rotated/modified arrays** — the sorted property is disrupted, but you can still eliminate half by checking which half is sorted. (3) **2D search** — searching in a row-sorted and column-sorted matrix. For all variants, the approach is the same: define the search space, define the predicate, verify monotonicity. The format changes; the thinking doesn't.",
+  "resources": [
+    {
+      "title": "Topcoder — Binary Search as Predicate Search",
+      "url": "https://www.topcoder.com/thrive/articles/Binary%20Search",
+      "type": "article",
+      "why": "The best explanation of binary search as a predicate search — transforms how you think about it"
+    },
+    {
+      "title": "Errichto — Binary Search on the Answer",
+      "url": "https://www.youtube.com/watch?v=GU7DpgHINWQ",
+      "type": "video",
+      "why": "Clear walkthrough of the 'search the answer space' technique with multiple contest problems"
+    },
+    {
+      "title": "CP-Algorithms — Binary Search",
+      "url": "https://cp-algorithms.com/num_methods/binary_search.html",
+      "type": "article",
+      "why": "Formal treatment with correct implementation templates and edge case analysis"
+    },
+    {
+      "title": "VisuAlgo — Binary Search",
+      "url": "https://visualgo.net/en/sorting",
+      "type": "visualizer",
+      "why": "Step through binary search visually to understand how the search space shrinks"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "id": "trees",
+  "name": "Trees",
+  "icon": "🌳",
+  "prerequisites": ["Recursion", "DFS", "BFS"],
+  "coreIntuition": "A tree is a connected graph with no cycles — which means there's exactly ONE path between any two nodes. This uniqueness property is what makes trees special: any property of the tree can be computed by breaking it into subtrees. Every tree problem is a recursion problem in disguise — the root's answer depends on its children's answers, which depend on their children's answers, all the way to the leaves.",
+  "mentalModel": "Think of a tree as a hierarchy where every node is the 'boss' of its subtree. When the CEO (root) needs a report, each VP (child) collects reports from their departments and passes a summary upward. This bottom-up information flow IS tree recursion. Top-down is the reverse: the CEO sends instructions that cascade down. Most tree problems are either bottom-up (return values from leaves to root) or top-down (pass parameters from root to leaves).",
+  "whenToUse": [
+    "The input is explicitly a tree (binary tree, BST, n-ary tree)",
+    "The problem has hierarchical structure (files, org chart, DOM)",
+    "You need to compute properties of subtrees",
+    "The problem involves paths in a tree (diameter, longest path, path sum)",
+    "You need to serialize, traverse, or reconstruct a tree"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Determine what you need to compute for each node",
+      "detail": "What does each node need to 'know' about its subtree? Height? Size? Sum? Whether it's balanced? This becomes the return value of your recursive function."
+    },
+    {
+      "step": "2. Determine the information flow direction",
+      "detail": "Bottom-up: children return information to parent (height, size, validity). Top-down: parent passes information to children (depth, path sum so far, is-left-child). Some problems need both."
+    },
+    {
+      "step": "3. Write the recurrence",
+      "detail": "Express the node's answer in terms of its children's answers. Tree height: 1 + max(height(left), height(right)). Tree diameter: max(height(left) + height(right), diameter(left), diameter(right))."
+    },
+    {
+      "step": "4. Handle base cases — null nodes and leaves",
+      "detail": "What's the answer for a null node? For a leaf? These are your recursion base cases. Height of null = -1 (or 0 depending on convention). Height of leaf = 0."
+    },
+    {
+      "step": "5. Consider traversal order",
+      "detail": "Pre-order (root → left → right): good for serialization, copying. In-order (left → root → right): gives sorted order for BSTs. Post-order (left → right → root): good for deletion, bottom-up computation."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Computing the same thing multiple times (e.g., height inside diameter)",
+      "howToAvoid": "Return multiple values from your recursive function. Instead of computing height separately, return it alongside your main answer. This turns O(n²) into O(n)."
+    },
+    {
+      "trap": "Not handling null children correctly",
+      "howToAvoid": "Define what your function returns for null input FIRST. This is your base case. Test: does your solution work on a single-node tree? On an empty tree?"
+    },
+    {
+      "trap": "Confusing BST properties with general tree properties",
+      "howToAvoid": "BST: left < root < right for ALL nodes in subtrees (not just immediate children). Validate BST by passing min/max bounds down, not by checking just parent-child."
+    }
+  ],
+  "interviewVariantStrategy": "Tree problems come in layers of difficulty: (1) **Basic traversal**: pre/in/post/level order — know all four cold. (2) **Property computation**: height, diameter, balance, symmetry — these are recursion exercises. (3) **Path problems**: path sum, longest path, LCA — require tracking information along paths. (4) **Construction**: build tree from traversals, serialize/deserialize — require understanding how traversal orders uniquely identify trees. (5) **BST-specific**: validate BST, kth smallest, successor/predecessor — exploit the sorted property. The interview twist: many tree problems are really about computing two things simultaneously (e.g., diameter needs both height AND max-path-through-each-node).",
+  "resources": [
+    {
+      "title": "NeetCode — Binary Tree Problems",
+      "url": "https://neetcode.io/roadmap",
+      "type": "course",
+      "why": "Structured progression through tree problems from basic traversal to advanced tree DP"
+    },
+    {
+      "title": "Abdul Bari — Tree Data Structure",
+      "url": "https://www.youtube.com/watch?v=EWCgpVUZaB0",
+      "type": "video",
+      "why": "Clear foundational explanation of tree concepts, traversals, and properties"
+    },
+    {
+      "title": "VisuAlgo — Binary Search Tree",
+      "url": "https://visualgo.net/en/bst",
+      "type": "visualizer",
+      "why": "Interactive BST visualization — insert, delete, search, and see rotations in real time"
+    },
+    {
+      "title": "Striver — Binary Tree Series",
+      "url": "https://takeuforward.org/data-structure/binary-tree-traversals-inorder-preorder-postorder/",
+      "type": "article",
+      "why": "Comprehensive tree problem series covering all major interview patterns with clear explanations"
+    }
+  ]
+}

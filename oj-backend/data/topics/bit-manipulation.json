@@ -1,0 +1,68 @@
+{
+  "id": "bit-manipulation",
+  "name": "Bit Manipulation",
+  "icon": "🔢",
+  "prerequisites": ["Math"],
+  "coreIntuition": "Bit manipulation operates on the binary representation of numbers. The key insight: **each bit is an independent boolean variable**. XOR finds differences, AND finds commonalities, OR combines. When a problem involves pairs, toggles, or power-of-2 properties, bits are the natural language.",
+  "mentalModel": "Think of each integer as a row of switches (bits), each ON or OFF. XOR is 'toggle if different', AND is 'both must be ON', OR is 'either can be ON'. The power of bit manipulation: operations on ALL 32/64 bits happen simultaneously in O(1). It's free parallelism.",
+  "whenToUse": [
+    "The problem involves XOR properties (find the unique element, find missing number)",
+    "You need to check or manipulate specific bits (powers of 2, even/odd)",
+    "The problem involves subsets (each subset maps to a bitmask)",
+    "You need to optimize a problem where each element has two states (include/exclude)",
+    "The problem involves toggling or pairing"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Identify the bit-level property",
+      "detail": "XOR of a number with itself = 0. XOR of a number with 0 = itself. AND with 1 extracts a bit. These properties are the building blocks."
+    },
+    {
+      "step": "2. Think per-bit independently",
+      "detail": "Many problems decompose: compute the answer for each bit position independently, then combine. 'Sum of XOR of all pairs' → for each bit, count how many numbers have it set."
+    },
+    {
+      "step": "3. Know the key operations",
+      "detail": "Check bit i: (n >> i) & 1. Set bit i: n | (1 << i). Clear bit i: n & ~(1 << i). Toggle bit i: n ^ (1 << i). Lowest set bit: n & (-n). Clear lowest set bit: n & (n-1)."
+    },
+    {
+      "step": "4. Use bitmasks for subset enumeration",
+      "detail": "An n-bit integer represents a subset of n elements. Bit i set → element i is included. Enumerate all subsets: for mask in 0 to 2^n - 1."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Integer overflow or sign issues with bit shifts",
+      "howToAvoid": "Use unsigned types or be careful with the sign bit. In Java, use >>> for unsigned right shift. In Python, integers have arbitrary precision, so less of an issue."
+    },
+    {
+      "trap": "Forgetting that XOR is its own inverse",
+      "howToAvoid": "a ^ b ^ b = a. This means XOR can 'undo' itself — useful for finding single unique elements, in-place swapping, and encryption."
+    },
+    {
+      "trap": "Using bitmask DP when n is too large",
+      "howToAvoid": "Bitmask DP is O(2^n × n). Only practical when n ≤ 20 or so. Don't try bitmasks with n = 100."
+    }
+  ],
+  "interviewVariantStrategy": "Bit manipulation interview problems: (1) **Single number** — XOR all elements to find the unique one. (2) **Counting bits** — Brian Kernighan's algorithm (n & (n-1) removes lowest set bit). (3) **Power of 2** — n & (n-1) == 0 for powers of 2. (4) **Subsets** — bitmask enumeration. (5) **XOR queries** — prefix XOR for range XOR queries. The interview twist: problems often don't mention bits directly. 'Find the missing number' → XOR. 'Find two non-repeating elements' → XOR + splitting by a distinguishing bit. Recognize that pairing/cancellation suggests XOR.",
+  "resources": [
+    {
+      "title": "Errichto — Bit Manipulation for CP",
+      "url": "https://www.youtube.com/watch?v=xXKL9YBWgCY",
+      "type": "video",
+      "why": "Comprehensive and practical — covers all essential bit tricks used in competitive programming and interviews"
+    },
+    {
+      "title": "Bit Twiddling Hacks — Stanford",
+      "url": "https://graphics.stanford.edu/~seander/bithacks.html",
+      "type": "article",
+      "why": "The definitive reference for clever bit manipulation tricks — useful for optimization and understanding"
+    },
+    {
+      "title": "LeetCode — Bit Manipulation Problems",
+      "url": "https://leetcode.com/tag/bit-manipulation/",
+      "type": "course",
+      "why": "Curated problems that test bit manipulation understanding from easy to hard"
+    }
+  ]
+}

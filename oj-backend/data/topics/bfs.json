@@ -1,0 +1,72 @@
+{
+  "id": "bfs",
+  "name": "BFS",
+  "icon": "🌊",
+  "prerequisites": ["Graphs", "Queue"],
+  "coreIntuition": "BFS explores a graph layer by layer — all nodes at distance 1, then distance 2, then distance 3. This layer-by-layer property is what makes BFS the **shortest path algorithm for unweighted graphs**. It's not just a traversal technique — it's a distance calculator. Every time you need the minimum number of steps to reach something, BFS is your first thought.",
+  "mentalModel": "Drop a stone in a pond. The ripples expand outward in concentric circles — each circle represents one 'step' or 'layer'. BFS works the same way: it processes all nodes at the current distance before moving to the next distance. This is why BFS finds shortest paths — it literally explores in order of increasing distance. The queue is what maintains this layer-by-layer order.",
+  "whenToUse": [
+    "You need the shortest path in an unweighted graph",
+    "The problem asks for the minimum number of moves/steps/operations",
+    "You need to explore all nodes at a given distance before going deeper",
+    "The problem involves level-order traversal of a tree",
+    "You're searching through a state space and want the fewest transitions"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Define the graph — what are nodes and edges?",
+      "detail": "For explicit graphs, this is given. For implicit graphs (grids, state spaces), each 'state' is a node and each 'valid move' is an edge. Example: in a word ladder, each word is a node and edges connect words that differ by one letter."
+    },
+    {
+      "step": "2. Identify the source(s) and target(s)",
+      "detail": "BFS starts from one or more sources. Multi-source BFS (starting from all sources simultaneously) is common — e.g., 'distance from nearest 0 in a matrix' starts BFS from ALL zeros."
+    },
+    {
+      "step": "3. Build the queue and visited set",
+      "detail": "Initialize the queue with all source nodes (marked as visited). Mark nodes visited WHEN ENQUEUING, not when dequeuing — this prevents duplicate entries and is a common source of bugs."
+    },
+    {
+      "step": "4. Process level by level if needed",
+      "detail": "If you need to know the current 'distance' or 'level', process the queue in batches: for each level, process all nodes currently in the queue before moving to the next batch."
+    },
+    {
+      "step": "5. Terminate early if possible",
+      "detail": "If you're looking for a specific target, return as soon as you dequeue it — you've found the shortest path. Don't process the entire graph unnecessarily."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Marking visited when DEQUEUING instead of when ENQUEUING",
+      "howToAvoid": "Always mark a node visited the moment you add it to the queue. Otherwise, the same node can be added multiple times from different neighbors, wasting time and potentially causing wrong answers."
+    },
+    {
+      "trap": "Using BFS on weighted graphs expecting shortest paths",
+      "howToAvoid": "BFS only finds shortest paths in UNWEIGHTED graphs (or graphs where all edges have equal weight). For weighted graphs, use Dijkstra's algorithm."
+    },
+    {
+      "trap": "Forgetting multi-source BFS",
+      "howToAvoid": "If the problem asks 'distance from the nearest X', start BFS from ALL X's simultaneously. This is O(V+E), not O(X × (V+E))."
+    }
+  ],
+  "interviewVariantStrategy": "BFS variants revolve around redefining what 'nodes' and 'edges' are: (1) **Grid BFS** — cells are nodes, adjacent cells are edges. (2) **State-space BFS** — each state of a puzzle is a node, each move is an edge. (3) **0-1 BFS** — edges have weight 0 or 1; use a deque (add weight-0 edges to front, weight-1 to back). (4) **Bi-directional BFS** — search from both source and target, meeting in the middle. The key insight: any 'minimum steps' problem is a shortest-path problem, and if steps have equal cost, BFS solves it.",
+  "resources": [
+    {
+      "title": "William Fiset — BFS Graph Traversal",
+      "url": "https://www.youtube.com/watch?v=oDqjPvD54Ss",
+      "type": "video",
+      "why": "Clear visual walkthrough of BFS with code, covering both basic traversal and shortest path"
+    },
+    {
+      "title": "CP-Algorithms — BFS and Applications",
+      "url": "https://cp-algorithms.com/graph/breadth-first-search.html",
+      "type": "article",
+      "why": "Comprehensive guide covering BFS for shortest paths, connected components, and bipartiteness checking"
+    },
+    {
+      "title": "VisuAlgo — BFS Visualization",
+      "url": "https://visualgo.net/en/dfsbfs",
+      "type": "visualizer",
+      "why": "Watch BFS explore a graph layer by layer — builds the ripple intuition"
+    }
+  ]
+}

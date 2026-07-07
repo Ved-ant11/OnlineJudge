@@ -1,0 +1,68 @@
+{
+  "id": "two-pointers",
+  "name": "Two Pointers",
+  "icon": "👆👆",
+  "prerequisites": ["Arrays", "Sorting"],
+  "coreIntuition": "Two pointers exploit structure in the input (usually sorted order) to eliminate unnecessary comparisons. Instead of checking all pairs O(n²), you maintain two pointers that move toward each other (or in the same direction), and at each step, you can logically eliminate a large chunk of pairs. The key insight: **if moving one pointer in a direction can only make things better or worse (monotonically), you never need to backtrack.**",
+  "mentalModel": "Imagine squeezing a spring from both ends. You have a left pointer and a right pointer. Based on the current state, you know which end to push inward. You never push outward because the sorted order guarantees that direction is already exhausted. Each step eliminates either the current left element or the current right element from consideration permanently.",
+  "whenToUse": [
+    "The input is sorted (or you can sort it without losing information)",
+    "You're looking for pairs or triplets with a specific property",
+    "You need to partition an array based on a condition",
+    "The problem involves comparing elements from two ends",
+    "You're merging two sorted sequences"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Ensure the input has exploitable order",
+      "detail": "Two pointers need monotonicity — usually sorted order. If the input isn't sorted and sorting is allowed, sort it. If sorting destroys needed information (like original indices), two pointers may not apply."
+    },
+    {
+      "step": "2. Choose the pointer movement pattern",
+      "detail": "Opposite ends (converging): for pair-sum problems on sorted arrays. Same direction (chasing): for removing duplicates, partitioning. Two inputs (merging): for merge-sort-style problems."
+    },
+    {
+      "step": "3. Define the movement condition",
+      "detail": "At each step, which pointer moves? For pair sum: if sum < target, move left pointer right (increase sum). If sum > target, move right pointer left (decrease sum). This logic must be exhaustive."
+    },
+    {
+      "step": "4. Prove that no valid pair is skipped",
+      "detail": "When you move a pointer, convince yourself that all pairs involving the abandoned position have been properly accounted for. This is what makes two pointers correct."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Applying two pointers to unsorted data",
+      "howToAvoid": "Two pointers on unsorted data is just two nested loops with extra steps. Sort first, or use a hash map approach instead."
+    },
+    {
+      "trap": "Not handling duplicates in pair/triplet problems",
+      "howToAvoid": "After finding a valid pair, skip over duplicate values: while (left < right && nums[left] == nums[left+1]) left++. Do this for both pointers."
+    },
+    {
+      "trap": "Confusing two pointers with sliding window",
+      "howToAvoid": "Two pointers: usually on sorted data, pointers converge. Sliding window: contiguous subarray, left and right both move rightward. They're different techniques solving different problems."
+    }
+  ],
+  "interviewVariantStrategy": "Two-pointer variants: (1) **Pair sum on sorted array** — converging pointers. (2) **3Sum/4Sum** — fix one element, two-pointer on the rest. (3) **Container with most water** — converging pointers, move the shorter side. (4) **Remove duplicates in-place** — one slow pointer (write position), one fast pointer (read position). (5) **Merge two sorted arrays** — one pointer per array. The core skill: given the current state of both pointers, can you prove which one to move? If yes, two pointers works. If you can't determine direction without trying both, you need a different approach.",
+  "resources": [
+    {
+      "title": "NeetCode — Two Pointers Pattern",
+      "url": "https://www.youtube.com/watch?v=cQ1Oz4ckceM",
+      "type": "video",
+      "why": "Covers the key two-pointer patterns with clear visual animations"
+    },
+    {
+      "title": "LeetCode — Two Pointers Study Plan",
+      "url": "https://leetcode.com/studyplan/two-pointers/",
+      "type": "course",
+      "why": "Structured practice progression from basic to advanced two-pointer problems"
+    },
+    {
+      "title": "Take U Forward — Two Pointers and Greedy",
+      "url": "https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2",
+      "type": "article",
+      "why": "Well-organized problem set that teaches two-pointer thinking through progressively harder problems"
+    }
+  ]
+}

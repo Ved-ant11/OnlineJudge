@@ -1,0 +1,68 @@
+{
+  "id": "union-find",
+  "name": "Union Find",
+  "icon": "🔗",
+  "prerequisites": ["Graphs", "Arrays"],
+  "coreIntuition": "Union-Find (Disjoint Set Union) efficiently tracks which elements belong to the same group and merges groups. The two operations — **find** (which group is this element in?) and **union** (merge two groups) — run in nearly O(1) with path compression and union by rank. Use Union-Find when you need to repeatedly ask 'are these two things connected?' while dynamically adding connections.",
+  "mentalModel": "Think of Union-Find as a social network. Each person starts as their own group. When two people become friends, their friend circles merge. 'Are Alice and Bob connected?' means 'are they in the same friend circle?' The clever part: path compression makes future lookups faster (everyone points directly to the group leader), and union by rank keeps the tree balanced.",
+  "whenToUse": [
+    "You need to dynamically connect elements and query connectivity",
+    "The problem involves connected components that are being merged over time",
+    "You need Kruskal's algorithm for minimum spanning tree",
+    "The problem involves equivalence classes (account merging, similar groups)",
+    "You need to process edges in order and track component changes"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Initialize — every element is its own parent",
+      "detail": "parent[i] = i for all elements. rank[i] = 0. Each element starts as a singleton component."
+    },
+    {
+      "step": "2. Find with path compression",
+      "detail": "find(x): follow parent pointers to the root. Path compression: make every node on the path point directly to the root. This amortizes future find operations to nearly O(1)."
+    },
+    {
+      "step": "3. Union by rank",
+      "detail": "union(x, y): find roots of x and y. If different, attach the shorter tree under the taller tree (union by rank). This keeps the tree balanced."
+    },
+    {
+      "step": "4. Count components or track component sizes",
+      "detail": "Maintain a component counter. Each union that merges two different roots decreases the count by 1. Alternatively, maintain size arrays for each component."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Forgetting path compression — find becomes O(n) worst case",
+      "howToAvoid": "Always implement path compression in find. One line: parent[x] = find(parent[x]). Without it, Union-Find degrades to a linked list."
+    },
+    {
+      "trap": "Using Union-Find when BFS/DFS is simpler",
+      "howToAvoid": "If you process all edges at once and just need connected components, BFS/DFS is simpler. Union-Find shines when edges arrive one at a time (online) or when you need Kruskal's MST."
+    },
+    {
+      "trap": "Comparing nodes instead of their roots",
+      "howToAvoid": "Always compare find(x) == find(y), never x == y. Two nodes in the same component may have different parent pointers before path compression."
+    }
+  ],
+  "interviewVariantStrategy": "Union-Find interview problems: (1) **Number of connected components** — union edges, count distinct roots. (2) **Detect cycle in undirected graph** — if find(u) == find(v) before union(u,v), there's a cycle. (3) **Kruskal's MST** — sort edges by weight, union greedily, skip if already connected. (4) **Account merging** — group accounts by shared emails. (5) **Redundant connection** — find the edge that creates a cycle. The twist: 'process connections in reverse' — some problems give you a connected graph and ask what happens as you REMOVE edges. Process in reverse (add edges), using Union-Find to track when components merge.",
+  "resources": [
+    {
+      "title": "William Fiset — Union-Find Data Structure",
+      "url": "https://www.youtube.com/watch?v=ibjEGG7ylHk",
+      "type": "video",
+      "why": "Complete walkthrough of Union-Find with path compression and union by rank, with visual animations"
+    },
+    {
+      "title": "CP-Algorithms — Disjoint Set Union",
+      "url": "https://cp-algorithms.com/data_structures/disjoint_set_union.html",
+      "type": "article",
+      "why": "Definitive reference with proofs, optimizations, and applications including Kruskal's algorithm"
+    },
+    {
+      "title": "VisuAlgo — Union-Find",
+      "url": "https://visualgo.net/en/ufds",
+      "type": "visualizer",
+      "why": "Interactive visualization of union and find operations with path compression"
+    }
+  ]
+}

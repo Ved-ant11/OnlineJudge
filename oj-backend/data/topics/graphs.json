@@ -1,0 +1,82 @@
+{
+  "id": "graphs",
+  "name": "Graphs",
+  "icon": "🕸️",
+  "prerequisites": ["Arrays", "Hash Map", "Queue", "Stack"],
+  "coreIntuition": "A graph is any relationship between things. Two cities connected by a road? Graph. A task that depends on another task? Graph. Friends on a social network? Graph. Mastering graphs means learning to **see graph structure in problems that don't mention graphs**. The nodes are the 'things', the edges are the 'relationships', and the question is always about the structure of those relationships — connectivity, shortest paths, cycles, orderings.",
+  "mentalModel": "When you see a problem with entities and relationships, draw it as dots and lines. Then ask: (1) Is the graph directed or undirected? (2) Are edges weighted? (3) What am I being asked about — connectivity (BFS/DFS/Union-Find), shortest path (BFS/Dijkstra), ordering (topological sort), or something else? The graph representation (adjacency list vs matrix) is a detail — the insight is recognizing the graph and knowing what question you're answering about its structure.",
+  "whenToUse": [
+    "The problem involves entities with relationships (connections, dependencies, transitions)",
+    "You're asked about connectivity, reachability, or connected components",
+    "The problem involves shortest/longest paths between states",
+    "There are dependencies between tasks (topological ordering)",
+    "A grid or matrix is given and you need to explore regions (grid = implicit graph)"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Identify nodes and edges",
+      "detail": "What are the 'things'? What are the 'relationships'? Sometimes nodes aren't obvious — in a word ladder, each word is a node and edges connect words differing by one letter."
+    },
+    {
+      "step": "2. Characterize the graph",
+      "detail": "Directed or undirected? Weighted or unweighted? Can there be cycles? Is it sparse or dense? Each answer narrows down the right algorithm."
+    },
+    {
+      "step": "3. Identify what you're being asked about",
+      "detail": "Connectivity → BFS/DFS/Union-Find. Shortest path (unweighted) → BFS. Shortest path (weighted) → Dijkstra/Bellman-Ford. Ordering with dependencies → Topological sort. This mapping is your compass."
+    },
+    {
+      "step": "4. Choose representation and implement",
+      "detail": "Adjacency list for sparse graphs (most interview problems), adjacency matrix for dense graphs. For grids, you often don't need to build an explicit graph — just iterate neighbors with direction arrays."
+    },
+    {
+      "step": "5. Handle edge cases",
+      "detail": "Disconnected graphs (process ALL components), self-loops, parallel edges, empty graphs. Always ask: does every node get visited?"
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Forgetting to mark nodes as visited → infinite loops",
+      "howToAvoid": "Always maintain a visited set. For BFS, mark visited WHEN ADDING TO QUEUE, not when processing. This prevents adding the same node multiple times."
+    },
+    {
+      "trap": "Using DFS for shortest path in unweighted graphs",
+      "howToAvoid": "DFS does NOT find shortest paths. BFS does. DFS finds A path; BFS finds the SHORTEST path (in unweighted graphs). This is a fundamental distinction."
+    },
+    {
+      "trap": "Not handling disconnected components",
+      "howToAvoid": "If the problem asks about the whole graph, iterate over ALL nodes and start a new traversal for each unvisited node."
+    },
+    {
+      "trap": "Treating a grid problem as a pure array problem",
+      "howToAvoid": "If a grid problem asks about regions, connected areas, or paths, it's a graph problem. Each cell is a node, and adjacent cells are edges."
+    }
+  ],
+  "interviewVariantStrategy": "Interviewers love disguising graph problems: 'find if you can transform word A to word B' (word ladder = BFS on implicit graph), 'find the order to take courses' (topological sort), 'find connected regions in a grid' (BFS/DFS flood fill). The variant strategy: whenever you see entities + relationships + a question about reachability/ordering/shortest-path, DRAW THE GRAPH. Even if the problem never says 'graph'. Then apply the standard graph algorithms. Also watch for state-space graphs: each 'state' of a puzzle is a node, and each 'move' is an edge — this turns puzzles into shortest-path problems.",
+  "resources": [
+    {
+      "title": "William Fiset — Graph Theory Playlist",
+      "url": "https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93Y",
+      "type": "video",
+      "why": "The most comprehensive free graph theory course — 40+ videos from basics to advanced algorithms with animations"
+    },
+    {
+      "title": "CP-Algorithms — Graph Theory",
+      "url": "https://cp-algorithms.com/graph/breadth-first-search.html",
+      "type": "article",
+      "why": "Reference-quality explanations of every graph algorithm you'll need, with correct implementations"
+    },
+    {
+      "title": "VisuAlgo — Graph Traversal",
+      "url": "https://visualgo.net/en/dfsbfs",
+      "type": "visualizer",
+      "why": "Watch BFS and DFS execute step-by-step on various graph structures"
+    },
+    {
+      "title": "Striver — Graph Series",
+      "url": "https://takeuforward.org/graph/striver-graph-series-top-graph-interview-questions",
+      "type": "course",
+      "why": "Interview-focused graph problems organized by technique with detailed video solutions"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "id": "dfs",
+  "name": "DFS",
+  "icon": "🌲",
+  "prerequisites": ["Graphs", "Stack", "Recursion"],
+  "coreIntuition": "DFS explores as deep as possible along each branch before backtracking. But the real power of DFS isn't just traversal — it's the **information you can gather during the recursion**. Entry/exit times, subtree sizes, back edges (cycles), articulation points — all of this comes from understanding what happens as you go deeper AND as you return. DFS is a framework for computing things about graph structure.",
+  "mentalModel": "Imagine exploring a maze by always taking the first unexplored turn and going as far as possible. When you hit a dead end, you backtrack to the last junction and try the next turn. The key insight: when your recursive call returns, you have complete information about everything reachable from that branch. This 'post-order' information is incredibly powerful — subtree sizes, presence of cycles, farthest distances.",
+  "whenToUse": [
+    "You need to explore all nodes or find if a path exists",
+    "The problem involves connected components or regions",
+    "You need to detect cycles in a graph",
+    "The problem requires processing subtrees (tree DP, subtree queries)",
+    "You need topological ordering (DFS with finish-time ordering)",
+    "You need to classify edges (tree/back/forward/cross edges)"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Define what each recursive call represents",
+      "detail": "DFS(node) should answer: 'process node and everything reachable from it'. Be clear about what 'process' means for your problem — is it marking visited? Computing a value? Counting something?"
+    },
+    {
+      "step": "2. Decide what information flows DOWN (parameters) vs UP (return values)",
+      "detail": "Parameters carry information from parent to child (depth, current path). Return values carry information from children back to parent (subtree size, found target). This split is crucial for tree/graph DP."
+    },
+    {
+      "step": "3. Handle the visited set correctly",
+      "detail": "For undirected graphs: mark visited before recursing. For directed graphs: you may need three states (unvisited, in-progress, completed) to detect cycles — a back edge goes to an in-progress node."
+    },
+    {
+      "step": "4. Process in pre-order, post-order, or both",
+      "detail": "Pre-order (before recursing on children): useful for assigning entry times, passing information down. Post-order (after all children return): useful for aggregating subtree information up."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Stack overflow on deep graphs with recursive DFS",
+      "howToAvoid": "For very deep graphs (10^5+ nodes in a chain), use iterative DFS with an explicit stack. Recursive DFS is cleaner but has stack depth limits."
+    },
+    {
+      "trap": "Not distinguishing between 'visited' and 'in current path' for cycle detection",
+      "howToAvoid": "In directed graphs, use 3 colors: white (unvisited), gray (in current DFS path), black (fully processed). A back edge to a gray node means cycle. A edge to a black node is fine."
+    },
+    {
+      "trap": "Forgetting to handle disconnected components",
+      "howToAvoid": "Loop over all nodes, starting DFS from each unvisited node. A single DFS call only explores one connected component."
+    }
+  ],
+  "interviewVariantStrategy": "DFS variants center on what you compute during traversal: (1) **Cycle detection** — track nodes in current path (gray nodes). (2) **Topological sort** — reverse post-order of DFS. (3) **Articulation points/bridges** — track discovery times and lowest reachable ancestor. (4) **Tree DP** — return values from children aggregate information (e.g., diameter = max over children of height1 + height2). (5) **Flood fill** — DFS on grid to find connected regions. The key: DFS is a framework. The algorithm doesn't change — what changes is what you compute in the pre-order and post-order steps.",
+  "resources": [
+    {
+      "title": "William Fiset — DFS Algorithm",
+      "url": "https://www.youtube.com/watch?v=7fujbpJ0LB4",
+      "type": "video",
+      "why": "Excellent visual walkthrough of DFS with applications to cycle detection and topological sorting"
+    },
+    {
+      "title": "CP-Algorithms — DFS and Applications",
+      "url": "https://cp-algorithms.com/graph/depth-first-search.html",
+      "type": "article",
+      "why": "Covers DFS edge classification, cycle detection, topological sort, and connected components"
+    },
+    {
+      "title": "MIT 6.006 — DFS, Edge Classification, Cycle Detection",
+      "url": "https://www.youtube.com/watch?v=AfSk24UTFS8",
+      "type": "video",
+      "why": "MIT lecture that explains the theoretical foundations — entry/exit times and edge classification"
+    }
+  ]
+}

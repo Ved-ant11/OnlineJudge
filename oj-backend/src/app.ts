@@ -11,6 +11,7 @@ import discussionRoutes from "./routes/discussion.routes";
 import roomRoutes from "./routes/room.routes";
 import feedbackRoutes from "./routes/feedback.routes";
 import practiceRoutes from "./routes/practice.routes";
+import topicGuideRoutes from "./routes/topic-guide.routes";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -37,6 +38,7 @@ app.use("/api/discussion", discussionRoutes);
 app.use("/api/rooms", roomRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/practice", practiceRoutes);
+app.use("/api/topics", topicGuideRoutes);
 
 export default app;
 

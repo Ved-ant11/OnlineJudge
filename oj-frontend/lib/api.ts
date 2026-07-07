@@ -414,3 +414,26 @@ export const dismissRetry = async (questionId: string) => {
   if (!response.ok) throw new Error("Failed to dismiss retry");
   return response.json();
 };
+
+// ==================== TOPIC LEARNING GUIDES ====================
+
+export const fetchTopicGuides = async () => {
+  const response = await fetch(`${API_BASE_URL}/topics`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+    cache: "no-store",
+  });
+  if (!response.ok) throw new Error("Failed to fetch topic guides");
+  return response.json();
+};
+
+export const fetchTopicGuide = async (id: string) => {
+  const response = await fetch(`${API_BASE_URL}/topics/${id}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+    cache: "no-store",
+  });
+  if (!response.ok) throw new Error("Failed to fetch topic guide");
+  return response.json();
+};
+

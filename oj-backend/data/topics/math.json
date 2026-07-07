@@ -1,0 +1,68 @@
+{
+  "id": "math",
+  "name": "Math",
+  "icon": "🔢",
+  "prerequisites": [],
+  "coreIntuition": "Math problems in competitive programming aren't about advanced calculus — they're about number theory basics (GCD, primes, modular arithmetic), combinatorics (counting arrangements), and recognizing mathematical properties that simplify computation. The key: **don't simulate when you can compute**. If there's a closed-form formula or a mathematical insight, it's 100x faster than brute force.",
+  "mentalModel": "Think of math as a shortcut finder. Instead of running a loop 10^9 times, can you find a formula that gives the answer directly? Instead of checking every number for primality, can you sieve them all at once? Math problems reward you for noticing structure: modular patterns, divisibility, Euclidean properties, pigeonhole principle.",
+  "whenToUse": [
+    "The problem involves counting combinations, permutations, or arrangements",
+    "The problem has very large numbers requiring modular arithmetic",
+    "You need GCD, LCM, or prime factorization",
+    "The brute force is too slow but a mathematical formula exists",
+    "The problem involves number properties (even/odd, divisibility, digits)"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Look for a pattern with small examples",
+      "detail": "Compute the answer for n=1,2,3,4,5 by hand. Do you see a pattern? Many math problems have closed-form solutions that become obvious from small cases."
+    },
+    {
+      "step": "2. Check if a well-known formula applies",
+      "detail": "Sum 1..n = n(n+1)/2. Number of ways to choose k from n = C(n,k). GCD(a,b) = GCD(b, a%b). These formulas appear constantly."
+    },
+    {
+      "step": "3. Consider modular arithmetic",
+      "detail": "If the answer could be huge and the problem asks for 'answer mod 10^9+7', use modular arithmetic throughout. (a + b) mod m = ((a mod m) + (b mod m)) mod m. Same for multiplication."
+    },
+    {
+      "step": "4. Think about number theory properties",
+      "detail": "Pigeonhole principle: n+1 items in n boxes → at least one box has 2+. GCD properties: if GCD(a,b)=g, then a and b are both multiples of g. Prime factorization: every number has a unique prime factorization."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Integer overflow with large numbers",
+      "howToAvoid": "Use long/BigInteger or apply modular arithmetic. Multiply before checking if intermediate results overflow."
+    },
+    {
+      "trap": "Forgetting edge cases: n=0, n=1, negative numbers",
+      "howToAvoid": "Always test your formula with n=0 and n=1. Check if the formula handles the boundary conditions correctly."
+    },
+    {
+      "trap": "Slow modular exponentiation",
+      "howToAvoid": "Use fast power: a^n mod m in O(log n) using repeated squaring. Never use a loop of n multiplications."
+    }
+  ],
+  "interviewVariantStrategy": "Math interview problems: (1) **GCD/LCM** — Euclidean algorithm, extend to arrays. (2) **Primes** — Sieve of Eratosthenes for bulk, trial division for single number. (3) **Counting** — combinations, permutations, often with DP. (4) **Modular arithmetic** — fast power, modular inverse. (5) **Digit problems** — process digits individually (sum, reverse, palindrome check). The interview twist: the problem often looks like it needs simulation but has a mathematical shortcut. 'How many trailing zeros in n!' = count factors of 5 = n/5 + n/25 + n/125 + ...",
+  "resources": [
+    {
+      "title": "CP-Algorithms — Number Theory",
+      "url": "https://cp-algorithms.com/algebra/euclid-algorithm.html",
+      "type": "article",
+      "why": "The best reference for GCD, modular arithmetic, sieve of Eratosthenes, and other essential number theory"
+    },
+    {
+      "title": "MIT 6.042J — Mathematics for Computer Science",
+      "url": "https://www.youtube.com/playlist?list=PLB7540DEDD482705B",
+      "type": "video",
+      "why": "Comprehensive mathematical foundations — number theory, combinatorics, probability"
+    },
+    {
+      "title": "Errichto — Number Theory for CP",
+      "url": "https://www.youtube.com/watch?v=eMXNWcbw75E",
+      "type": "video",
+      "why": "Practical number theory techniques used in competitive programming and interviews"
+    }
+  ]
+}

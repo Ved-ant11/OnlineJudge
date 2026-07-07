@@ -1,0 +1,68 @@
+{
+  "id": "matrix",
+  "name": "Matrix",
+  "icon": "🔲",
+  "prerequisites": ["Arrays", "DFS", "BFS"],
+  "coreIntuition": "A matrix is a 2D array, and most matrix problems are really **graph problems in disguise** or **2D extensions of 1D techniques**. Each cell is a node, adjacent cells are edges. When you see a matrix problem, ask: is this a 2D traversal (DFS/BFS), a 2D prefix sum, or a simulation (spiral, rotation)? This classification determines your approach immediately.",
+  "mentalModel": "Think of a matrix as a grid city. Each cell is a building. Neighbors are buildings you can walk to (up, down, left, right). Searching for connected regions? That's graph traversal on this grid. Computing submatrix sums? That's 2D prefix sums. Rotating or spiraling? That's index manipulation. The matrix is the map; the algorithm comes from what you're doing on it.",
+  "whenToUse": [
+    "The input is a 2D grid and you need to explore regions (islands, connected areas)",
+    "You need to compute properties of submatrices (sums, maxima)",
+    "The problem involves matrix transformations (rotate, transpose, spiral traversal)",
+    "You need shortest paths on a grid",
+    "The problem involves dynamic programming on a 2D grid"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Classify the problem type",
+      "detail": "Graph on grid (BFS/DFS for regions, shortest paths)? 2D DP (paths, min cost)? Submatrix queries (2D prefix sums)? Transformation (rotation, spiral)? The classification determines the algorithm."
+    },
+    {
+      "step": "2. Use direction arrays for neighbors",
+      "detail": "const dirs = [[0,1],[0,-1],[1,0],[-1,0]] for 4-directional, add diagonals for 8-directional. Loop through dirs to visit neighbors cleanly."
+    },
+    {
+      "step": "3. Handle bounds checking consistently",
+      "detail": "Check 0 <= row < rows && 0 <= col < cols before accessing. Create a helper function to avoid repeating this check everywhere."
+    },
+    {
+      "step": "4. Consider in-place modification vs visited array",
+      "detail": "For space optimization, mark visited cells by modifying the matrix (e.g., set to '#'). If the matrix must be preserved, use a separate visited set."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Confusing rows and columns, or (x,y) vs (row,col)",
+      "howToAvoid": "Be consistent: matrix[row][col] where row is the y-axis (vertical) and col is the x-axis (horizontal). This is opposite to (x,y) in math."
+    },
+    {
+      "trap": "Not handling rectangular matrices (rows ≠ cols)",
+      "howToAvoid": "Always use matrix.length for rows and matrix[0].length for cols. Don't assume square matrices."
+    },
+    {
+      "trap": "Matrix rotation: doing it wrong because of overwriting",
+      "howToAvoid": "Rotate 90° clockwise: transpose (swap rows/cols), then reverse each row. Or rotate in layers — process the outer ring, then the inner ring."
+    }
+  ],
+  "interviewVariantStrategy": "Matrix interview problems: (1) **Flood fill / island counting** — BFS/DFS on grid, classic graph-on-grid. (2) **Shortest path on grid** — BFS for unweighted, Dijkstra for weighted. (3) **Matrix DP** — unique paths, minimum path sum. (4) **Spiral traversal / rotation** — index manipulation with boundary tracking. (5) **Set matrix zeroes** — use first row/col as flags. (6) **Search in sorted matrix** — start from top-right corner, move left or down. The twist: grid problems are graph problems. If you can see the grid as a graph and identify the right traversal algorithm, you can solve any matrix problem.",
+  "resources": [
+    {
+      "title": "NeetCode — Matrix Problems",
+      "url": "https://neetcode.io/roadmap",
+      "type": "course",
+      "why": "Covers all major matrix problem patterns with step-by-step solutions"
+    },
+    {
+      "title": "Striver — Matrix Problems Sheet",
+      "url": "https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2",
+      "type": "article",
+      "why": "Curated matrix problems from basic traversal to advanced DFS/BFS on grids"
+    },
+    {
+      "title": "VisuAlgo — Graph on Grid",
+      "url": "https://visualgo.net/en/dfsbfs",
+      "type": "visualizer",
+      "why": "Visualize DFS/BFS traversal on grid structures"
+    }
+  ]
+}

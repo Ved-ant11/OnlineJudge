@@ -1,0 +1,68 @@
+{
+  "id": "prefix-sum",
+  "name": "Prefix Sum",
+  "icon": "➕",
+  "prerequisites": ["Arrays"],
+  "coreIntuition": "A prefix sum array stores the cumulative sum up to each index. The magic: any subarray sum can be computed in O(1) as prefix[right] - prefix[left-1]. This transforms range-sum queries from O(n) to O(1) after O(n) preprocessing. The deeper insight: **prefix sums work for any associative operation that has an inverse** — sums, XOR, and with modifications, even products.",
+  "mentalModel": "Think of a bank balance. Your balance at any point is the sum of all deposits and withdrawals up to that point. If you want to know how much you spent in July, you don't re-add every transaction — you subtract June's balance from July's balance. Prefix sums work exactly like this: store running totals, answer range queries by subtraction.",
+  "whenToUse": [
+    "You need to compute sums of multiple subarrays efficiently",
+    "The problem asks 'how many subarrays have sum equal to K'",
+    "You need range queries on immutable data",
+    "The problem involves cumulative differences or frequencies",
+    "You're solving a 2D matrix problem involving submatrix sums"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Build the prefix array",
+      "detail": "prefix[0] = 0, prefix[i] = prefix[i-1] + arr[i-1]. Use 1-based indexing to avoid edge cases. Now sum(L..R) = prefix[R+1] - prefix[L]."
+    },
+    {
+      "step": "2. Identify the query",
+      "detail": "What range property do you need? Sum → prefix sum. XOR → prefix XOR. Count → prefix count. The technique generalizes to any operation with an efficient inverse."
+    },
+    {
+      "step": "3. Combine with hash map for subarray counting",
+      "detail": "For 'number of subarrays with sum K': store each prefix sum in a hash map. At each index, check if (current_prefix - K) exists in the map. This is the prefix sum + hash map combo."
+    },
+    {
+      "step": "4. Extend to 2D if needed",
+      "detail": "For matrix subregion sums: build 2D prefix sums. sum(r1,c1,r2,c2) = prefix[r2][c2] - prefix[r1-1][c2] - prefix[r2][c1-1] + prefix[r1-1][c1-1]. The inclusion-exclusion principle."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Off-by-one errors with prefix array indexing",
+      "howToAvoid": "Use a prefix array of size n+1 with prefix[0] = 0. Then sum(i..j) = prefix[j+1] - prefix[i]. This eliminates edge cases."
+    },
+    {
+      "trap": "Forgetting that prefix sums don't support array modifications",
+      "howToAvoid": "Prefix sums are for STATIC arrays. If the array changes, you need a more advanced structure like a Fenwick tree or segment tree."
+    },
+    {
+      "trap": "Not recognizing the prefix sum + hash map pattern",
+      "howToAvoid": "Whenever you see 'count subarrays with sum/XOR equal to K', think prefix sum + hash map immediately. It's one of the most important patterns in competitive programming."
+    }
+  ],
+  "interviewVariantStrategy": "Prefix sum variants: (1) **Basic range sum queries** — direct prefix sum. (2) **Count subarrays with sum K** — prefix sum + hash map (store prefix → count). (3) **Longest subarray with equal 0s and 1s** — convert 0s to -1s, then find longest subarray with sum 0 (prefix sum + hash map for first occurrence). (4) **2D prefix sums** — matrix region sum queries. (5) **Difference arrays** — for range UPDATE operations: add v to all elements in [L, R] by doing diff[L] += v, diff[R+1] -= v, then prefix sum to reconstruct. Interviewers love combining prefix sums with hash maps — if you master this combo, you handle 80% of subarray counting problems.",
+  "resources": [
+    {
+      "title": "NeetCode — Prefix Sum Pattern",
+      "url": "https://www.youtube.com/watch?v=fFVZt-6sgyo",
+      "type": "video",
+      "why": "Clear walkthrough of prefix sums with the hash map combo technique"
+    },
+    {
+      "title": "CP-Algorithms — Prefix Sums",
+      "url": "https://cp-algorithms.com/",
+      "type": "article",
+      "why": "Covers 1D and 2D prefix sums with correct implementations and applications"
+    },
+    {
+      "title": "LeetCode — Prefix Sum Problems",
+      "url": "https://leetcode.com/tag/prefix-sum/",
+      "type": "course",
+      "why": "Curated practice problems for prefix sums from basic to advanced"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "id": "strings",
+  "name": "Strings",
+  "icon": "🔤",
+  "prerequisites": ["Arrays", "Hash Map"],
+  "coreIntuition": "Strings are arrays of characters with unique properties: they have linguistic structure (palindromes, anagrams, patterns), they can be compared lexicographically, and many problems involve matching or searching within them. The key insight: most string problems are actually array problems with a character-frequency or pattern-matching twist. Think of strings as arrays first, then exploit character-specific properties.",
+  "mentalModel": "A string is a sequence with a small alphabet (26 lowercase letters, 128 ASCII, etc.). This small alphabet is your advantage — frequency arrays of size 26 replace expensive comparisons with O(1) lookups. Two strings are anagrams if they have the same frequency array. A palindrome reads the same forwards and backwards. Most string insights come from this character-frequency view.",
+  "whenToUse": [
+    "The input is text and you need to find patterns, matches, or properties",
+    "The problem involves anagrams, palindromes, or character frequencies",
+    "You need to search for a pattern within a larger text",
+    "The problem involves string transformation (edit distance, LCS)",
+    "You need to compress, encode, or decode strings"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. What string property matters?",
+      "detail": "Frequencies (anagrams, valid permutation) → use frequency array. Order (palindromes, subsequences) → two pointers or DP. Pattern matching (find substring) → KMP, Rabin-Karp, or sliding window."
+    },
+    {
+      "step": "2. Can you reduce to a frequency problem?",
+      "detail": "Many string problems that seem complex are just frequency counting. 'Valid anagram' → same frequencies. 'Minimum window substring' → frequency check with sliding window."
+    },
+    {
+      "step": "3. Does the problem involve substrings or subsequences?",
+      "detail": "Substrings are contiguous → sliding window or suffix structures. Subsequences are not contiguous → DP. This distinction determines the algorithm."
+    },
+    {
+      "step": "4. Consider the alphabet size",
+      "detail": "With 26 lowercase letters, O(26 × n) = O(n). Use this — iterate over all characters per position if needed. The constant factor from the small alphabet is your friend."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "String immutability — concatenating in a loop is O(n²)",
+      "howToAvoid": "Build strings using arrays/lists and join at the end. In Java, use StringBuilder. Each += creates a new string, costing O(length) each time."
+    },
+    {
+      "trap": "Confusing substring (contiguous) with subsequence (not contiguous)",
+      "howToAvoid": "Substring: 'abc' has substrings 'ab', 'bc', 'abc'. Subsequence: 'abc' has subsequences 'ac', 'a', 'abc'. Different problems, different techniques."
+    },
+    {
+      "trap": "Not considering Unicode or case sensitivity",
+      "howToAvoid": "Always clarify: is the input lowercase only? ASCII only? Unicode? Case-sensitive? These affect your frequency array size and comparison logic."
+    }
+  ],
+  "interviewVariantStrategy": "String interview problems: (1) **Frequency-based** — anagrams, character matching, minimum window. Use frequency arrays. (2) **Palindromes** — two pointers from outside in (checking), DP or expand-from-center (finding). (3) **Pattern matching** — KMP for exact matching, sliding window for permutation matching. (4) **DP on strings** — edit distance, LCS, longest palindromic subsequence. (5) **String manipulation** — reverse words, compress, decode. The interview twist: combining string concepts with other techniques — 'find all anagram occurrences' is sliding window + frequency matching. Break the problem into its string-specific and algorithm-specific parts.",
+  "resources": [
+    {
+      "title": "NeetCode — String Problems Roadmap",
+      "url": "https://neetcode.io/roadmap",
+      "type": "course",
+      "why": "Structured string problem progression with video explanations for each type"
+    },
+    {
+      "title": "CP-Algorithms — String Processing",
+      "url": "https://cp-algorithms.com/string/string-hashing.html",
+      "type": "article",
+      "why": "Comprehensive guide to string algorithms — KMP, Z-function, string hashing, and more"
+    },
+    {
+      "title": "VisuAlgo — String Matching",
+      "url": "https://visualgo.net/en/suffixarray",
+      "type": "visualizer",
+      "why": "Visualize string matching algorithms step by step"
+    }
+  ]
+}

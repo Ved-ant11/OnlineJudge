@@ -1,0 +1,68 @@
+{
+  "id": "stack",
+  "name": "Stack",
+  "icon": "📚",
+  "prerequisites": ["Arrays"],
+  "coreIntuition": "A stack processes things in reverse order — last in, first out. But the real power of stacks in algorithm problems is the **monotonic stack**: maintaining a stack where elements are always increasing (or decreasing). This lets you answer 'next greater/smaller element' queries in O(n), which is the foundation for dozens of seemingly unrelated problems. When you see a problem about 'looking back for the first element that satisfies a condition', think stack.",
+  "mentalModel": "Think of a stack of plates: you can only interact with the top. Now imagine a more powerful variant: a stack of people sorted by height. When a tall person arrives, all shorter people in front become irrelevant — they'll never be 'seen' again. This is the monotonic stack: each new element kicks out elements that are no longer useful, maintaining a sorted order that makes queries instant.",
+  "whenToUse": [
+    "You need to match nested structures (parentheses, HTML tags)",
+    "The problem asks about 'next greater/smaller element' for each position",
+    "You need to process elements in reverse order of arrival",
+    "The problem involves nested scopes or undo operations",
+    "You need to find the largest rectangle in a histogram"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Identify what the stack represents",
+      "detail": "In matching problems, it's unmatched opening symbols. In monotonic stack problems, it's candidates for 'next greater' — elements that haven't found their answer yet."
+    },
+    {
+      "step": "2. Determine the stack invariant",
+      "detail": "What property does the stack maintain? For monotonic increasing: stack[i] < stack[i+1] always. When a new element violates this, pop until it doesn't — each popped element has found its answer."
+    },
+    {
+      "step": "3. Define what happens on push and pop",
+      "detail": "Push: this element is now a candidate, waiting for its answer. Pop: this element's answer has been found (the current element or the new top). The logic lives in the pop condition."
+    },
+    {
+      "step": "4. Determine if you need indices or values on the stack",
+      "detail": "Usually store indices, not values. Indices give you positions AND values (via the original array), while values alone lose position information."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Using a stack when a simple variable suffices",
+      "howToAvoid": "If you only ever need the most recent element (not a history), a variable is enough. Use a stack when you need to backtrack through multiple previous elements."
+    },
+    {
+      "trap": "Processing elements remaining in the stack after iteration",
+      "howToAvoid": "After processing all elements, the stack may still contain elements that never found their 'next greater'. Handle these — their answer is usually -1 or infinity."
+    },
+    {
+      "trap": "Wrong direction — iterating left-to-right vs right-to-left",
+      "howToAvoid": "For 'next greater to the RIGHT', iterate left-to-right and pop when current > stack top. For 'previous greater to the LEFT', iterate left-to-right and peek at stack top before pushing."
+    }
+  ],
+  "interviewVariantStrategy": "Stack problems come in three families: (1) **Matching**: valid parentheses, nested structures. Push opening, pop on closing, check match. (2) **Monotonic stack**: next greater element, largest rectangle in histogram, stock span, daily temperatures. Maintain sorted order, pop when violated. (3) **Simulation**: evaluate expression, browser back/forward. Use stacks to maintain state history. The hardest variant: 'largest rectangle in histogram' — uses monotonic stack where each pop computes the area with the popped bar as the shortest. If you deeply understand this one problem, you can solve almost any monotonic stack problem.",
+  "resources": [
+    {
+      "title": "NeetCode — Stack & Monotonic Stack",
+      "url": "https://www.youtube.com/watch?v=zx5Sw9130L0",
+      "type": "video",
+      "why": "Excellent breakdown of monotonic stack pattern with visual animations"
+    },
+    {
+      "title": "Aditya Verma — Stack Playlist",
+      "url": "https://www.youtube.com/playlist?list=PL_z_8CaSLPWdeOezg68SKkeLN4-T_jNHd",
+      "type": "video",
+      "why": "Systematic approach to all stack-based problems including monotonic stack and its applications"
+    },
+    {
+      "title": "VisuAlgo — Stack Visualization",
+      "url": "https://visualgo.net/en/list",
+      "type": "visualizer",
+      "why": "Interactive visualization of stack operations to build intuition about LIFO behavior"
+    }
+  ]
+}

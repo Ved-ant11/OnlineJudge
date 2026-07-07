@@ -1,0 +1,68 @@
+{
+  "id": "intervals",
+  "name": "Intervals",
+  "icon": "📏",
+  "prerequisites": ["Arrays", "Sorting", "Greedy"],
+  "coreIntuition": "Interval problems are about ranges — pairs of [start, end] values. The fundamental insight: **sort intervals by one endpoint (usually start), then process them sequentially**. After sorting, overlapping intervals become adjacent, making merging, intersection, and gap-finding straightforward. Most interval problems are really greedy scanning problems on sorted ranges.",
+  "mentalModel": "Think of intervals as colored segments on a number line. Sorting them lines them up so overlapping segments are next to each other. Then you can merge overlapping ones by extending the current segment, or count the maximum overlap at any point, or find gaps between segments — all in a single scan.",
+  "whenToUse": [
+    "The input is a list of [start, end] pairs",
+    "You need to merge overlapping intervals",
+    "You need to find the maximum number of overlapping intervals (meeting rooms)",
+    "You need to insert a new interval into a sorted set",
+    "The problem involves scheduling non-overlapping activities"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Sort intervals — by start time, end time, or both",
+      "detail": "Merge overlapping → sort by start. Activity selection → sort by end. The choice of sort key depends on what property you need to process."
+    },
+    {
+      "step": "2. Scan and maintain state",
+      "detail": "Track the 'current' interval or boundary as you scan. For merging: extend current end if overlap, start new interval if not. For counting overlap: use a sweep line."
+    },
+    {
+      "step": "3. Consider the sweep line technique for complex overlap queries",
+      "detail": "Convert intervals into events: +1 at start, -1 at end. Sort events by time. Scan through, maintaining a counter — the maximum counter value is the maximum overlap."
+    },
+    {
+      "step": "4. Handle edge cases — touching vs overlapping, inclusive vs exclusive",
+      "detail": "Are [1,3] and [3,5] overlapping or not? This depends on the problem. Clarify boundary conditions."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Wrong sort order — sorting by start when you need end, or vice versa",
+      "howToAvoid": "For merging: sort by start (group overlaps). For scheduling maximum activities: sort by end (greedily pick earliest-ending). Think about what the sort enables."
+    },
+    {
+      "trap": "Not handling contained intervals ([1,10] contains [3,5])",
+      "howToAvoid": "When merging, always compare with the current merged interval's end, not the previous input interval. current_end = max(current_end, new_end)."
+    },
+    {
+      "trap": "Confusing 'minimum meeting rooms' with 'maximum non-overlapping'",
+      "howToAvoid": "Minimum rooms = maximum overlap at any point (sweep line). Maximum non-overlapping = activity selection (sort by end, greedy). They're different problems with different algorithms."
+    }
+  ],
+  "interviewVariantStrategy": "Interval problems in interviews: (1) **Merge intervals** — sort by start, extend or start new. (2) **Insert interval** — find the right position, merge affected. (3) **Minimum meeting rooms** — sweep line or min-heap of end times. (4) **Non-overlapping intervals to remove** — sort by end, greedy activity selection. (5) **Interval intersection** — two pointers on sorted interval lists. The twist: many problems encode intervals implicitly — 'minimum platforms at a train station' is really 'maximum overlap of arrival/departure intervals'.",
+  "resources": [
+    {
+      "title": "NeetCode — Intervals Pattern",
+      "url": "https://www.youtube.com/watch?v=nqXShI8-LP8",
+      "type": "video",
+      "why": "Covers the core interval patterns (merge, insert, scheduling) with clear diagrams"
+    },
+    {
+      "title": "LeetCode — Interval Problems Collection",
+      "url": "https://leetcode.com/tag/intervals/",
+      "type": "course",
+      "why": "Curated interval problems organized by difficulty"
+    },
+    {
+      "title": "Take U Forward — Interval Problems",
+      "url": "https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2",
+      "type": "article",
+      "why": "Structured problem set covering all major interval problem types"
+    }
+  ]
+}

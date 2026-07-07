@@ -1,0 +1,68 @@
+{
+  "id": "trie",
+  "name": "Trie",
+  "icon": "🌿",
+  "prerequisites": ["Trees", "Strings", "Hash Map"],
+  "coreIntuition": "A trie (prefix tree) stores strings character by character in a tree, where each path from root to a node represents a prefix. The key advantage: **all strings sharing a prefix share the same nodes**. This makes prefix searches O(length) regardless of how many strings are stored. When a problem involves prefix matching, autocomplete, or shared-prefix operations, trie is the answer.",
+  "mentalModel": "Think of a trie as a decision tree for spelling. At the root, you decide the first letter. At level 2, the second letter. Each path spells out a word. Words sharing a prefix ('app', 'apple', 'application') share the same nodes up to the common prefix. This sharing is what makes tries space-efficient and fast for prefix operations.",
+  "whenToUse": [
+    "You need to search for words by prefix (autocomplete, prefix matching)",
+    "The problem involves multiple string searches in a dictionary",
+    "You need to find the longest common prefix among strings",
+    "The problem involves word search on a grid (DFS + trie)",
+    "You need to count words with a given prefix"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Build the trie from the dictionary",
+      "detail": "Insert each word character by character. Each node has children (one per character) and an isEnd flag marking word boundaries."
+    },
+    {
+      "step": "2. Use the trie for queries",
+      "detail": "Search: follow characters from root. If you reach the end of the query and isEnd is true, the word exists. Prefix search: same, but don't need isEnd — any partial path is a valid prefix."
+    },
+    {
+      "step": "3. Consider trie + DFS for complex problems",
+      "detail": "Word search on grid: build trie from word list, DFS on grid while traversing the trie simultaneously. This avoids searching for each word separately."
+    },
+    {
+      "step": "4. Optimize with trie node counters",
+      "detail": "Add a count field to nodes: prefixCount (how many words pass through this node) and wordCount (how many words end here). This enables efficient counting queries."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Using a hash map of strings when a trie would be more efficient",
+      "howToAvoid": "If you're doing prefix operations (startsWith, autocomplete), tries are purpose-built. Hash maps can't do prefix searches efficiently."
+    },
+    {
+      "trap": "Memory usage — 26 children per node adds up",
+      "howToAvoid": "Use a hash map for children instead of an array of 26 if the alphabet is large or most children are null. Or use compressed tries (radix trees)."
+    },
+    {
+      "trap": "Forgetting the isEnd marker — treating every prefix as a valid word",
+      "howToAvoid": "Mark word boundaries explicitly. 'app' being a prefix of 'apple' doesn't mean 'app' is a word — only if isEnd is true at that node."
+    }
+  ],
+  "interviewVariantStrategy": "Trie interview problems: (1) **Implement trie** — insert, search, startsWith. The classic design question. (2) **Word search II** — find all dictionary words in a grid using trie + DFS. (3) **Autocomplete** — prefix search + DFS to enumerate completions. (4) **Longest common prefix** — insert all strings, find the longest path with only one child per node. (5) **XOR maximum** — binary trie (each bit is a character) to find the pair with maximum XOR. The twist: binary tries are powerful — store numbers bit-by-bit and use greedy traversal to maximize/minimize XOR.",
+  "resources": [
+    {
+      "title": "NeetCode — Trie Implementation & Problems",
+      "url": "https://www.youtube.com/watch?v=oobqoCJlHA0",
+      "type": "video",
+      "why": "Clear implementation walkthrough with visual diagrams and common interview problems"
+    },
+    {
+      "title": "VisuAlgo — Trie Visualization",
+      "url": "https://visualgo.net/en/suffixtree",
+      "type": "visualizer",
+      "why": "Watch trie construction and search step by step"
+    },
+    {
+      "title": "CP-Algorithms — Trie",
+      "url": "https://cp-algorithms.com/string/aho_corasick.html",
+      "type": "article",
+      "why": "Covers basic tries, compressed tries, and the powerful Aho-Corasick extension for multi-pattern matching"
+    }
+  ]
+}

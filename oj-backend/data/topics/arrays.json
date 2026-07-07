@@ -1,0 +1,71 @@
+{
+  "id": "arrays",
+  "name": "Arrays",
+  "icon": "📊",
+  "prerequisites": [],
+  "coreIntuition": "An array is the simplest data structure — contiguous memory with O(1) random access. But mastering arrays isn't about knowing what they are. It's about understanding that most array problems are really about **relationships between elements** — adjacent pairs, subarrays, positions, frequencies. The array is just the container; the insight is in the relationships.",
+  "mentalModel": "Think of an array as a number line where each position holds a value. Most array problems boil down to one of three mental models: (1) **Scanning with state** — walk through and maintain some running information (max so far, count, etc.), (2) **Rearranging** — put elements into a specific order by swapping, and (3) **Subarray reasoning** — thinking about contiguous chunks and their properties. When you see an array problem, your first instinct should be: what relationship between elements am I looking for?",
+  "whenToUse": [
+    "The input is a list of values and you need to compute something over them",
+    "You need O(1) access to elements by index",
+    "The problem involves subarrays, subsequences, or element relationships",
+    "You're preprocessing data for faster queries later"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Identify what you're really computing",
+      "detail": "Is it a single value (max, min, sum)? A subarray? A rearrangement? A count? This determines your approach — scanning for single values, sliding window for subarrays, etc."
+    },
+    {
+      "step": "2. Can you do it in one pass?",
+      "detail": "Many array problems that seem to need nested loops can be solved in a single pass if you maintain the right state. Ask: what information from previous elements do I need to process the current one?"
+    },
+    {
+      "step": "3. Would sorting help?",
+      "detail": "If the problem doesn't depend on original positions, sorting often simplifies things dramatically. Sorting converts an unstructured problem into one with exploitable order."
+    },
+    {
+      "step": "4. Can I precompute something?",
+      "detail": "Prefix sums, frequency maps, position maps — building an auxiliary structure in O(n) often makes the main query O(1). Ask: what would I want to look up instantly?"
+    },
+    {
+      "step": "5. Work backwards from the brute force",
+      "detail": "Write the O(n²) or O(n³) solution first. Then ask: what computation am I repeating? That repeated work is where the optimization lives."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Off-by-one errors with array bounds",
+      "howToAvoid": "Always clarify: is the range [start, end) or [start, end]? Use < length consistently. Trace through arrays of size 0, 1, and 2."
+    },
+    {
+      "trap": "Modifying an array while iterating over it",
+      "howToAvoid": "Either iterate backwards, use a separate output array, or use the two-pointer technique to modify in-place safely."
+    },
+    {
+      "trap": "Assuming input constraints that aren't given",
+      "howToAvoid": "Always ask: can values be negative? Can the array be empty? Are there duplicates? These edge cases break solutions that work for 'nice' inputs."
+    }
+  ],
+  "interviewVariantStrategy": "Interviewers love combining arrays with other techniques: 'find a subarray with sum K' (prefix sum + hash map), 'find two elements that sum to target' (sorting + two pointers or hash map), 'rearrange the array in-place' (cyclic sort or two pointers). The key is recognizing that the array is the input format, not the algorithm — the algorithm comes from the relationship you need to find. When you see a new array problem, don't think 'what array tricks do I know?' — think 'what relationship between elements am I looking for, and what data structure or technique reveals that relationship?'",
+  "resources": [
+    {
+      "title": "NeetCode — Arrays & Hashing Roadmap",
+      "url": "https://neetcode.io/roadmap",
+      "type": "course",
+      "why": "Structured progression from basic to advanced array problems with video explanations"
+    },
+    {
+      "title": "Striver — Array Problems Master Sheet",
+      "url": "https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2",
+      "type": "article",
+      "why": "Comprehensive problem set organized by technique, not just difficulty"
+    },
+    {
+      "title": "VisuAlgo — Array Sorting Visualization",
+      "url": "https://visualgo.net/en/sorting",
+      "type": "visualizer",
+      "why": "Watch how array operations work step-by-step to build spatial intuition"
+    }
+  ]
+}

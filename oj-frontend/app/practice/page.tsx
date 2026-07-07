@@ -7,6 +7,7 @@ import {
   fetchRetryQueue,
   fetchPracticeStats,
   fetchTopicMastery,
+  fetchTopicGuides,
   submitReview,
   dismissRetry,
 } from "@/lib/api";
@@ -89,6 +90,7 @@ export default function PracticePage() {
   const [reviewCards, setReviewCards] = useState<ReviewCard[]>([]);
   const [retryItems, setRetryItems] = useState<RetryItem[]>([]);
   const [topics, setTopics] = useState<TopicData[]>([]);
+  const [topicGuideIds, setTopicGuideIds] = useState<Set<string>>(new Set());
   const [currentIndex, setCurrentIndex] = useState(0);
   const [ratingState, setRatingState] = useState<"idle" | "rating" | "done">("idle");
   const [reviewedCount, setReviewedCount] = useState(0);
@@ -99,16 +101,18 @@ export default function PracticePage() {
 
   const loadData = async () => {
     try {
-      const [statsData, reviewData, retryData, topicData] = await Promise.all([
+      const [statsData, reviewData, retryData, topicData, guidesData] = await Promise.all([
         fetchPracticeStats(),
         fetchReviewQueue(),
         fetchRetryQueue(),
         fetchTopicMastery(),
+        fetchTopicGuides().catch(() => ({ topics: [] })),
       ]);
       setStats(statsData);
       setReviewCards(reviewData.cards || []);
       setRetryItems(retryData.items || []);
       setTopics(topicData.topics || []);
+      setTopicGuideIds(new Set((guidesData.topics || []).map((t: { id: string }) => t.id)));
       setReviewedCount(statsData.reviewedToday || 0);
     } catch {
       router.push("/login");
@@ -463,6 +467,22 @@ export default function PracticePage() {
                           {topic.avgStability > 0 ? `${topic.avgStability}d stability` : "—"}
                         </span>
                       </div>
+
+                      {/* Deep Dive Link */}
+                      {(() => {
+                        const guideId = topic.name.toLowerCase().replace(/\s+/g, "-");
+                        return topicGuideIds.has(guideId) ? (
+                          <Link
+                            href={`/practice/learn/${guideId}`}
+                            className="flex items-center justify-center gap-2 mt-1 py-2 rounded-md border border-neutral-800/60 bg-neutral-800/20 font-mono-custom text-[9px] tracking-[0.15em] uppercase text-neutral-500 hover:text-neutral-200 hover:border-neutral-700 hover:bg-neutral-800/40 transition-all duration-200"
+                          >
+                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                            Deep Dive
+                          </Link>
+                        ) : null;
+                      })()}
                     </div>
                   </div>
                 );

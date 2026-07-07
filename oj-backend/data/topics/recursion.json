@@ -1,0 +1,68 @@
+{
+  "id": "recursion",
+  "name": "Recursion",
+  "icon": "🔄",
+  "prerequisites": [],
+  "coreIntuition": "Recursion is solving a problem by solving a smaller version of the same problem. But the real skill isn't writing recursive functions — it's the **leap of faith**: trust that the recursive call correctly solves the smaller problem, and focus ONLY on how to combine that result with the current step. If you try to trace every recursive call mentally, you'll get lost. Define the contract, trust it, and compose.",
+  "mentalModel": "You're the manager of one level. You have a task, and you have subordinates who can each handle a smaller version of that task perfectly. Your job: (1) handle the simplest case yourself (base case), (2) delegate smaller tasks to subordinates (recursive calls), (3) combine their results with your own work. You never need to know HOW your subordinates work — you just trust that they return the right answer.",
+  "whenToUse": [
+    "The problem can be broken into smaller versions of itself",
+    "The data structure is naturally recursive (trees, linked lists, nested structures)",
+    "You need to explore all possibilities (backtracking, permutations, combinations)",
+    "The problem involves divide and conquer",
+    "You're building a DP solution — start with recursion, then add memoization"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Define the function contract clearly",
+      "detail": "What does your function take as input? What does it return? Be precise. 'Returns the height of the subtree rooted at node' is a contract. Unclear contracts lead to bugs."
+    },
+    {
+      "step": "2. Write the base case(s) first",
+      "detail": "What's the smallest problem you can solve directly? For trees: null node. For arrays: empty or single element. Get this right — wrong base cases mean infinite recursion or wrong answers."
+    },
+    {
+      "step": "3. Write the recursive step — trust the recursive call",
+      "detail": "Assume the recursive call on a smaller input returns the correct answer. How do you use that to compute the answer for the current input? This is the leap of faith."
+    },
+    {
+      "step": "4. Ensure the problem actually gets smaller",
+      "detail": "The recursive call MUST operate on a strictly smaller input. If not, you have infinite recursion. Common ways to shrink: reduce n, remove an element, move to a child node."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Trying to trace every recursive call mentally",
+      "howToAvoid": "Don't trace — trust. Verify your base case handles the smallest input, verify the recursive step correctly combines results, and trust the recursive call. Tracing is for debugging, not for design."
+    },
+    {
+      "trap": "Missing base cases",
+      "howToAvoid": "Ask: what's the smallest valid input? What about empty input? What about null? Cover all cases where the problem can't be broken down further."
+    },
+    {
+      "trap": "Stack overflow on deep recursion",
+      "howToAvoid": "If recursion depth could be 10^5+, convert to iteration with an explicit stack. Or use tail recursion if your language optimizes it."
+    }
+  ],
+  "interviewVariantStrategy": "Recursion is a foundation, not a topic — it underlies trees, DP, backtracking, divide-and-conquer, and more. Interviewers test recursive thinking by: (1) Tree problems — nearly all tree solutions are recursive. (2) Generate all permutations/combinations — recursion with backtracking. (3) Parsing nested structures — recursive descent. The variant defense: practice the leap of faith until it's second nature. If you can write the contract and trust the recursive call, you can solve ANY recursive problem.",
+  "resources": [
+    {
+      "title": "Aditya Verma — Recursion Playlist",
+      "url": "https://www.youtube.com/playlist?list=PL_z_8CaSLPWeT1ffjiImo0sYTcnLzo-wY",
+      "type": "video",
+      "why": "Builds recursive thinking from scratch — the IBH (Induction-Base-Hypothesis) method is excellent"
+    },
+    {
+      "title": "The Coding Train — Recursion",
+      "url": "https://www.youtube.com/watch?v=jPsZwrV9ld0",
+      "type": "video",
+      "why": "Fun, visual introduction to recursive thinking with graphical examples"
+    },
+    {
+      "title": "Thinking Recursively — Stanford CS106B",
+      "url": "https://web.stanford.edu/class/archive/cs/cs106b/cs106b.1176/",
+      "type": "course",
+      "why": "Stanford's approach to teaching recursion — builds the 'leap of faith' mental model systematically"
+    }
+  ]
+}

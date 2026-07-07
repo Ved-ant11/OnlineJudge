@@ -1,0 +1,68 @@
+{
+  "id": "divide-and-conquer",
+  "name": "Divide and Conquer",
+  "icon": "✂️",
+  "prerequisites": ["Recursion", "Sorting"],
+  "coreIntuition": "Divide and conquer breaks a problem into independent subproblems, solves each recursively, and combines the results. The independence is what distinguishes it from DP — subproblems don't overlap. The power comes from the combining step: merge sort's merge, quicksort's partition, and closest-pair's strip check are where the real algorithm lives.",
+  "mentalModel": "Imagine splitting a deck of cards in half, sorting each half, then merging them. The 'divide' is trivial (just split). The 'conquer' is recursive (sort each half). The 'combine' is the clever part (merge two sorted halves). In every D&C algorithm, the combine step is where the insight lives — that's where you should focus.",
+  "whenToUse": [
+    "The problem can be split into independent subproblems of the same type",
+    "Solving two halves and combining is cheaper than solving the whole",
+    "The problem involves sorting, counting inversions, or closest pairs",
+    "You see a recurrence like T(n) = 2T(n/2) + O(n)",
+    "The problem has a natural split point (midpoint, pivot)"
+  ],
+  "thinkingFramework": [
+    {
+      "step": "1. Define how to divide",
+      "detail": "Usually split at the midpoint. For quicksort, the pivot creates the split. The division should be balanced for optimal performance."
+    },
+    {
+      "step": "2. Solve subproblems recursively",
+      "detail": "Trust the recursion — each half is solved correctly by assumption. This is the 'conquer' step."
+    },
+    {
+      "step": "3. Design the combine step",
+      "detail": "This is where the algorithm's intelligence lives. Merging two sorted halves, counting cross-inversions, finding closest pair across the dividing line. The combine step determines complexity."
+    },
+    {
+      "step": "4. Analyze complexity using the Master Theorem",
+      "detail": "T(n) = aT(n/b) + O(n^d). If d < log_b(a): O(n^(log_b(a))). If d = log_b(a): O(n^d log n). If d > log_b(a): O(n^d). This tells you if D&C actually improves over brute force."
+    }
+  ],
+  "commonTraps": [
+    {
+      "trap": "Choosing D&C when subproblems overlap (should use DP instead)",
+      "howToAvoid": "If solving the left half and right half requires shared subproblems, you have overlapping subproblems → use DP. D&C works when subproblems are independent."
+    },
+    {
+      "trap": "Expensive combine step negating the divide benefit",
+      "howToAvoid": "If combining takes O(n²), your D&C is T(n) = 2T(n/2) + O(n²) = O(n²). The combine must be O(n) or O(n log n) to beat brute force."
+    },
+    {
+      "trap": "Unbalanced divisions",
+      "howToAvoid": "Quicksort with bad pivots degrades to O(n²). Use randomized pivots or median-of-three to maintain balance."
+    }
+  ],
+  "interviewVariantStrategy": "D&C interview problems: (1) **Merge sort applications** — counting inversions (merge step counts cross-inversions), counting range sums (merge step processes cross-boundary subarrays). (2) **Binary search as D&C** — eliminate half the search space each step. (3) **Matrix multiplication** — Strassen's algorithm. (4) **Closest pair of points** — split by x-coordinate, merge by checking the strip. The variant twist: the problem often doesn't say 'divide and conquer' — you recognize it by seeing that splitting the problem and combining results is cheaper than brute force.",
+  "resources": [
+    {
+      "title": "MIT 6.006 — Divide & Conquer",
+      "url": "https://www.youtube.com/watch?v=Sk2dYqGXkAk",
+      "type": "video",
+      "why": "MIT's approach to D&C with the Master Theorem — foundational understanding"
+    },
+    {
+      "title": "Abdul Bari — Divide and Conquer",
+      "url": "https://www.youtube.com/watch?v=2Rr2tW9zvRg",
+      "type": "video",
+      "why": "Clear visual explanations of merge sort, quicksort, and the Master Theorem"
+    },
+    {
+      "title": "CP-Algorithms — Divide and Conquer",
+      "url": "https://cp-algorithms.com/",
+      "type": "article",
+      "why": "Advanced D&C techniques including D&C optimization for DP and merge sort trees"
+    }
+  ]
+}
