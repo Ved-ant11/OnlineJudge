@@ -78,7 +78,11 @@ router.post('/login', loginLimiter, validate(loginSchema), async (req: Request, 
 });
 
 router.post('/logout', (_req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
   res.status(200).json({ message: "Logged out" });
 });
 
