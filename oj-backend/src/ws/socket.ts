@@ -1174,7 +1174,7 @@ export function setupWebSocket(server: Server) {
         const cRoom = customRooms.get(roomId);
         if (cRoom) {
           const player = cRoom.players.get(userId);
-          if (player) {
+          if (player && player.ws === ws) {
             player.ws = null;
           }
           const playersList = Array.from(cRoom.players.entries()).map(
