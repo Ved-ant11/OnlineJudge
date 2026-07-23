@@ -1,18 +1,24 @@
 export const API_BASE_URL =
   typeof window === "undefined"
-    ? process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL // server-side
-    : process.env.NEXT_PUBLIC_API_BASE_URL; // browser
+    ? process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL
+    : process.env.NEXT_PUBLIC_API_BASE_URL;
 
 if (!API_BASE_URL) {
   throw new Error("API_BASE_URL is not defined");
 }
 
+export const getAuthHeaders = () => {
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  return {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+};
+
 export const fetchQuestionById = async (id: string) => {
   const response = await fetch(`${API_BASE_URL}/questions/${id}`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -23,9 +29,7 @@ export const fetchQuestionById = async (id: string) => {
 export const fetchQuestions = async () => {
   const response = await fetch(`${API_BASE_URL}/questions`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -44,9 +48,7 @@ export const submitSolution = async ({
 }) => {
   const response = await fetch(`${API_BASE_URL}/submissions`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: getAuthHeaders(),
     credentials: "include",
     body: JSON.stringify({
       code,
@@ -63,9 +65,7 @@ export const submitSolution = async ({
 export const fetchSubmissionStatus = async (id: string) => {
   const response = await fetch(`${API_BASE_URL}/submissions/${id}`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -77,9 +77,7 @@ export const fetchProfile = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/user/profile`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: getAuthHeaders(),
       credentials: "include",
       cache: "no-store",
     });
@@ -95,9 +93,7 @@ export const fetchSolvedIds = async (): Promise<string[]> => {
   try {
     const response = await fetch(`${API_BASE_URL}/user/solved`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: getAuthHeaders(),
       credentials: "include",
       cache: "no-store",
     });
@@ -116,9 +112,7 @@ export const fetchAuthStatus = async (): Promise<{
   try {
     const response = await fetch(`${API_BASE_URL}/user/me`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: getAuthHeaders(),
       credentials: "include",
       cache: "no-store",
     });
@@ -132,7 +126,7 @@ export const fetchAuthStatus = async (): Promise<{
 export const fetchLeaderboard = async () => {
   const response = await fetch(`${API_BASE_URL}/user/leaderboard`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     cache: "no-store",
   });
   if (!response.ok) throw new Error("Failed to fetch leaderboard");
@@ -144,7 +138,7 @@ export const fetchSubmissionsByQuestion = async (questionId: string) => {
     `${API_BASE_URL}/submissions/question/${questionId}`,
     {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders(),
       credentials: "include",
       cache: "no-store",
     },
@@ -156,7 +150,7 @@ export const fetchSubmissionsByQuestion = async (questionId: string) => {
 export const fetchStreakData = async () => {
   const response = await fetch(`${API_BASE_URL}/user/streak`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -167,7 +161,7 @@ export const fetchStreakData = async () => {
 export const fetchReview = async (submissionId: string) => {
   const response = await fetch(`${API_BASE_URL}/review`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
     body: JSON.stringify({ submissionId }),
@@ -179,7 +173,7 @@ export const fetchReview = async (submissionId: string) => {
 export const joinQueue = async () => {
   const response = await fetch(`${API_BASE_URL}/battle/queue`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -191,7 +185,7 @@ export const joinQueue = async () => {
 export const leaveQueue = async () => {
   const response = await fetch(`${API_BASE_URL}/battle/queue`, {
     method: "DELETE",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -202,7 +196,7 @@ export const leaveQueue = async () => {
 export const getBattle = async (battleId: string) => {
   const response = await fetch(`${API_BASE_URL}/battle/${battleId}`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -213,7 +207,7 @@ export const getBattle = async (battleId: string) => {
 export const getUserStats = async () => {
   const response = await fetch(`${API_BASE_URL}/user/me`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -223,6 +217,7 @@ export const getUserStats = async () => {
 
 export const getQueueStatus = async () => {
   const response = await fetch(`${API_BASE_URL}/battle/queue/status`, {
+    headers: getAuthHeaders(),
     credentials: "include",
   });
   return response.json();
@@ -231,7 +226,7 @@ export const getQueueStatus = async () => {
 export const getBattleHistory = async () => {
   const response = await fetch(`${API_BASE_URL}/battle/history`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -242,6 +237,7 @@ export const getBattleHistory = async () => {
 export const logout = async () => {
   await fetch(`${API_BASE_URL}/auth/logout`, {
     method: "POST",
+    headers: getAuthHeaders(),
     credentials: "include",
   });
 };
@@ -249,7 +245,7 @@ export const logout = async () => {
 export const fetchPublicProfile = async (username: string) => {
   const response = await fetch(`${API_BASE_URL}/user/${username}/public`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     cache: "no-store",
   });
   if (!response.ok) {
@@ -262,7 +258,7 @@ export const fetchPublicProfile = async (username: string) => {
 export const fetchDiscussion = async (questionId: string) => {
   const response = await fetch(`${API_BASE_URL}/discussion/${questionId}`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     cache: "no-store",
   });
   if (!response.ok) throw new Error("Failed to fetch discussion");
@@ -272,7 +268,7 @@ export const fetchDiscussion = async (questionId: string) => {
 export const postComment = async (questionId: string, content: string) => {
   const response = await fetch(`${API_BASE_URL}/discussion/${questionId}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     body: JSON.stringify({ content }),
   });
@@ -283,18 +279,21 @@ export const postComment = async (questionId: string, content: string) => {
 export const createRoom = async () => {
   const response = await fetch(`${API_BASE_URL}/rooms`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
-  if (!response.ok) throw new Error("Failed to create room");
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || "Failed to create room");
+  }
   return response.json();
 };
 
 export const joinRoom = async (code: string) => {
   const response = await fetch(`${API_BASE_URL}/rooms/${code}/join`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -308,7 +307,7 @@ export const joinRoom = async (code: string) => {
 export const fetchRoom = async (roomId: string) => {
   const response = await fetch(`${API_BASE_URL}/rooms/${roomId}`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -319,7 +318,7 @@ export const fetchRoom = async (roomId: string) => {
 export const fetchFeedback = async () => {
   const response = await fetch(`${API_BASE_URL}/feedback`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     cache: "no-store",
   });
   if (!response.ok) throw new Error("Failed to fetch feedback");
@@ -337,7 +336,7 @@ export const submitFeedback = async ({
 }) => {
   const response = await fetch(`${API_BASE_URL}/feedback`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     body: JSON.stringify({ category, content, rating }),
   });
@@ -353,7 +352,7 @@ export const submitFeedback = async ({
 export const fetchReviewQueue = async () => {
   const response = await fetch(`${API_BASE_URL}/practice/review-queue`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -364,7 +363,7 @@ export const fetchReviewQueue = async () => {
 export const fetchRetryQueue = async () => {
   const response = await fetch(`${API_BASE_URL}/practice/retry-queue`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -375,7 +374,7 @@ export const fetchRetryQueue = async () => {
 export const submitReview = async (questionId: string, rating: string) => {
   const response = await fetch(`${API_BASE_URL}/practice/review`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     body: JSON.stringify({ questionId, rating }),
   });
@@ -386,7 +385,7 @@ export const submitReview = async (questionId: string, rating: string) => {
 export const fetchPracticeStats = async () => {
   const response = await fetch(`${API_BASE_URL}/practice/stats`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -397,7 +396,7 @@ export const fetchPracticeStats = async () => {
 export const fetchTopicMastery = async () => {
   const response = await fetch(`${API_BASE_URL}/practice/topics`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
     cache: "no-store",
   });
@@ -408,7 +407,7 @@ export const fetchTopicMastery = async () => {
 export const dismissRetry = async (questionId: string) => {
   const response = await fetch(`${API_BASE_URL}/practice/retry/${questionId}`, {
     method: "DELETE",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     credentials: "include",
   });
   if (!response.ok) throw new Error("Failed to dismiss retry");
@@ -420,7 +419,7 @@ export const dismissRetry = async (questionId: string) => {
 export const fetchTopicGuides = async () => {
   const response = await fetch(`${API_BASE_URL}/topics`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     cache: "no-store",
   });
   if (!response.ok) throw new Error("Failed to fetch topic guides");
@@ -430,7 +429,7 @@ export const fetchTopicGuides = async () => {
 export const fetchTopicGuide = async (id: string) => {
   const response = await fetch(`${API_BASE_URL}/topics/${id}`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     cache: "no-store",
   });
   if (!response.ok) throw new Error("Failed to fetch topic guide");
@@ -440,7 +439,7 @@ export const fetchTopicGuide = async (id: string) => {
 export const checkUsernameAvailability = async (username: string) => {
   const response = await fetch(`${API_BASE_URL}/auth/check-username?username=${encodeURIComponent(username)}`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     cache: "no-store",
   });
   if (!response.ok) return { available: false };
@@ -450,10 +449,9 @@ export const checkUsernameAvailability = async (username: string) => {
 export const checkEmailAvailability = async (email: string) => {
   const response = await fetch(`${API_BASE_URL}/auth/check-email?email=${encodeURIComponent(email)}`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     cache: "no-store",
   });
   if (!response.ok) return { available: false };
   return response.json();
 };
-

@@ -59,7 +59,7 @@ router.post('/signup', signupLimiter, validate(signupSchema), async (req: Reques
       sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    res.status(200).json({ username: user.username });
+    res.status(200).json({ username: user.username, token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
@@ -80,7 +80,7 @@ router.post('/login', loginLimiter, validate(loginSchema), async (req: Request, 
       sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    res.status(200).json({ username: user.username });
+    res.status(200).json({ username: user.username, token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });

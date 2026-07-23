@@ -47,7 +47,7 @@ export default function RoomArena({ params }: PageProps) {
 
         const joinRes = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/rooms/${roomCode}/join`,
-          { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include" }
+          { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` }, credentials: "include" }
         );
         if (!joinRes.ok) { router.push("/rooms"); toast.error("Failed to join room"); return; }
 

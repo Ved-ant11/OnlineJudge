@@ -105,6 +105,7 @@ const Signup = () => {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem("username", data.username);
+        localStorage.setItem("token", data.token);
         window.dispatchEvent(new Event("auth-change"));
         toast.success("Signed up!");
         router.push("/problems");

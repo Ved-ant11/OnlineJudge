@@ -24,6 +24,7 @@ export default function NavAuth() {
       } else {
         setUsername(null);
         localStorage.removeItem("username");
+        localStorage.removeItem("token");
       }
     });
 
@@ -36,6 +37,7 @@ export default function NavAuth() {
         } else {
           setUsername(null);
           localStorage.removeItem("username");
+          localStorage.removeItem("token");
         }
       });
     };
@@ -59,6 +61,7 @@ export default function NavAuth() {
   const handleLogout = async () => {
     await logout();
     localStorage.removeItem("username");
+    localStorage.removeItem("token");
     setUsername(null);
     window.dispatchEvent(new Event("auth-change"));
     router.push("/login");

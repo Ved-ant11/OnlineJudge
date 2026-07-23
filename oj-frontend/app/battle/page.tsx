@@ -2,7 +2,7 @@
 import { useMatchmaking } from "@/hooks/useMatchmaking";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { fetchAuthStatus, getBattleHistory } from "@/lib/api";
+import { fetchAuthStatus, getBattleHistory, getUserStats } from "@/lib/api";
 
 type BattleHistoryEntry = {
   id: string;
@@ -31,12 +31,8 @@ export default function Battle() {
         const status = await fetchAuthStatus();
         if (status && status.username) {
           setAuthStatus({ isLoggedIn: true, userId: status.username });
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api"}/user/me`,
-            { credentials: "include" }
-          );
-          if (res.ok) {
-            const userData = await res.json();
+          const userData = await getUserStats();
+          if (userData) {
             setStats({ rating: userData.rating || 1200, battlesPlayed: userData.battlesPlayed || 0, battlesWon: userData.battlesWon || 0 });
           }
           try {
