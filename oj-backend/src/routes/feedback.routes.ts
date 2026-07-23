@@ -20,6 +20,7 @@ router.get("/", async (_req: Request, res: Response) => {
       rating: f.rating,
       createdAt: f.createdAt,
       username: f.user?.username || "Anonymous",
+      userId: f.userId,
     }));
 
     return res.status(200).json(result);
@@ -57,6 +58,34 @@ router.post("/", tokenVerify, async (req: Request, res: Response) => {
     });
 
     return res.status(201).json(feedback);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.delete("/:id", tokenVerify, async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).userId;
+    const { id } = req.params;
+
+    const feedback = await prisma.feedback.findUnique({
+      where: { id },
+    });
+
+    if (!feedback) {
+      return res.status(404).json({ error: "Feedback not found" });
+    }
+
+    if (feedback.userId !== userId) {
+      return res.status(403).json({ error: "Not authorized to delete this feedback" });
+    }
+
+    await prisma.feedback.delete({
+      where: { id },
+    });
+
+    return res.status(200).json({ message: "Feedback deleted successfully" });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Internal server error" });
