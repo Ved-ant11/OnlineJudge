@@ -29,7 +29,8 @@ const Signup = () => {
         toast.success("Signed up!");
         router.push("/problems");
       } else {
-        toast.error("Invalid credentials");
+        const errorData = await response.json().catch(() => ({}));
+        toast.error(errorData.error || "Failed to sign up");
       }
     } catch (error) {
       console.error(error);
