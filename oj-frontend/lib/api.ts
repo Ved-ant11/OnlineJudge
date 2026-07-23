@@ -182,6 +182,19 @@ export const joinQueue = async () => {
   return data;
 };
 
+export const updateComment = async (commentId: string, content: string) => {
+  const response = await fetch(`${API_BASE_URL}/discussion/${commentId}`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    credentials: "include",
+    cache: "no-store",
+    body: JSON.stringify({ content }),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || "Failed to update comment");
+  return data;
+};
+
 export const leaveQueue = async () => {
   const response = await fetch(`${API_BASE_URL}/battle/queue`, {
     method: "DELETE",
