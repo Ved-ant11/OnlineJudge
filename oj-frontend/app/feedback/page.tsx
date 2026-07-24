@@ -61,16 +61,22 @@ export default function FeedbackPage() {
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(0);
   const [hoveredStar, setHoveredStar] = useState(0);
+  const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
 
   useEffect(() => {
-    Promise.all([
-      fetchFeedback().catch(() => []),
-      fetchAuthStatus().catch(() => null),
-    ]).then(([feedback, auth]) => {
-      setFeedbackList(feedback);
-      if (auth) setCurrentUserId(auth.id);
-      setLoading(false);
-    });
+    fetchAuthStatus()
+      .then(async (auth) => {
+        if (auth) {
+          setCurrentUserId(auth.id);
+          setCurrentUserRole(auth.role);
+          if (auth.role === "ADMIN") {
+            const feedback = await fetchFeedback().catch(() => []);
+            setFeedbackList(feedback);
+          }
+        }
+      })
+      .catch(() => null)
+      .finally(() => setLoading(false));
   }, []);
 
   const handleSubmit = async () => {
@@ -217,37 +223,39 @@ export default function FeedbackPage() {
           </button>
         </div>
       )}
-      {!loading && feedbackList.length > 0 && (
-        <div className="grid grid-cols-3 gap-px mb-8 border border-neutral-800/60 rounded-lg overflow-hidden bg-neutral-800/40">
-          {[
-            {
-              label: "Liked",
-              count: statsMap.LIKED,
-              color: "text-emerald-500",
-            },
-            {
-              label: "Improvements",
-              count: statsMap.IMPROVEMENT,
-              color: "text-amber-500",
-            },
-            { label: "Bugs", count: statsMap.BUG, color: "text-red-400" },
-          ].map((s) => (
-            <div
-              key={s.label}
-              className="bg-[#0d0d0d] px-5 py-4 flex flex-col items-center"
-            >
-              <span
-                className={`font-mono-custom text-[20px] font-medium tabular-nums ${s.color}`}
-              >
-                {s.count}
-              </span>
-              <span className="font-mono-custom text-[9px] tracking-[0.22em] uppercase text-neutral-700 mt-1">
-                {s.label}
-              </span>
+      {currentUserRole === "ADMIN" && (
+        <>
+          {!loading && feedbackList.length > 0 && (
+            <div className="grid grid-cols-3 gap-px mb-8 border border-neutral-800/60 rounded-lg overflow-hidden bg-neutral-800/40">
+              {[
+                {
+                  label: "Liked",
+                  count: statsMap.LIKED,
+                  color: "text-emerald-500",
+                },
+                {
+                  label: "Improvements",
+                  count: statsMap.IMPROVEMENT,
+                  color: "text-amber-500",
+                },
+                { label: "Bugs", count: statsMap.BUG, color: "text-red-400" },
+              ].map((s) => (
+                <div
+                  key={s.label}
+                  className="bg-[#0d0d0d] px-5 py-4 flex flex-col items-center"
+                >
+                  <span
+                    className={`font-mono-custom text-[20px] font-medium tabular-nums ${s.color}`}
+                  >
+                    {s.count}
+                  </span>
+                  <span className="font-mono-custom text-[9px] tracking-[0.22em] uppercase text-neutral-700 mt-1">
+                    {s.label}
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      )}
+          )}
 
       <div className="border border-neutral-800/60 rounded-lg overflow-hidden">
         <div className="px-5 py-3 bg-[#0d0d0d] border-b border-neutral-800/60">
@@ -327,6 +335,8 @@ export default function FeedbackPage() {
           </div>
         )}
       </div>
+        </>
+      )}
     </div>
   );
 }

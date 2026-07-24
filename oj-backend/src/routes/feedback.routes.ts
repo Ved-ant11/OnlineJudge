@@ -4,8 +4,17 @@ import tokenVerify from "../middleware/auth";
 
 const router = Router();
 
-router.get("/", async (_req: Request, res: Response) => {
+router.get("/", tokenVerify, async (req: Request, res: Response) => {
   try {
+    const userId = (req as any).userId;
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user || user.role !== "ADMIN") {
+      return res.status(403).json({ error: "Forbidden: Admin access only" });
+    }
+
     const feedback = await prisma.feedback.findMany({
       orderBy: { createdAt: "desc" },
       include: {

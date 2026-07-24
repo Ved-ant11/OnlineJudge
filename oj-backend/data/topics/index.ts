@@ -32,7 +32,7 @@ export type TopicGuide = {
   resources: Resource[];
 };
 
-const dir = path.join(__dirname);
+const dir = path.join(process.cwd(), "data/topics");
 
 const guideFiles = fs
   .readdirSync(dir)

@@ -56,6 +56,7 @@ router.get("/me", tokenVerify, async (req: Request, res: Response) => {
     res.status(200).json({
       id: user.id,
       username: user.username,
+      role: user.role,
       rating: user.rating,
       battlesPlayed: user.battlesPlayed,
       battlesWon: user.battlesWon,

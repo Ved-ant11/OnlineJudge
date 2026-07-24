@@ -23,6 +23,7 @@ model User {
   submissions Submission[]
   currentStreak Int      @default(0)
   maxStreak   Int      @default(0)
+  role        Role     @default(USER)
   lastActivityDate  DateTime?    @db.Date
   activities        DailyActivity[]
   rating          Int       @default(1200)
@@ -194,6 +195,11 @@ enum FeedbackCategory {
   LIKED
   BUG
   OTHER
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 enum BattleStatus {

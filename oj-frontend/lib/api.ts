@@ -105,10 +105,13 @@ export const fetchSolvedIds = async (): Promise<string[]> => {
   }
 };
 
-export const fetchAuthStatus = async (): Promise<{
+export interface AuthStatus {
   id: string;
   username: string;
-} | null> => {
+  role: string;
+}
+
+export const fetchAuthStatus = async (): Promise<AuthStatus | null> => {
   try {
     const response = await fetch(`${API_BASE_URL}/user/me`, {
       method: "GET",
